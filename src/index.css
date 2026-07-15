@@ -1,0 +1,165 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Study2PR Design System — Modern Professional CRM
+   Brand: Gold #D4AF37 (logo/active) · Indigo #4F46E5 (primary CTA) · Grey sidebar, white text
+   Clean white content · Colorful semantic palette · Formal yet vibrant
+*/
+
+@layer base {
+  :root {
+    /* Clean white-blue canvas */
+    --background: 210 40% 97%;        /* #F5F8FC soft blue-white */
+    --foreground: 222 47% 11%;        /* #0F172A near-black navy */
+
+    --card: 0 0% 100%;                /* pure white cards */
+    --card-foreground: 222 47% 11%;
+    --card-border-hover: 243 75% 88%; /* light indigo glow on hover */
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Indigo primary — professional, colorful, trustworthy */
+    --primary: 243 75% 59%;           /* #4F46E5 indigo-600 */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 243 80% 72%;      /* lighter indigo glow */
+
+    /* Navy text token */
+    --navy: 222 47% 11%;              /* #0F172A */
+    --navy-foreground: 210 40% 97%;
+
+    /* Sky blue accent */
+    --accent: 199 89% 48%;            /* #0EA5E9 sky-500 */
+    --accent-foreground: 0 0% 100%;
+
+    /* Gold — Study2PR brand identity, logo, active sidebar indicator */
+    --gold: 42 70% 48%;               /* #D4AF37 */
+    --gold-foreground: 222 47% 11%;
+    --gold-soft: 42 60% 82%;
+
+    /* Secondary — light indigo-tinted gray */
+    --secondary: 214 32% 93%;
+    --secondary-foreground: 222 47% 15%;
+
+    --muted: 210 40% 95%;
+    --muted-foreground: 215 16% 47%;  /* slate-500 */
+
+    /* Vibrant semantic colors */
+    --destructive: 0 84% 60%;         /* #EF4444 red-500 */
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 160 60% 40%;           /* #10B981 emerald */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;            /* #F59E0B amber */
+    --warning-foreground: 222 47% 11%;
+
+    --border: 214 32% 89%;            /* clean light border */
+    --input: 214 32% 91%;
+    --ring: 243 75% 59%;              /* indigo focus ring */
+
+    --radius: 0.625rem;
+
+    /* ━━ GREY SIDEBAR · WHITE TEXT ━━ */
+    --sidebar-background: 0 0% 33%;     /* #545454 — neutral grey */
+    --sidebar-foreground: 0 0% 100%;    /* white text */
+    --sidebar-primary: 42 70% 48%;      /* gold for active/brand */
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 0 0% 43%;         /* #6E6E6E — hover/active highlight */
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 45%;         /* subtle grey border */
+    --sidebar-ring: 42 70% 48%;
+
+    --shadow-card: 0 1px 3px hsl(222 47% 11% / 0.06), 0 4px 16px hsl(222 47% 11% / 0.07);
+    --shadow-elevated: 0 4px 24px hsl(222 47% 11% / 0.12);
+  }
+
+  .dark {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 92%;
+    --card: 222 47% 10%;
+    --card-foreground: 210 40% 92%;
+    --card-border-hover: 243 60% 40%;
+    --popover: 222 47% 10%;
+    --popover-foreground: 210 40% 92%;
+    --primary: 243 75% 65%;
+    --primary-foreground: 0 0% 100%;
+    --navy: 210 40% 85%;
+    --navy-foreground: 222 47% 7%;
+    --accent: 199 89% 55%;
+    --accent-foreground: 0 0% 100%;
+    --gold: 42 70% 55%;
+    --gold-foreground: 222 47% 11%;
+    --gold-soft: 42 50% 35%;
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 90%;
+    --muted: 217 33% 15%;
+    --muted-foreground: 215 16% 60%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 160 60% 45%;
+    --success-foreground: 0 0% 100%;
+    --warning: 38 92% 55%;
+    --warning-foreground: 222 47% 11%;
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 243 75% 65%;
+    --sidebar-background: 0 0% 22%;     /* darker grey for dark mode */
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 42 70% 55%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 0 0% 32%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 34%;
+    --sidebar-ring: 42 70% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.01em;
+    color: hsl(var(--navy));
+  }
+}
+
+@layer components {
+  .card-surface {
+    @apply bg-card border border-border rounded-xl transition-colors;
+    box-shadow: var(--shadow-card);
+  }
+  .card-surface:hover {
+    border-color: hsl(var(--card-border-hover));
+  }
+  .stat-value {
+    @apply text-3xl font-semibold tracking-tight;
+    color: hsl(var(--navy));
+  }
+  .stat-label {
+    @apply text-xs uppercase tracking-wider text-muted-foreground font-medium;
+  }
+  /* Secondary button: navy text on cream, gold border on hover */
+  .btn-secondary-warm {
+    @apply bg-secondary text-secondary-foreground border border-border rounded-md transition-colors;
+  }
+  .btn-secondary-warm:hover {
+    border-color: hsl(var(--gold));
+  }
+
+  /* Sidebar hover-expand uses setOpen(true/false) directly — no CSS hacks needed */
+}
