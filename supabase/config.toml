@@ -1,0 +1,4 @@
+project_id = "ocnsavosheduqzmeyvcd"
+
+[functions.send-template-test]
+verify_jwt = true
