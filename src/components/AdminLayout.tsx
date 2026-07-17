@@ -10,6 +10,7 @@ import {
   FileCheck2,
   Timer,
   Sparkles,
+  PartyPopper,
   Percent,
   Mail,
   Users,
@@ -60,6 +61,7 @@ const ADMIN_GROUPS: AdminGroup[] = [
       { to: "/admin/upsell-triggers", label: "Upsell Triggers", icon: Sparkles },
       { to: "/admin/commission-rules", label: "Commission Rules", icon: Percent },
       { to: "/admin/templates", label: "Email & WhatsApp Templates", icon: Mail },
+      { to: "/admin/festivals", label: "Festival Greetings", icon: PartyPopper },
     ],
   },
   {
