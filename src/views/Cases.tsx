@@ -25,9 +25,34 @@ import { writeAudit } from "@/lib/audit";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 
+// FIX 2026-07-18: view choice now persists in localStorage — previously it was
+// plain useState defaulting to "kanban", so every remount (e.g. opening a case
+// and coming back) silently reset Table view back to Kanban.
+const VIEW_STORAGE_KEY = "study2pr_cases_view";
+
+function loadSavedView(): "kanban" | "table" {
+  if (typeof window === "undefined") return "kanban";
+  try {
+    const saved = window.localStorage.getItem(VIEW_STORAGE_KEY);
+    if (saved === "table" || saved === "kanban") return saved;
+  } catch {
+    // storage unavailable (private mode etc.) — fall through to default
+  }
+  return "kanban";
+}
+
 export default function Cases() {
-  const [view, setView] = useState<"kanban" | "table">("kanban");
+  const [view, setView] = useState<"kanban" | "table">(loadSavedView);
   const [open, setOpen] = useState(false);
+
+  const changeView = (v: "kanban" | "table") => {
+    setView(v);
+    try {
+      window.localStorage.setItem(VIEW_STORAGE_KEY, v);
+    } catch {
+      // non-fatal: view still switches for this session
+    }
+  };
 
   const { data: stages } = useQuery({
     queryKey: ["case-stages"],
@@ -41,10 +66,10 @@ export default function Cases() {
         actions={
           <div className="flex items-center gap-2">
             <div className="flex rounded-md border border-border overflow-hidden">
-              <button onClick={() => setView("kanban")} className={`px-3 py-1.5 text-xs flex items-center gap-1.5 ${view === "kanban" ? "bg-primary text-primary-foreground" : "bg-card"}`}>
+              <button onClick={() => changeView("kanban")} className={`px-3 py-1.5 text-xs flex items-center gap-1.5 ${view === "kanban" ? "bg-primary text-primary-foreground" : "bg-card"}`}>
                 <LayoutGrid className="h-3.5 w-3.5" /> Kanban
               </button>
-              <button onClick={() => setView("table")} className={`px-3 py-1.5 text-xs flex items-center gap-1.5 ${view === "table" ? "bg-primary text-primary-foreground" : "bg-card"}`}>
+              <button onClick={() => changeView("table")} className={`px-3 py-1.5 text-xs flex items-center gap-1.5 ${view === "table" ? "bg-primary text-primary-foreground" : "bg-card"}`}>
                 <TableIcon className="h-3.5 w-3.5" /> Table
               </button>
             </div>
