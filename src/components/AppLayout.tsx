@@ -5,17 +5,21 @@ import { AppSidebar, useSidebarPersistence } from "./AppSidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { NotificationBell } from "./NotificationBell";
 import { GlobalCreateFab } from "./GlobalCreateFab";
+import { GlobalSearch } from "./GlobalSearch";
 
 export function AppLayout({ children }: { children?: ReactNode }) {
   const [open, setOpen] = useSidebarPersistence();
   return (
     <SidebarProvider open={open} onOpenChange={setOpen}>
-      <div className="min-h-screen flex w-full bg-background">
+      {/* v2.1 2026-07-18: bg-background → bg-transparent so the multitone body
+          gradient (index.css) shows through — the opaque wrapper was hiding it */}
+      <div className="min-h-screen flex w-full bg-transparent">
         <AppSidebar />
         <div className="flex-1 min-w-0 flex flex-col">
           {/* Top bar with hamburger trigger and notification bell */}
           <header className="h-12 flex items-center justify-between border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-20 px-2">
             <SidebarTrigger />
+            <GlobalSearch />
             <NotificationBell />
           </header>
           <main className="flex-1 min-w-0">
