@@ -2,117 +2,119 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Study2PR Design System — Modern Professional CRM
-   Brand: Gold #D4AF37 (logo/active) · Indigo #4F46E5 (primary CTA) · Grey sidebar, white text
-   Clean white content · Colorful semantic palette · Formal yet vibrant
+/* Study2PR Design System v2 — Premium Consultancy
+   Brand: Deep navy sidebar · Gold #C6A343 accents · Royal indigo CTA
+   Multitone ivory/indigo canvas · Fraunces display serif · Plus Jakarta Sans body
+   (v2 2026-07-18: premium restyle — same variable names, richer values)
 */
 
 @layer base {
   :root {
-    /* Clean white-blue canvas */
-    --background: 210 40% 97%;        /* #F5F8FC soft blue-white */
-    --foreground: 222 47% 11%;        /* #0F172A near-black navy */
+    /* Multitone canvas base (gradients layered on body below) */
+    --background: 220 40% 97%;        /* cool ivory-blue base */
+    --foreground: 224 50% 12%;        /* deep navy ink */
 
-    --card: 0 0% 100%;                /* pure white cards */
-    --card-foreground: 222 47% 11%;
-    --card-border-hover: 243 75% 88%; /* light indigo glow on hover */
+    --card: 0 0% 100%;
+    --card-foreground: 224 50% 12%;
+    --card-border-hover: 42 55% 72%;  /* soft gold glow on hover */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 224 50% 12%;
 
-    /* Indigo primary — professional, colorful, trustworthy */
-    --primary: 243 75% 59%;           /* #4F46E5 indigo-600 */
-    --primary-foreground: 0 0% 100%;
-    --primary-glow: 243 80% 72%;      /* lighter indigo glow */
+    /* Royal indigo primary — deeper, less neon, more "firm" */
+    --primary: 234 55% 42%;           /* #3140A6 royal indigo */
+    --primary-foreground: 40 30% 98%;
+    --primary-glow: 234 70% 68%;
 
     /* Navy text token */
-    --navy: 222 47% 11%;              /* #0F172A */
-    --navy-foreground: 210 40% 97%;
+    --navy: 224 50% 13%;              /* #101830 */
+    --navy-foreground: 40 30% 97%;
 
-    /* Sky blue accent */
-    --accent: 199 89% 48%;            /* #0EA5E9 sky-500 */
+    /* Refined sky accent (links, highlights) */
+    --accent: 205 80% 41%;            /* #1373BD deep sky */
     --accent-foreground: 0 0% 100%;
 
-    /* Gold — Study2PR brand identity, logo, active sidebar indicator */
-    --gold: 42 70% 48%;               /* #D4AF37 */
-    --gold-foreground: 222 47% 11%;
-    --gold-soft: 42 60% 82%;
+    /* Gold — richer, brand identity, active states */
+    --gold: 42 62% 47%;               /* #C6A343 */
+    --gold-foreground: 224 50% 12%;
+    --gold-soft: 42 60% 85%;
 
-    /* Secondary — light indigo-tinted gray */
-    --secondary: 214 32% 93%;
-    --secondary-foreground: 222 47% 15%;
+    /* Secondary — warm parchment */
+    --secondary: 40 30% 93%;
+    --secondary-foreground: 224 45% 18%;
 
-    --muted: 210 40% 95%;
-    --muted-foreground: 215 16% 47%;  /* slate-500 */
+    --muted: 220 30% 94%;
+    --muted-foreground: 224 15% 44%;
 
-    /* Vibrant semantic colors */
-    --destructive: 0 84% 60%;         /* #EF4444 red-500 */
+    /* Semantic */
+    --destructive: 0 72% 51%;         /* deeper red */
     --destructive-foreground: 0 0% 100%;
 
-    --success: 160 60% 40%;           /* #10B981 emerald */
+    --success: 158 55% 34%;           /* deep emerald */
     --success-foreground: 0 0% 100%;
 
-    --warning: 38 92% 50%;            /* #F59E0B amber */
-    --warning-foreground: 222 47% 11%;
+    --warning: 36 90% 45%;            /* burnt amber */
+    --warning-foreground: 224 50% 12%;
 
-    --border: 214 32% 89%;            /* clean light border */
-    --input: 214 32% 91%;
-    --ring: 243 75% 59%;              /* indigo focus ring */
+    --border: 222 25% 88%;
+    --input: 222 25% 90%;
+    --ring: 234 55% 48%;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;                /* rounder = softer, more premium */
 
-    /* ━━ GREY SIDEBAR · WHITE TEXT ━━ */
-    --sidebar-background: 0 0% 33%;     /* #545454 — neutral grey */
-    --sidebar-foreground: 0 0% 100%;    /* white text */
-    --sidebar-primary: 42 70% 48%;      /* gold for active/brand */
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 0 0% 43%;         /* #6E6E6E — hover/active highlight */
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 45%;         /* subtle grey border */
-    --sidebar-ring: 42 70% 48%;
+    /* ━━ DEEP NAVY SIDEBAR · WARM WHITE TEXT · GOLD ACTIVE ━━ */
+    --sidebar-background: 224 47% 11%;   /* #0E1731 deep navy */
+    --sidebar-foreground: 40 25% 96%;    /* warm white */
+    --sidebar-primary: 42 65% 53%;       /* gold active/brand */
+    --sidebar-primary-foreground: 224 50% 10%;
+    --sidebar-accent: 224 38% 18%;       /* hover navy */
+    --sidebar-accent-foreground: 40 25% 97%;
+    --sidebar-border: 224 32% 20%;
+    --sidebar-ring: 42 65% 53%;
 
-    --shadow-card: 0 1px 3px hsl(222 47% 11% / 0.06), 0 4px 16px hsl(222 47% 11% / 0.07);
-    --shadow-elevated: 0 4px 24px hsl(222 47% 11% / 0.12);
+    --shadow-card: 0 1px 2px hsl(224 50% 12% / 0.05), 0 6px 20px hsl(224 50% 12% / 0.07);
+    --shadow-elevated: 0 8px 32px hsl(224 50% 12% / 0.14);
   }
 
   .dark {
-    --background: 222 47% 7%;
-    --foreground: 210 40% 92%;
-    --card: 222 47% 10%;
-    --card-foreground: 210 40% 92%;
-    --card-border-hover: 243 60% 40%;
-    --popover: 222 47% 10%;
-    --popover-foreground: 210 40% 92%;
-    --primary: 243 75% 65%;
-    --primary-foreground: 0 0% 100%;
-    --navy: 210 40% 85%;
-    --navy-foreground: 222 47% 7%;
-    --accent: 199 89% 55%;
-    --accent-foreground: 0 0% 100%;
-    --gold: 42 70% 55%;
-    --gold-foreground: 222 47% 11%;
-    --gold-soft: 42 50% 35%;
-    --secondary: 217 33% 17%;
-    --secondary-foreground: 210 40% 90%;
-    --muted: 217 33% 15%;
-    --muted-foreground: 215 16% 60%;
-    --destructive: 0 84% 60%;
+    --background: 224 45% 6%;
+    --foreground: 40 20% 92%;
+    --card: 224 40% 9%;
+    --card-foreground: 40 20% 92%;
+    --card-border-hover: 42 45% 40%;
+    --popover: 224 40% 9%;
+    --popover-foreground: 40 20% 92%;
+    --primary: 234 65% 66%;
+    --primary-foreground: 224 50% 8%;
+    --primary-glow: 234 70% 75%;
+    --navy: 220 30% 85%;
+    --navy-foreground: 224 45% 7%;
+    --accent: 205 80% 55%;
+    --accent-foreground: 224 50% 8%;
+    --gold: 42 70% 58%;
+    --gold-foreground: 224 50% 10%;
+    --gold-soft: 42 40% 30%;
+    --secondary: 224 32% 15%;
+    --secondary-foreground: 40 20% 90%;
+    --muted: 224 30% 13%;
+    --muted-foreground: 220 12% 62%;
+    --destructive: 0 72% 56%;
     --destructive-foreground: 0 0% 100%;
-    --success: 160 60% 45%;
+    --success: 158 55% 42%;
     --success-foreground: 0 0% 100%;
-    --warning: 38 92% 55%;
-    --warning-foreground: 222 47% 11%;
-    --border: 217 33% 20%;
-    --input: 217 33% 20%;
-    --ring: 243 75% 65%;
-    --sidebar-background: 0 0% 22%;     /* darker grey for dark mode */
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 42 70% 55%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 0 0% 32%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 34%;
-    --sidebar-ring: 42 70% 55%;
+    --warning: 36 90% 52%;
+    --warning-foreground: 224 50% 10%;
+    --border: 224 28% 17%;
+    --input: 224 28% 17%;
+    --ring: 234 65% 66%;
+    --sidebar-background: 224 47% 8%;
+    --sidebar-foreground: 40 25% 96%;
+    --sidebar-primary: 42 70% 58%;
+    --sidebar-primary-foreground: 224 50% 10%;
+    --sidebar-accent: 224 36% 15%;
+    --sidebar-accent-foreground: 40 25% 97%;
+    --sidebar-border: 224 30% 16%;
+    --sidebar-ring: 42 70% 58%;
   }
 }
 
@@ -127,38 +129,83 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    font-family: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv11";
+    /* Multitone canvas: gold wash upper-left · indigo wash right · ivory base */
+    background-image:
+      radial-gradient(1100px 560px at 88% -8%, hsl(234 60% 90% / 0.55), transparent 62%),
+      radial-gradient(900px 520px at -8% 14%, hsl(42 72% 88% / 0.5), transparent 58%),
+      linear-gradient(180deg, hsl(221 42% 97%), hsl(40 32% 96%));
+    background-attachment: fixed;
+  }
+
+  .dark body {
+    background-image:
+      radial-gradient(1100px 560px at 88% -8%, hsl(234 55% 22% / 0.5), transparent 62%),
+      radial-gradient(900px 520px at -8% 14%, hsl(42 45% 20% / 0.35), transparent 58%),
+      linear-gradient(180deg, hsl(224 45% 7%), hsl(224 40% 5%));
   }
 
   h1, h2, h3, .font-display {
-    font-family: 'Playfair Display', Georgia, serif;
-    letter-spacing: -0.01em;
+    font-family: 'Fraunces', 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.015em;
     color: hsl(var(--navy));
+  }
+
+  /* Refined selection + slim scrollbars */
+  ::selection {
+    background: hsl(var(--gold-soft));
+    color: hsl(var(--navy));
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(224 25% 75% / 0.6);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(224 30% 60% / 0.7);
   }
 }
 
 @layer components {
   .card-surface {
-    @apply bg-card border border-border rounded-xl transition-colors;
+    @apply border border-border rounded-xl transition-all;
+    background: linear-gradient(180deg, hsl(var(--card)), hsl(40 30% 99%));
     box-shadow: var(--shadow-card);
+  }
+  .dark .card-surface {
+    background: linear-gradient(180deg, hsl(var(--card)), hsl(224 40% 8%));
   }
   .card-surface:hover {
     border-color: hsl(var(--card-border-hover));
+    box-shadow: var(--shadow-elevated);
   }
   .stat-value {
     @apply text-3xl font-semibold tracking-tight;
+    font-family: 'Fraunces', Georgia, serif;
     color: hsl(var(--navy));
   }
   .stat-label {
     @apply text-xs uppercase tracking-wider text-muted-foreground font-medium;
   }
-  /* Secondary button: navy text on cream, gold border on hover */
+  /* Secondary button: navy text on parchment, gold border on hover */
   .btn-secondary-warm {
     @apply bg-secondary text-secondary-foreground border border-border rounded-md transition-colors;
   }
   .btn-secondary-warm:hover {
     border-color: hsl(var(--gold));
+  }
+  /* Gold hairline for premium section dividers (opt-in utility) */
+  .gold-rule {
+    height: 2px;
+    background: linear-gradient(90deg, hsl(var(--gold)), hsl(var(--gold) / 0));
+    border-radius: 2px;
   }
 
   /* Sidebar hover-expand uses setOpen(true/false) directly — no CSS hacks needed */
