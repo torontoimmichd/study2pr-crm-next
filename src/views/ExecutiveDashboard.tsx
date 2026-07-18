@@ -1,27 +1,23 @@
 "use client";
 
-// src/pages/ExecutiveDashboard.tsx
+// src/views/ExecutiveDashboard.tsx — v2 2026-07-18 (Gaurav's redesign)
 //
-// Owner "Morning Dashboard" — rebuilt to the original mockup
-// (Study2PR_Morning_Dashboard_Mockup.html). A 15-minute morning review:
-//   • 5-KPI strip (money in, pipeline, at-risk, new inquiries, upsells)
-//   • Needs Your Decision  (pending step-template edits)
-//   • Cases At Risk        (overdue submissions + refusals)
-//   • Upsell Engine        (pending prospective applications)
-//   • Team Performance      (v_counselor_performance)
-//   • Inquiries by Channel  (leads, last 24h)
-//   • IRCC Emails Today
-//   • Month-to-Date Summary
+// Owner "Morning Dashboard":
+//   • 5-KPI strip (money in, pipeline, ENROLLMENTS TODAY, new inquiries, upsells)
+//   • Daily Activity        (today's events from activity_timeline)
+//   • Today's Enrollments   (applications created today)
+//   • Shortcuts             (immigration portals + all PNP websites + mail)
+//   • Team Performance · Upsell Engine · Inquiries by Channel · IRCC Emails · MTD
 //
-// Sections that depend on the (currently sparse) automation tables degrade to a
-// friendly empty state instead of erroring.
+// REMOVED per Gaurav 2026-07-18: "Needs Your Decision" and "Cases At Risk".
+// Sections that depend on sparse tables degrade to a friendly empty state.
 
 import { useMemo, type ReactNode } from "react";
 import { Link } from "@/lib/router-compat";
 import { useQuery } from "@tanstack/react-query";
 import {
-  IndianRupee, TrendingUp, TrendingDown, AlertTriangle, UserPlus, Sparkles,
-  CheckCircle2, Clock, Mail, ArrowRight, ExternalLink, Gauge,
+  IndianRupee, TrendingUp, TrendingDown, UserPlus, Sparkles, GraduationCap,
+  Clock, Mail, ExternalLink, Gauge, Activity, Link2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -29,6 +25,32 @@ import { fmtRelative } from "@/lib/format";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
+
+// ── Shortcuts (edit labels/URLs here) ─────────────────────────────────────────
+const PORTAL_LINKS: { label: string; url: string }[] = [
+  { label: "PR Confirmation Portal (GCKey)", url: "https://prson-srpel.apps.cic.gc.ca/en/login" },
+  { label: "IRCC Secure Account", url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/application/account.html" },
+  { label: "PR Portal — non Express Entry", url: "https://portal-portail.apps.cic.gc.ca/signin?lang=en" },
+  { label: "Outlook Mail", url: "https://login.live.com/login.srf?wa=wsignin1.0&rpsnv=22&ct=1711498730&rver=7.0.6738.0&wp=MBI_SSL&wreply=https%3a%2f%2foutlook.live.com%2fowa%2f%3fcobrandid%3dab0455a0-8d03-46b9-b18b-df2f57b9e44c%26nlp%3d1%26deeplink%3dowa%252f%26RpsCsrfState%3dc27f5547-a3d2-0ef3-6c0e-28bd1747bfa1&id=292841&aadredir=1&CBCXT=out&lw=1&fl=dob%2cflname%2cwld&cobrandid=ab0455a0-8d03-46b9-b18b-df2f57b9e44c" },
+  { label: "US Visa from Canada (appointments)", url: "https://ais.usvisa-info.com/en-ca/niv" },
+  { label: "Australia Visa Processing Times", url: "https://immi.homeaffairs.gov.au/visas/getting-a-visa/visa-processing-times/global-visa-processing-times" },
+];
+
+const PNP_LINKS: { label: string; url: string }[] = [
+  { label: "All PNPs — IRCC overview", url: "https://www.canada.ca/en/immigration-refugees-citizenship/services/immigrate-canada/provincial-nominees.html" },
+  { label: "Ontario — OINP", url: "https://www.ontario.ca/page/ontario-immigrant-nominee-program-oinp" },
+  { label: "British Columbia — BC PNP", url: "https://www.welcomebc.ca/Immigrate-to-B-C/B-C-Provincial-Nominee-Program" },
+  { label: "Alberta — AAIP", url: "https://www.alberta.ca/aaip" },
+  { label: "Saskatchewan — SINP", url: "https://www.saskatchewan.ca/residents/moving-to-saskatchewan/live-in-saskatchewan/by-immigrating/saskatchewan-immigrant-nominee-program" },
+  { label: "Manitoba — MPNP", url: "https://immigratemanitoba.com/" },
+  { label: "Nova Scotia — NSNP", url: "https://liveinnovascotia.com/" },
+  { label: "New Brunswick", url: "https://www.welcomenb.ca/" },
+  { label: "Prince Edward Island", url: "https://www.princeedwardisland.ca/en/topic/immigrate" },
+  { label: "Newfoundland & Labrador", url: "https://www.gov.nl.ca/immigration/" },
+  { label: "Yukon — YNP", url: "https://yukon.ca/en/immigrate-yukon" },
+  { label: "Northwest Territories", url: "https://www.immigratenwt.ca/" },
+  { label: "Quebec — Arrima", url: "https://www.quebec.ca/en/immigration" },
+];
 
 // ── helpers ───────────────────────────────────────────────────────────────────
 function inr(n: number | null | undefined): string {
@@ -102,57 +124,45 @@ export default function ExecutiveDashboard() {
     },
   });
 
-  // ── At-risk cases (overdue submissions + refusals) ────────────────────────────
-  const { data: atRisk } = useQuery({
-    queryKey: ["morning-at-risk"],
+  // ── Today's enrollments (applications created today) ──────────────────────────
+  const { data: enroll } = useQuery({
+    queryKey: ["morning-enrollments"],
     queryFn: async () => {
-      const [overdueRes, refusedRes] = await Promise.all([
-        db.from("cases").select("id, case_code, client_id, target_submission_date, current_stage_code")
-          .eq("is_archived", false).is("outcome", null).not("target_submission_date", "is", null)
-          .lt("target_submission_date", B.todayStr).limit(10),
-        db.from("cases").select("id, case_code, client_id, decision_date")
-          .eq("outcome", "refused").order("decision_date", { ascending: false }).limit(10),
+      const { data } = await db.from("cases")
+        .select("id, case_code, client_id, visa_type_id, created_at")
+        .gte("created_at", B.iso(B.startToday))
+        .order("created_at", { ascending: false }).limit(25);
+      const rows = (data ?? []) as { id: string; case_code: string | null; client_id: string; visa_type_id: string | null; created_at: string }[];
+      const cIds = Array.from(new Set(rows.map(r => r.client_id).filter(Boolean)));
+      const vIds = Array.from(new Set(rows.map(r => r.visa_type_id).filter(Boolean) as string[]));
+      const [cs, vs, convRes] = await Promise.all([
+        cIds.length ? supabase.from("clients").select("id, full_name").in("id", cIds) : Promise.resolve({ data: [] }),
+        vIds.length ? supabase.from("visa_types").select("id, label").in("id", vIds) : Promise.resolve({ data: [] }),
+        supabase.from("leads").select("id", { count: "exact", head: true }).eq("lifecycle_state", "converted").gte("updated_at", B.iso(B.startToday)),
       ]);
-      const overdue = (overdueRes.data ?? []) as { id: string; case_code: string | null; client_id: string; target_submission_date: string }[];
-      const refused = (refusedRes.data ?? []) as { id: string; case_code: string | null; client_id: string; decision_date: string | null }[];
-      const ids = Array.from(new Set([...overdue, ...refused].map((c) => c.client_id).filter(Boolean)));
-      const nameMap = new Map<string, string>();
-      if (ids.length) {
-        const { data: cl } = await supabase.from("clients").select("id, full_name").in("id", ids);
-        (cl ?? []).forEach((c) => nameMap.set(c.id, c.full_name));
-      }
-      const items = [
-        ...overdue.map((c) => ({ id: c.id, ref: c.case_code, name: nameMap.get(c.client_id) ?? "—", reason: `Submission overdue since ${c.target_submission_date}`, kind: "overdue" as const })),
-        ...refused.map((c) => ({ id: c.id, ref: c.case_code, name: nameMap.get(c.client_id) ?? "—", reason: `IRCC refusal${c.decision_date ? ` · ${fmtRelative(c.decision_date)}` : ""}`, kind: "refused" as const })),
-      ];
-      return { items, overdueCount: overdue.length, refusedCount: refused.length };
+      const cMap = new Map(((cs.data ?? []) as { id: string; full_name: string }[]).map(c => [c.id, c.full_name]));
+      const vMap = new Map(((vs.data ?? []) as { id: string; label: string }[]).map(v => [v.id, v.label]));
+      return {
+        rows: rows.map(r => ({
+          ...r,
+          client_name: cMap.get(r.client_id) ?? "—",
+          visa_label: r.visa_type_id ? (vMap.get(r.visa_type_id) ?? "—") : "—",
+        })),
+        convertedToday: convRes.count ?? 0,
+      };
     },
   });
 
-  // ── Needs Your Decision (pending step-template edits) ─────────────────────────
-  const { data: decisions } = useQuery({
-    queryKey: ["morning-decisions"],
+  // ── Daily activity (today's timeline events) ──────────────────────────────────
+  const { data: activity } = useQuery({
+    queryKey: ["morning-activity"],
     queryFn: async () => {
-      const { data } = await db.from("step_template_edits")
-        .select("id, proposed_at, proposed_by, proposed_change, status")
-        .eq("status", "pending").order("proposed_at", { ascending: true }).limit(6);
-      const rows = (data ?? []) as { id: string; proposed_at: string; proposed_by: string | null; proposed_change: unknown }[];
-      const ids = Array.from(new Set(rows.map((r) => r.proposed_by).filter(Boolean) as string[]));
-      const nameMap = new Map<string, string>();
-      if (ids.length) {
-        const { data: st } = await supabase.from("staff_profiles").select("id, full_name").in("id", ids);
-        (st ?? []).forEach((s) => nameMap.set(s.id, s.full_name));
-      }
-      return rows.map((r) => {
-        const change = (r.proposed_change ?? {}) as { title?: string; summary?: string; description?: string };
-        return {
-          id: r.id,
-          who: r.proposed_by ? (nameMap.get(r.proposed_by) ?? "Staff") : "Staff",
-          title: change.title || "Proposed workflow change",
-          desc: change.summary || change.description || "Review the proposed change before publishing.",
-          at: r.proposed_at,
-        };
-      });
+      const { data } = await db.from("activity_timeline")
+        .select("id, event_type, title, body, case_id, lead_id, client_id, is_system, occurred_at")
+        .gte("occurred_at", B.iso(B.startToday))
+        .order("occurred_at", { ascending: false })
+        .limit(20);
+      return (data ?? []) as { id: string; event_type: string | null; title: string | null; body: string | null; case_id: string | null; lead_id: string | null; client_id: string | null; is_system: boolean | null; occurred_at: string }[];
     },
   });
 
@@ -229,8 +239,7 @@ export default function ExecutiveDashboard() {
     },
   });
 
-  const decisionCount = decisions?.length ?? 0;
-  const riskCount = (atRisk?.overdueCount ?? 0) + (atRisk?.refusedCount ?? 0);
+  const enrollCount = enroll?.rows.length ?? 0;
 
   return (
     <div className="p-5 max-w-[1400px] mx-auto space-y-5">
@@ -246,7 +255,7 @@ export default function ExecutiveDashboard() {
         <div className="text-right">
           <p className="font-semibold text-navy text-sm">{greeting()}, {profile?.full_name?.split(" ")[0] ?? "there"}</p>
           <p className="text-xs text-muted-foreground">
-            {decisionCount > 0 ? `${decisionCount} decision${decisionCount > 1 ? "s" : ""} need you` : "All decisions handled"}
+            {enrollCount > 0 ? `${enrollCount} enrollment${enrollCount > 1 ? "s" : ""} today 🎉` : "No new enrollments yet today"}
           </p>
         </div>
       </div>
@@ -258,9 +267,9 @@ export default function ExecutiveDashboard() {
           detail={`${kpi?.moneyPayCount ?? 0} payments${kpi?.methods && Object.keys(kpi.methods).length ? " · " + Object.entries(kpi.methods).map(([k, n]) => `${n} ${k}`).join(" · ") : ""}`} />
         <KpiCard label="Pipeline Value (Open)" value={inr(kpi?.pipeline ?? 0)} accent="default"
           detail={`${kpi?.openCaseCount ?? 0} open cases`} icon={<IndianRupee className="h-4 w-4" />} />
-        <KpiCard label="Cases At Risk" value={String(riskCount)}
-          accent={riskCount > 0 ? "alert" : "ok"}
-          detail={`${atRisk?.overdueCount ?? 0} overdue docs · ${atRisk?.refusedCount ?? 0} refusal`} icon={<AlertTriangle className="h-4 w-4" />} />
+        <KpiCard label="Enrollments (Today)" value={String(enrollCount)}
+          accent={enrollCount > 0 ? "ok" : "default"}
+          detail={`${enroll?.convertedToday ?? 0} leads converted today`} icon={<GraduationCap className="h-4 w-4" />} />
         <KpiCard label="New Inquiries (24h)" value={String(kpi?.newInquiries ?? 0)}
           accent={(kpi?.newInquiries ?? 0) >= (kpi?.dailyAvg ?? 0) ? "ok" : "warn"}
           detail={`daily avg ${kpi?.dailyAvg ?? 0}`} icon={<UserPlus className="h-4 w-4" />} />
@@ -272,38 +281,45 @@ export default function ExecutiveDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Left 2/3 */}
         <div className="lg:col-span-2 space-y-5">
-          {/* Needs Your Decision */}
-          <Card title="Needs Your Decision" count={decisionCount} countTone={decisionCount > 0 ? "alert" : undefined}>
-            {decisionCount === 0 ? (
-              <Empty icon={<CheckCircle2 className="h-5 w-5 text-emerald-500" />} text="All items handled. You can close the app." />
+          {/* Daily activity */}
+          <Card title="Daily Activity" count={activity?.length ?? 0}>
+            {!activity || activity.length === 0 ? (
+              <Empty icon={<Activity className="h-5 w-5 text-muted-foreground" />} text="No activity recorded yet today." />
             ) : (
-              <div className="space-y-2.5">
-                {decisions!.map((d) => (
-                  <div key={d.id} className="rounded-lg border-l-4 border-orange-400 bg-orange-50/60 px-3.5 py-3">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-orange-700">Proposed by {d.who} · {fmtRelative(d.at)}</p>
-                    <p className="font-semibold text-sm mt-0.5">{d.title}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">{d.desc}</p>
-                    <Link to="/admin/pending-approvals" className="inline-flex items-center gap-1 text-xs font-medium text-navy mt-2 hover:underline">
-                      Review &amp; decide <ArrowRight className="h-3 w-3" />
-                    </Link>
+              <div className="divide-y divide-border">
+                {activity.map((a) => (
+                  <div key={a.id} className="flex items-start gap-3 py-2.5">
+                    <span className={`h-2 w-2 rounded-full mt-1.5 shrink-0 ${a.is_system ? "bg-sky-400" : "bg-gold"}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-navy truncate">{a.title ?? (a.event_type ?? "Event").replace(/_/g, " ")}</p>
+                      {a.body && <p className="text-xs text-muted-foreground truncate">{a.body}</p>}
+                    </div>
+                    <span className="text-[11px] text-muted-foreground shrink-0">{fmtRelative(a.occurred_at)}</span>
+                    {a.case_id ? (
+                      <Link to={`/cases/${a.case_id}`} className="text-[11px] font-medium text-navy hover:underline shrink-0">Open</Link>
+                    ) : a.lead_id ? (
+                      <Link to={`/leads/${a.lead_id}`} className="text-[11px] font-medium text-navy hover:underline shrink-0">Open</Link>
+                    ) : a.client_id ? (
+                      <Link to={`/clients/${a.client_id}`} className="text-[11px] font-medium text-navy hover:underline shrink-0">Open</Link>
+                    ) : null}
                   </div>
                 ))}
               </div>
             )}
           </Card>
 
-          {/* Cases At Risk */}
-          <Card title="Cases At Risk" count={atRisk?.items.length ?? 0} countTone={(atRisk?.items.length ?? 0) > 0 ? "warn" : undefined}>
-            {(atRisk?.items.length ?? 0) === 0 ? (
-              <Empty icon={<CheckCircle2 className="h-5 w-5 text-emerald-500" />} text="No cases at risk right now." />
+          {/* Today's enrollments */}
+          <Card title="Today's Enrollments" count={enrollCount} countTone={undefined}>
+            {enrollCount === 0 ? (
+              <Empty icon={<GraduationCap className="h-5 w-5 text-muted-foreground" />} text="No new enrollments yet today." />
             ) : (
               <div className="divide-y divide-border">
-                {atRisk!.items.map((c) => (
+                {enroll!.rows.map((c) => (
                   <div key={c.id} className="flex items-center gap-3 py-2.5">
-                    <span className={`h-2.5 w-2.5 rounded-full shrink-0 ${c.kind === "refused" ? "bg-red-500" : "bg-amber-500"}`} />
+                    <span className="h-2.5 w-2.5 rounded-full shrink-0 bg-emerald-500" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-navy truncate">{c.name} <span className="text-muted-foreground font-normal">· {c.ref ?? ""}</span></p>
-                      <p className="text-xs text-muted-foreground">{c.reason}</p>
+                      <p className="text-sm font-medium text-navy truncate">{c.client_name} <span className="text-muted-foreground font-normal">· {c.case_code ?? ""}</span></p>
+                      <p className="text-xs text-muted-foreground">{c.visa_label} · {fmtRelative(c.created_at)}</p>
                     </div>
                     <Link to={`/cases/${c.id}`} className="text-xs font-medium px-2.5 py-1 rounded-md border border-navy/30 text-navy hover:bg-navy/5">Open</Link>
                   </div>
@@ -347,6 +363,32 @@ export default function ExecutiveDashboard() {
 
         {/* Right 1/3 */}
         <div className="space-y-5">
+          {/* Shortcuts */}
+          <Card title="Shortcuts">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Portals</p>
+            <div className="space-y-1">
+              {PORTAL_LINKS.map((l) => (
+                <a key={l.label} href={l.url} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-navy hover:bg-gold-soft/40 transition-colors">
+                  <Link2 className="h-3.5 w-3.5 text-gold shrink-0" />
+                  <span className="flex-1 truncate">{l.label}</span>
+                  <ExternalLink className="h-3 w-3 text-muted-foreground shrink-0" />
+                </a>
+              ))}
+            </div>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground mt-3 mb-1.5">PNP Websites</p>
+            <div className="space-y-1">
+              {PNP_LINKS.map((l) => (
+                <a key={l.label} href={l.url} target="_blank" rel="noopener noreferrer"
+                  className="flex items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-navy hover:bg-gold-soft/40 transition-colors">
+                  <Link2 className="h-3.5 w-3.5 text-gold shrink-0" />
+                  <span className="flex-1 truncate">{l.label}</span>
+                  <ExternalLink className="h-3 w-3 text-muted-foreground shrink-0" />
+                </a>
+              ))}
+            </div>
+          </Card>
+
           {/* Upsell engine */}
           <Card title="Upsell Engine — This Week">
             {!upsellEngine || upsellEngine.length === 0 ? (
