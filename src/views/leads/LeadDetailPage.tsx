@@ -231,10 +231,9 @@ export default function LeadDetailPage() {
               <TabsTrigger value="applications">
                 Applications <Badge variant="secondary" className="ml-1">{applications.length}</Badge>
               </TabsTrigger>
-              <TabsTrigger value="chain">
-                Chain plan{" "}
-                <Badge variant="secondary" className="ml-1 bg-amber-100 text-amber-900">{prospective.length}</Badge>
-              </TabsTrigger>
+              {/* Chain plan tab moved to the CLIENTS module (ClientDetail) —
+                  chains fire on application approval, which belongs to clients,
+                  not unconverted leads. The Overview pathway snapshot stays. */}
               <TabsTrigger value="tasks">Tasks</TabsTrigger>
               <TabsTrigger value="timeline">Timeline</TabsTrigger>
               <TabsTrigger value="notes">Notes</TabsTrigger>
@@ -267,11 +266,6 @@ export default function LeadDetailPage() {
                 currentLeadId={lead.id}
                 expanded
               />
-            </TabsContent>
-
-            {/* Chain plan */}
-            <TabsContent value="chain" className="mt-3">
-              <PathwayPlanCard applications={applications} prospective={prospective} expanded />
             </TabsContent>
 
             {/* Tasks */}

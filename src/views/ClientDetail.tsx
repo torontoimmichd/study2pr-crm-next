@@ -16,6 +16,7 @@ import { FamilyMemberDialog, type FamilyMemberFormValue } from "@/components/Fam
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { writeAudit } from "@/lib/audit";
 import { EntityTimeline } from "@/components/EntityTimeline";
+import { ChainPlanPanel } from "@/components/ChainPlanPanel";
 
 export default function ClientDetail() {
   const { id } = useParams<{ id: string }>();
@@ -83,6 +84,22 @@ export default function ClientDetail() {
     void refetchFamily();
   };
 
+  // Chain plan count for the tab badge (rows created by the chain engine, sql/24)
+  const { data: chainCount = 0 } = useQuery({
+    queryKey: ["client-chain-count", id],
+    queryFn: async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const { count, error } = await (supabase as any)
+        .from("prospective_applications")
+        .select("id", { count: "exact", head: true })
+        .eq("for_person_id", id!)
+        .neq("status", "converted_to_case");
+      if (error) { console.warn("[ClientDetail chain count]", error.message); return 0; }
+      return count ?? 0;
+    },
+    enabled: !!id,
+  });
+
   const { data: payments } = useQuery({
     queryKey: ["client-payments", id],
     queryFn: async () => {
@@ -138,6 +155,10 @@ export default function ClientDetail() {
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="cases">Cases ({cases?.length ?? 0})</TabsTrigger>
+            <TabsTrigger value="chain">
+              Chain plan{" "}
+              <span className="ml-1 text-[10px] px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-medium">{chainCount}</span>
+            </TabsTrigger>
             <TabsTrigger value="family">Family ({family?.length ?? 0})</TabsTrigger>
             <TabsTrigger value="payments">Payments ({payments?.length ?? 0})</TabsTrigger>
             <TabsTrigger value="timeline">Timeline</TabsTrigger>
@@ -185,6 +206,10 @@ export default function ClientDetail() {
                 </tbody>
               </table>
             )}
+          </TabsContent>
+
+          <TabsContent value="chain" className="mt-2">
+            <ChainPlanPanel clientId={id!} />
           </TabsContent>
 
           <TabsContent value="family" className="card-surface overflow-hidden">
