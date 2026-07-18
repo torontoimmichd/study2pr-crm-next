@@ -590,7 +590,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                     <L>Case Manager *</L>
                     <Select value={caseManager} onValueChange={setCaseManager}>
                       <SelectTrigger className="h-8 text-sm"><SelectValue placeholder={staffList === undefined ? "Loading…" : "Select…"} /></SelectTrigger>
-                      <SelectContent>{(staffList ?? []).filter(s => ["owner","admin","senior_advisor","case_manager"].includes(s.role)).map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
+                      <SelectContent>{(staffList ?? []).filter(s => ["owner","admin","senior_advisor","case_manager","senior_counsellor","visa_expert","manager","counselor"].includes(s.role)).map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-1">
@@ -598,7 +598,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                     <Select value={filingOfficer} onValueChange={setFilingOfficer}>
                       <SelectTrigger className="h-8 text-sm"><SelectValue placeholder={staffList === undefined ? "Loading…" : "Select…"} /></SelectTrigger>
                       <SelectContent>
-                        {(staffList ?? []).filter(s => ["owner","admin","senior_advisor"].includes(s.role)).map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}
+                        {(staffList ?? []).filter(s => ["owner","admin","senior_advisor","senior_counsellor","manager"].includes(s.role)).map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>

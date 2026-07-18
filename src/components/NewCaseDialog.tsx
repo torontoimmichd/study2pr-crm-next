@@ -16,7 +16,7 @@ import { createCaseTasks } from "@/lib/taskEngine";
 import { useAuth } from "@/lib/auth-context";
 
 // Manager-level roles that may offer up to MAX_DISCOUNT_MANAGER
-const MANAGER_ROLES = ["owner", "admin", "senior_advisor"] as const;
+const MANAGER_ROLES = ["owner", "admin", "senior_advisor", "senior_counsellor", "manager"] as const;
 const MAX_DISCOUNT_MANAGER = 15; // %
 const MAX_DISCOUNT_STAFF   = 10; // %
 

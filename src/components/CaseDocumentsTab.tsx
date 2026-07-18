@@ -26,6 +26,7 @@ interface DocRow {
   storage_bucket: string;
   storage_path: string;
   expires_at: string | null;
+  expires_on: string | null;
   uploaded_by: string | null;
   uploaded_by_name?: string;
   created_at: string | null;
@@ -50,7 +51,7 @@ export function CaseDocumentsTab({ caseId }: Props) {
     queryFn: async (): Promise<DocRow[]> => {
       const { data } = await supabase
         .from("case_documents")
-        .select("id, title, document_type, status, storage_bucket, storage_path, expires_at, uploaded_by, created_at")
+        .select("id, title, document_type, status, storage_bucket, storage_path, expires_at, expires_on, uploaded_by, created_at")
         .eq("case_id", caseId)
         .eq("is_deleted", false)
         .order("created_at", { ascending: false });
@@ -95,6 +96,13 @@ export function CaseDocumentsTab({ caseId }: Props) {
     void qc.invalidateQueries({ queryKey: ["timeline", "case", caseId] });
     toast.success(newStatus === "verified" ? "Document verified" : "Document marked as rejected");
     refresh();
+  };
+
+  const updateExpiry = async (id: string, v: string) => {
+    const { error } = await supabase.from("case_documents").update({ expires_on: v || null }).eq("id", id);
+    if (error) { toast.error("Could not save expiry: " + error.message); return; }
+    toast.success(v ? "Validity date saved — expiry reminders active" : "Validity date cleared");
+    qc.invalidateQueries({ queryKey: ["case-docs-full", caseId] });
   };
 
   if (isLoading) return <div className="card-surface p-6 text-sm text-muted-foreground">Loading documents…</div>;
@@ -205,6 +213,13 @@ export function CaseDocumentsTab({ caseId }: Props) {
                     </Button>
                   ) : (
                     <>
+                      <input
+                        type="date"
+                        className="h-7 rounded border border-border bg-background px-1.5 text-[11px] text-muted-foreground"
+                        value={d.expires_on ?? ""}
+                        title="Document valid until — feeds automatic expiry reminders"
+                        onChange={(e) => updateExpiry(d.id, e.target.value)}
+                      />
                       <Button size="sm" variant="ghost" onClick={() => downloadDoc(d)} title="Open file">
                         <Download className="h-3.5 w-3.5" />
                       </Button>

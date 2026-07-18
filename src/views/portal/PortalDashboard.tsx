@@ -17,6 +17,7 @@ import {
   FileText, User, ChevronRight, RefreshCw, Download, XCircle,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { PortalPayments } from "@/components/PortalPayments";
 import { Button } from "@/components/ui/button";
 import { fmtDateIST, fmtRelative } from "@/lib/format";
 import { toast } from "sonner";
@@ -305,6 +306,8 @@ export default function PortalDashboard() {
                 </div>
               )}
             </div>
+
+            {client && <PortalPayments clientId={client.id} />}
 
             {/* Document checklist */}
             <div className="card-surface overflow-hidden">
