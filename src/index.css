@@ -2,119 +2,121 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Study2PR Design System v2 — Premium Consultancy
-   Brand: Deep navy sidebar · Gold #C6A343 accents · Royal indigo CTA
-   Multitone ivory/indigo canvas · Fraunces display serif · Plus Jakarta Sans body
-   (v2 2026-07-18: premium restyle — same variable names, richer values)
+/* Study2PR Design System v2.2 — Premium Consultancy, ALL-LIGHT edition
+   Gaurav's rule: no dark colours anywhere — only lighter shades.
+   Light ivory sidebar · Gold accents · Soft indigo CTA · Pastel multitone canvas
+   Fraunces display serif · Plus Jakarta Sans body
 */
 
 @layer base {
   :root {
-    /* Multitone canvas base (gradients layered on body below) */
-    --background: 220 40% 97%;        /* cool ivory-blue base */
-    --foreground: 224 50% 12%;        /* deep navy ink */
+    /* Pastel multitone canvas base (gradients layered on body below) */
+    --background: 220 45% 97%;
+    --foreground: 224 35% 20%;        /* soft navy ink — text only */
 
     --card: 0 0% 100%;
-    --card-foreground: 224 50% 12%;
-    --card-border-hover: 42 55% 72%;  /* soft gold glow on hover */
+    --card-foreground: 224 35% 20%;
+    --card-border-hover: 42 60% 75%;  /* soft gold glow on hover */
 
     --popover: 0 0% 100%;
-    --popover-foreground: 224 50% 12%;
+    --popover-foreground: 224 35% 20%;
 
-    /* Royal indigo primary — deeper, less neon, more "firm" */
-    --primary: 234 55% 42%;           /* #3140A6 royal indigo */
-    --primary-foreground: 40 30% 98%;
-    --primary-glow: 234 70% 68%;
+    /* Soft indigo primary — bright, friendly, still professional */
+    --primary: 236 75% 62%;           /* #5A63EC soft indigo */
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 236 85% 76%;
 
-    /* Navy text token */
-    --navy: 224 50% 13%;              /* #101830 */
-    --navy-foreground: 40 30% 97%;
+    /* Navy token — used for headings/text, softened */
+    --navy: 224 40% 24%;
+    --navy-foreground: 40 30% 98%;
 
-    /* Refined sky accent (links, highlights) */
-    --accent: 205 80% 41%;            /* #1373BD deep sky */
+    /* Bright sky accent (links, highlights) */
+    --accent: 199 85% 48%;            /* #0FA3E9 sky */
     --accent-foreground: 0 0% 100%;
 
-    /* Gold — richer, brand identity, active states */
-    --gold: 42 62% 47%;               /* #C6A343 */
-    --gold-foreground: 224 50% 12%;
-    --gold-soft: 42 60% 85%;
+    /* Gold — brand identity, active states */
+    --gold: 42 65% 50%;               /* #D2A93A */
+    --gold-foreground: 224 40% 20%;
+    --gold-soft: 42 70% 88%;
 
     /* Secondary — warm parchment */
-    --secondary: 40 30% 93%;
-    --secondary-foreground: 224 45% 18%;
+    --secondary: 40 35% 94%;
+    --secondary-foreground: 224 35% 24%;
 
-    --muted: 220 30% 94%;
-    --muted-foreground: 224 15% 44%;
+    --muted: 220 35% 95%;
+    --muted-foreground: 224 12% 48%;
 
-    /* Semantic */
-    --destructive: 0 72% 51%;         /* deeper red */
+    /* Semantic — bright, not deep */
+    --destructive: 0 80% 63%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 158 55% 34%;           /* deep emerald */
+    --success: 158 52% 44%;
     --success-foreground: 0 0% 100%;
 
-    --warning: 36 90% 45%;            /* burnt amber */
-    --warning-foreground: 224 50% 12%;
+    --warning: 38 92% 52%;
+    --warning-foreground: 224 40% 20%;
 
-    --border: 222 25% 88%;
-    --input: 222 25% 90%;
-    --ring: 234 55% 48%;
+    --border: 222 28% 89%;
+    --input: 222 28% 91%;
+    --ring: 236 75% 62%;
 
-    --radius: 0.75rem;                /* rounder = softer, more premium */
+    --radius: 0.75rem;
 
-    /* ━━ DEEP NAVY SIDEBAR · WARM WHITE TEXT · GOLD ACTIVE ━━ */
-    --sidebar-background: 224 47% 11%;   /* #0E1731 deep navy */
-    --sidebar-foreground: 40 25% 96%;    /* warm white */
-    --sidebar-primary: 42 65% 53%;       /* gold active/brand */
-    --sidebar-primary-foreground: 224 50% 10%;
-    --sidebar-accent: 224 38% 18%;       /* hover navy */
-    --sidebar-accent-foreground: 40 25% 97%;
-    --sidebar-border: 224 32% 20%;
-    --sidebar-ring: 42 65% 53%;
+    /* ━━ LIGHT IVORY SIDEBAR · NAVY TEXT · GOLD ACTIVE ━━ */
+    --sidebar-background: 42 45% 96%;    /* warm ivory */
+    --sidebar-foreground: 224 35% 24%;   /* soft navy text */
+    --sidebar-primary: 42 65% 50%;       /* gold active/brand */
+    --sidebar-primary-foreground: 224 40% 18%;
+    --sidebar-accent: 42 55% 89%;        /* light gold parchment hover */
+    --sidebar-accent-foreground: 224 38% 20%;
+    --sidebar-border: 40 28% 87%;
+    --sidebar-ring: 42 65% 50%;
 
-    --shadow-card: 0 1px 2px hsl(224 50% 12% / 0.05), 0 6px 20px hsl(224 50% 12% / 0.07);
-    --shadow-elevated: 0 8px 32px hsl(224 50% 12% / 0.14);
+    --shadow-card: 0 1px 2px hsl(224 40% 30% / 0.04), 0 6px 20px hsl(224 40% 30% / 0.06);
+    --shadow-elevated: 0 8px 28px hsl(224 40% 30% / 0.10);
   }
 
+  /* Dark mode intentionally mirrors the LIGHT theme — Gaurav wants no dark
+     surfaces anywhere, so even if .dark is toggled the app stays light. */
   .dark {
-    --background: 224 45% 6%;
-    --foreground: 40 20% 92%;
-    --card: 224 40% 9%;
-    --card-foreground: 40 20% 92%;
-    --card-border-hover: 42 45% 40%;
-    --popover: 224 40% 9%;
-    --popover-foreground: 40 20% 92%;
-    --primary: 234 65% 66%;
-    --primary-foreground: 224 50% 8%;
-    --primary-glow: 234 70% 75%;
-    --navy: 220 30% 85%;
-    --navy-foreground: 224 45% 7%;
-    --accent: 205 80% 55%;
-    --accent-foreground: 224 50% 8%;
-    --gold: 42 70% 58%;
-    --gold-foreground: 224 50% 10%;
-    --gold-soft: 42 40% 30%;
-    --secondary: 224 32% 15%;
-    --secondary-foreground: 40 20% 90%;
-    --muted: 224 30% 13%;
-    --muted-foreground: 220 12% 62%;
-    --destructive: 0 72% 56%;
+    --background: 220 45% 97%;
+    --foreground: 224 35% 20%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 35% 20%;
+    --card-border-hover: 42 60% 75%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 35% 20%;
+    --primary: 236 75% 62%;
+    --primary-foreground: 0 0% 100%;
+    --primary-glow: 236 85% 76%;
+    --navy: 224 40% 24%;
+    --navy-foreground: 40 30% 98%;
+    --accent: 199 85% 48%;
+    --accent-foreground: 0 0% 100%;
+    --gold: 42 65% 50%;
+    --gold-foreground: 224 40% 20%;
+    --gold-soft: 42 70% 88%;
+    --secondary: 40 35% 94%;
+    --secondary-foreground: 224 35% 24%;
+    --muted: 220 35% 95%;
+    --muted-foreground: 224 12% 48%;
+    --destructive: 0 80% 63%;
     --destructive-foreground: 0 0% 100%;
-    --success: 158 55% 42%;
+    --success: 158 52% 44%;
     --success-foreground: 0 0% 100%;
-    --warning: 36 90% 52%;
-    --warning-foreground: 224 50% 10%;
-    --border: 224 28% 17%;
-    --input: 224 28% 17%;
-    --ring: 234 65% 66%;
-    --sidebar-background: 224 47% 8%;
-    --sidebar-foreground: 40 25% 96%;
-    --sidebar-primary: 42 70% 58%;
-    --sidebar-primary-foreground: 224 50% 10%;
-    --sidebar-accent: 224 36% 15%;
-    --sidebar-accent-foreground: 40 25% 97%;
-    --sidebar-border: 224 30% 16%;
-    --sidebar-ring: 42 70% 58%;
+    --warning: 38 92% 52%;
+    --warning-foreground: 224 40% 20%;
+    --border: 222 28% 89%;
+    --input: 222 28% 91%;
+    --ring: 236 75% 62%;
+    --sidebar-background: 42 45% 96%;
+    --sidebar-foreground: 224 35% 24%;
+    --sidebar-primary: 42 65% 50%;
+    --sidebar-primary-foreground: 224 40% 18%;
+    --sidebar-accent: 42 55% 89%;
+    --sidebar-accent-foreground: 224 38% 20%;
+    --sidebar-border: 40 28% 87%;
+    --sidebar-ring: 42 65% 50%;
   }
 }
 
@@ -131,19 +133,13 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv11";
-    /* Multitone canvas: gold wash upper-left · indigo wash right · ivory base */
+    /* Pastel multitone canvas: lavender top-right · gold-cream left · baby-blue foot */
     background-image:
-      radial-gradient(1100px 560px at 88% -8%, hsl(234 60% 90% / 0.55), transparent 62%),
-      radial-gradient(900px 520px at -8% 14%, hsl(42 72% 88% / 0.5), transparent 58%),
-      linear-gradient(180deg, hsl(221 42% 97%), hsl(40 32% 96%));
+      radial-gradient(1200px 620px at 90% -10%, hsl(236 80% 90% / 0.85), transparent 60%),
+      radial-gradient(1000px 560px at -10% 12%, hsl(42 85% 88% / 0.8), transparent 56%),
+      radial-gradient(900px 500px at 70% 110%, hsl(199 75% 90% / 0.7), transparent 60%),
+      linear-gradient(165deg, hsl(222 55% 97%), hsl(40 45% 95%));
     background-attachment: fixed;
-  }
-
-  .dark body {
-    background-image:
-      radial-gradient(1100px 560px at 88% -8%, hsl(234 55% 22% / 0.5), transparent 62%),
-      radial-gradient(900px 520px at -8% 14%, hsl(42 45% 20% / 0.35), transparent 58%),
-      linear-gradient(180deg, hsl(224 45% 7%), hsl(224 40% 5%));
   }
 
   h1, h2, h3, .font-display {
@@ -165,22 +161,19 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: hsl(224 25% 75% / 0.6);
+    background: hsl(222 30% 82% / 0.8);
     border-radius: 8px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: hsl(224 30% 60% / 0.7);
+    background: hsl(222 30% 72% / 0.9);
   }
 }
 
 @layer components {
   .card-surface {
     @apply border border-border rounded-xl transition-all;
-    background: linear-gradient(180deg, hsl(var(--card)), hsl(40 30% 99%));
+    background: linear-gradient(180deg, hsl(var(--card)), hsl(40 35% 99%));
     box-shadow: var(--shadow-card);
-  }
-  .dark .card-surface {
-    background: linear-gradient(180deg, hsl(var(--card)), hsl(224 40% 8%));
   }
   .card-surface:hover {
     border-color: hsl(var(--card-border-hover));
