@@ -8,6 +8,7 @@ import {
   FolderTree,
   GitBranch,
   FileCheck2,
+  ClipboardList,
   Timer,
   Sparkles,
   PartyPopper,
@@ -62,6 +63,8 @@ const ADMIN_GROUPS: AdminGroup[] = [
       { to: "/admin/commission-rules", label: "Commission Rules", icon: Percent },
       { to: "/admin/templates", label: "Email & WhatsApp Templates", icon: Mail },
       { to: "/admin/festivals", label: "Festival Greetings", icon: PartyPopper },
+      { to: "/admin/expiry", label: "Expiry & Alerts", icon: Timer },
+      { to: "/admin/assessment-forms", label: "Assessment Forms", icon: ClipboardList },
     ],
   },
   {
