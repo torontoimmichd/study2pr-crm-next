@@ -373,6 +373,14 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
       is_system: false,
     });
     void createLeadTasks(data.id, profile?.id ?? null, user?.id ?? null);
+    // Creation note → categorised notes panel as a 'general' note (not just the leads.notes blob)
+    if (payload.notes) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      void (supabase as any).from("entity_notes").insert({
+        lead_id: data.id, note_type: "general", body: payload.notes,
+        is_locked: false, created_by: user?.id ?? null,
+      });
+    }
 
     // Create family unit and add members if requested
     if (hasFamily && familyMembers.length > 0) {
@@ -410,7 +418,26 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
               source_code: form.source_code,
             };
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            await (supabase as any).from("leads").insert(memberPayload as any);
+            const { data: memberRow } = await (supabase as any)
+              .from("leads").insert(memberPayload as any).select("id").single();
+            if (memberRow?.id) {
+              void writeAudit({ action: "CREATE", entity_type: "leads", entity_id: memberRow.id, changes: memberPayload });
+              void writeTimeline({
+                event_type: "lead_created",
+                title: `Lead created — ${member.name.trim()} (${member.role})`,
+                body: memberPayload.notes ?? null,
+                metadata: { source: memberPayload.source_code, family_of: fullName },
+                lead_id: memberRow.id,
+                is_system: false,
+              });
+              if (memberPayload.notes) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                void (supabase as any).from("entity_notes").insert({
+                  lead_id: memberRow.id, note_type: "general", body: memberPayload.notes,
+                  is_locked: false, created_by: user?.id ?? null,
+                });
+              }
+            }
           }
         }
       } catch (familyErr) {
