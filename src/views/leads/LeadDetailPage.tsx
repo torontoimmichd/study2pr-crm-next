@@ -21,6 +21,7 @@ import { writeAudit } from "@/lib/audit";
 import { writeTimeline } from "@/lib/timeline";
 import { createStageTasks } from "@/lib/taskEngine";
 import { EntityTimeline } from "@/components/EntityTimeline";
+import { NotesPanel } from "@/components/NotesPanel";
 import { LogCallDialog } from "@/components/LogCallDialog";
 import { ConvertLeadWizard } from "@/components/ConvertLeadWizard";
 import { OutreachDialog } from "@/components/OutreachDialog";
@@ -280,27 +281,9 @@ export default function LeadDetailPage() {
               </div>
             </TabsContent>
 
-            {/* Notes */}
+            {/* Notes — categorised, one row per note (entity_notes) */}
             <TabsContent value="notes" className="mt-3">
-              <div className="card-surface p-5 rounded-xl space-y-3">
-                <h3 className="text-sm font-semibold">Lead notes</h3>
-                <Textarea
-                  rows={10}
-                  value={editingNotes}
-                  onChange={e => setEditingNotes(e.target.value)}
-                  placeholder="Add notes about this lead — background, context, next steps…"
-                  className="text-sm"
-                />
-                <div className="flex justify-end">
-                  <Button
-                    size="sm"
-                    disabled={savingNotes || editingNotes === (lead.notes ?? "")}
-                    onClick={saveNotes}
-                  >
-                    {savingNotes ? "Saving…" : "Save notes"}
-                  </Button>
-                </div>
-              </div>
+              <NotesPanel leadId={leadId} clientId={lead.converted_client_id ?? undefined} title="Lead notes" />
             </TabsContent>
 
             {/* Documents — placeholder linking to existing Documents page */}
