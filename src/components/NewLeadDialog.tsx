@@ -322,6 +322,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
     if (!form.country_of_residence) { toast.error("Country of residence is required"); return; }
     if (!form.nationality) { toast.error("Nationality is required"); return; }
     if (!form.source_code) { toast.error("Pick a source"); return; }
+    if (!form.notes.trim()) { toast.error("Notes are required — add initial context for this lead"); return; }
 
     const combined = `${form.dial_code} ${form.phone_local.trim()}`;
     const digitsOnly = combined.replace(/\D/g, "");
@@ -694,13 +695,14 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
 
           {/* Notes */}
           <div className="space-y-1.5">
-            <Label htmlFor="lead-notes">Notes</Label>
+            <Label htmlFor="lead-notes">Notes <span className="text-destructive">*</span></Label>
             <Textarea
               id="lead-notes"
               rows={3}
               value={form.notes}
               onChange={(e) => setForm({ ...form, notes: e.target.value })}
-              placeholder="Any initial context about this lead…"
+              placeholder="Required — initial context, what the client asked, next step…"
+              required
             />
           </div>
 
