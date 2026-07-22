@@ -387,6 +387,14 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
       void writeAudit({ action: "CREATE",  entity_type: "cases",   entity_id: caseRow.id, changes: { case_code: caseRef } });
       void writeTimeline({ event_type: "lead_converted", title: `Lead converted — Case ${caseRef} created`, lead_id: lead.id, case_id: caseRow.id, client_id: client.id, is_system: false });
       void createCaseTasks(caseRow.id, caseManager || profile?.id || null, user?.id || null);
+      // Carry the client's note onto the new application as a 'General' note (shows in Notes tab)
+      if (lead.notes && lead.notes.trim()) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        void (supabase as any).from("entity_notes").insert({
+          case_id: caseRow.id, client_id: client.id, note_type: "general",
+          body: lead.notes.trim(), is_locked: false, created_by: user?.id ?? null,
+        });
+      }
 
       void qc.invalidateQueries({ queryKey: ["leads-list"] });
       void qc.invalidateQueries({ queryKey: ["leads-counts"] });
