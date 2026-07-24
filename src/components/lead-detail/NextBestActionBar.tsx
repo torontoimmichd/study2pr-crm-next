@@ -6,6 +6,7 @@ import { AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 import type { ChainTask } from "@/lib/types";
 
 interface Props {
@@ -29,16 +30,21 @@ export function NextBestActionBar({ task, onAction }: Props) {
   const markContacted = async () => {
     setBusy(true);
     try {
-      await (supabase as any).from("tasks").update({
-        status: "completed",
+      // FIX 2026-07-22: tasks uses status_code ("done") + completed_at, not "status".
+      const { error } = await (supabase as any).from("tasks").update({
+        status_code: "done",
         completed_at: new Date().toISOString(),
       }).eq("id", task.id);
+      if (error) { toast.error(error.message); return; }
+      // Best-effort: advance the linked chain prospective (never blocks completion).
       if (task.prospective_application_id) {
-        await (supabase as any).from("prospective_applications").update({
-          status: "client_contacted",
-          client_decision_at: new Date().toISOString(),
-        }).eq("id", task.prospective_application_id);
+        try {
+          await (supabase as any).from("prospective_applications").update({
+            client_decision_at: new Date().toISOString(),
+          }).eq("id", task.prospective_application_id);
+        } catch { /* non-fatal */ }
       }
+      toast.success("Marked contacted");
       onAction();
     } finally {
       setBusy(false);
@@ -49,7 +55,8 @@ export function NextBestActionBar({ task, onAction }: Props) {
     setBusy(true);
     try {
       const newDue = new Date(Date.now() + 3 * 86400000).toISOString();
-      await (supabase as any).from("tasks").update({ sla_due_at: newDue, due_at: newDue }).eq("id", task.id);
+      const { error } = await (supabase as any).from("tasks").update({ due_at: newDue }).eq("id", task.id);
+      if (error) { toast.error(error.message); return; }
       onAction();
     } finally {
       setBusy(false);
