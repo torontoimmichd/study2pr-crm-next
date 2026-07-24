@@ -367,7 +367,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
     void writeTimeline({
       event_type: "lead_created",
       title: `Lead created — ${fullName}`,
-      body: payload.notes ?? null,
+      body: null,
       metadata: { source: payload.source_code, country: payload.country_of_residence },
       lead_id: data.id,
       is_system: false,
@@ -425,7 +425,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
               void writeTimeline({
                 event_type: "lead_created",
                 title: `Lead created — ${member.name.trim()} (${member.role})`,
-                body: memberPayload.notes ?? null,
+                body: null,
                 metadata: { source: memberPayload.source_code, family_of: fullName },
                 lead_id: memberRow.id,
                 is_system: false,
