@@ -86,6 +86,7 @@ const STAFF_GROUPS: NavGroup[] = [
     label: "Comms",
     items: [
       { to: "/messages", label: "Unified Inbox", icon: MessageSquare, roles: ["owner", "admin", "senior_advisor", "case_manager", "support"] },
+      { to: "/comms", label: "WhatsApp Inbox", icon: MessageSquare },
       { to: "/calls", label: "Call Log", icon: Phone },
       { to: "/ircc", label: "IRCC Emails", icon: Mail, badgeKey: "ircc" },
     ],
