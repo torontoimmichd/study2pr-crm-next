@@ -753,7 +753,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
                 <span className="text-[11px] text-muted-foreground">(add them to the same family unit)</span>
               </div>
             </label>
-
+            
             {hasFamily && (
               <div className="space-y-3">
                 {familyMembers.map((member, idx) => (
