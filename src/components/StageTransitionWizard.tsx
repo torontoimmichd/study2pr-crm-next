@@ -82,6 +82,7 @@ const DISCOUNT_CAP: Record<string, number> = {
 // ---------- Types ----------
 
 export interface LeadStageData {
+  id?: string;                 // added 2026-07-29 — needed to attach stage notes
   lifecycle_state?: string;
   waiting_reason?: string | null;
   waiting_start_date?: string | null;
@@ -307,11 +308,24 @@ export function StageTransitionWizard({ open, onOpenChange, currentStage, leadDa
         updates.stage_metadata = { review_notes: form.review_notes ?? null };
       }
 
-      // Append note entry to lead notes
+      // ── Stage note → entity_notes (NOT the legacy leads.notes blob) ──────
+      // FIXED 2026-07-29: this previously appended to `leads.notes`, which the
+      // Notes tab (entity_notes) never reads — so every note staff wrote during
+      // a stage change silently disappeared. It now writes a real note row.
       const noteEntry = buildNoteEntry();
-      if (noteEntry) {
-        const existing = (leadData?.notes ?? "").trim();
-        updates.notes = existing ? `${existing}\n\n${noteEntry}` : noteEntry;
+      if (noteEntry && leadData?.id) {
+        const { error: noteErr } = await (supabase as unknown as {
+          from: (t: string) => { insert: (v: Record<string, unknown>) => Promise<{ error: { message: string } | null }> };
+        }).from("entity_notes").insert({
+          lead_id:   leadData?.id,
+          note_type: "stage_change",
+          body:      noteEntry,
+          created_by: profile?.id ?? null,
+        });
+        if (noteErr) {
+          // Never block the stage move on a note failure — surface it instead.
+          toast.error(`Stage saved, but the note could not be stored: ${noteErr.message}`);
+        }
       }
 
       await onTransition(updates);
