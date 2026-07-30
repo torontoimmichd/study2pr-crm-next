@@ -223,7 +223,12 @@ function KanbanView({ stages }: { stages: { code: string; label: string; sort_or
       void refetch();
       return;
     }
-    await supabase.from("case_stage_history").insert({ case_id: caseId, from_stage_code: oldStage, to_stage_code: newStage, changed_by: user?.id ?? null, note: "drag-drop" });
+    // P1.2 — REMOVED (2026-07-30): duplicate stage-history write.
+    // Trigger trg_cases_stage -> log_stage_change() inserts this row and now
+    // records the actor via auth.uid(). Keeping both produced exactly two rows
+    // per transition (verified: 36 rows = 18 trigger + 18 client).
+    // FIDELITY NOTE: the cosmetic note='drag-drop' label is no longer written,
+    // because a trigger cannot observe the UI origin. Nothing reads that value.
     void writeAudit({ action: "STAGE_CHANGE", entity_type: "cases", entity_id: caseId, changes: { from: oldStage, to: newStage } });
     toast.success(`Moved to ${newStage}`);
   };

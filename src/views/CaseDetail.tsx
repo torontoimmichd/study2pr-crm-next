@@ -7,6 +7,9 @@ import { ArrowLeft, FileText, CheckSquare, DollarSign, Activity, Receipt, FilePl
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/AppLayout";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+// P1.6 — RECOVERED (2026-07-30): these two were stranded in the dead src/src tree.
+import { NotesPanel } from "@/components/NotesPanel";
+import { CaseFinanceTab } from "@/components/CaseFinanceTab";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -139,17 +142,17 @@ export default function CaseDetail() {
     const old = caseRow.current_stage_code;
     const { error } = await supabase.from("cases").update({ current_stage_code: newStage, stage_entered_at: new Date().toISOString() }).eq("id", id!);
     if (error) { toast.error(error.message); return; }
-    await supabase.from("case_stage_history").insert({ case_id: id!, from_stage_code: old, to_stage_code: newStage, changed_by: user?.id ?? null });
+    // P1.2 — REMOVED (2026-07-30): duplicate stage-history write.
+    // Trigger trg_cases_stage -> log_stage_change() already inserts this row and
+    // now captures the actor via auth.uid(). Keeping both produced exactly two
+    // rows per transition (verified: 36 rows = 18 trigger + 18 client).
     void writeAudit({ action: "STAGE_CHANGE", entity_type: "cases", entity_id: id!, changes: { from: old, to: newStage } });
-    // Wire: timeline entry + auto-tasks for the new stage
-    void writeTimeline({
-      event_type: "case_stage_change",
-      title: `Case stage: ${(old ?? "—").replace(/_/g, " ")} → ${newStage.replace(/_/g, " ")}`,
-      case_id: id!,
-      client_id: caseRow.client_id ?? null,
-      metadata: { from: old, to: newStage },
-      is_system: true,
-    });
+    // P1.4 — REMOVED (2026-07-30): duplicate timeline write for one event.
+    // Trigger trg_engine_stage_change -> fn_engine_on_stage_change() already
+    // writes an activity_timeline row (event_type='stage_change') with the same
+    // from/to metadata. The DB writer is strictly more complete: it also fires
+    // for kanban drag-drop in views/Cases.tsx, which this client write missed.
+    // Auto-tasks for the new stage are still created below.
     void createCaseStageTasks(id!, newStage, caseRow.case_manager_id ?? null, user?.id ?? null);
     toast.success("Stage updated");
     void qc.invalidateQueries({ queryKey: ["case", id] });
@@ -239,6 +242,8 @@ export default function CaseDetail() {
               <TabsTrigger value="payments"><DollarSign className="h-3.5 w-3.5 mr-1" />Payments</TabsTrigger>
               <TabsTrigger value="invoices"><Receipt className="h-3.5 w-3.5 mr-1" />Invoices</TabsTrigger>
               <TabsTrigger value="ircc"><Mail className="h-3.5 w-3.5 mr-1" />IRCC ({ircc?.length ?? 0})</TabsTrigger>
+              <TabsTrigger value="notes">Notes</TabsTrigger>
+              <TabsTrigger value="finance">Finance</TabsTrigger>
               <TabsTrigger value="activity"><Activity className="h-3.5 w-3.5 mr-1" />Timeline</TabsTrigger>
             </TabsList>
 
@@ -357,6 +362,10 @@ export default function CaseDetail() {
                 </ul>
               )}
             </TabsContent>
+
+            <TabsContent value="notes"><NotesPanel caseId={id!} clientId={caseRow?.client_id} /></TabsContent>
+
+            <TabsContent value="finance"><CaseFinanceTab caseId={id!} clientId={caseRow?.client_id} /></TabsContent>
 
             <TabsContent value="activity" className="card-surface p-5">
               <EntityTimeline caseId={id} allowNotes />

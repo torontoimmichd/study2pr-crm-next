@@ -113,13 +113,14 @@ export async function createLeadTasks(
   };
 
   const tasks: TaskRow[] = [
-    {
-      ...base,
-      title: "First call — introduce & qualify",
-      description: "Call within 2 hours of enquiry. Introduce the firm, understand the client's goals, and qualify the lead.",
-      due_at: hoursFromNow(2),
-      priority: "urgent",
-    },
+    // P1.3 — REMOVED (2026-07-30): duplicate first-call task.
+    // The DB engine trigger fn_engine_on_lead_created() already creates the
+    // authoritative first-call task ("First call — new lead") with
+    // sla_rule_code='NEW_LEAD_FIRST_CALL' and a 2-hour due time. That rule code
+    // is what engine_sla_sweep (every 15 min) escalates on, so the DB task is
+    // the one that must survive. This client-side copy used a different title,
+    // which is why insertTasks()' title-based dedup could never see the clash.
+    // Verified duplicate in live data on lead 9d579e6f (both tasks present).
     {
       ...base,
       title: "Day 1 follow-up",

@@ -4,7 +4,7 @@
  * OutreachDialog.tsx
  * Send WhatsApp or Email to a lead directly from Lead Detail.
  *
- * - Loads templates from admin_templates (type: whatsapp / email)
+ * - Loads templates from `messages` where is_template = true (whatsapp / email)
  * - Replaces {{name}}, {{advisor_name}} placeholders
  * - WhatsApp: opens wa.me link in new tab
  * - Email: opens mailto: link
@@ -82,13 +82,33 @@ export function OutreachDialog({ open, onOpenChange, leadId, leadName, leadPhone
   const { data: templates = [] } = useQuery({
     queryKey: ["outreach-templates"],
     queryFn: async () => {
-      const { data } = await supabase
-        .from("admin_templates")
-        .select("id, name, channel, subject, body")
+      // P1.7 — FIXED (2026-07-30): table "admin_templates" does not exist in
+      // study2pr-prod, so this query returned null on every render and the
+      // template dropdown was permanently empty in all 4 screens that mount
+      // this dialog. Templates actually live in `messages` where
+      // is_template = true (same source AdminTemplates.tsx manages). Verified:
+      // 37 active whatsapp templates were present but unreachable.
+      // The error is now surfaced instead of being silently discarded.
+      const { data, error } = await supabase
+        .from("messages")
+        .select("id, template_name, channel, subject, body")
+        .eq("is_template", true)
+        .eq("status", "active")
         .in("channel", ["whatsapp", "email"])
-        .eq("is_active", true)
-        .order("name");
-      return (data ?? []) as Template[];
+        .order("template_name");
+      if (error) {
+        // eslint-disable-next-line no-console
+        console.warn("[outreach] template load failed:", error.message);
+        return [];
+      }
+      type TemplateRow = { id: string; template_name: string | null; channel: string; subject: string | null; body: string | null };
+      return ((data ?? []) as TemplateRow[]).map((r) => ({
+        id: r.id,
+        name: r.template_name ?? "(untitled)",
+        channel: r.channel,
+        subject: r.subject,
+        body: r.body ?? "",
+      })) as Template[];
     },
   });
 

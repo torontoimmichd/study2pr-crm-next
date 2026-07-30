@@ -228,7 +228,9 @@ function CasePipelineSection() {
     queryKey: ["report-case-pipeline"],
     queryFn: async () => {
       const { data: cases } = await supabase.from("cases").select("current_stage_code").eq("is_archived", false);
-      const { data: stages } = await supabase.from("case_stages").select("code, label").order("sort_order");
+      // P1.7 — FIXED (2026-07-30): table is case_stages_ref; "case_stages" does not
+      // exist, so this returned null and the pipeline chart was always blank.
+      const { data: stages } = await supabase.from("case_stages_ref").select("code, label").order("sort_order");
       const counts: Record<string, number> = {};
       (cases ?? []).forEach((c: any) => { counts[c.current_stage_code] = (counts[c.current_stage_code] ?? 0) + 1; });
       return (stages ?? []).map((s: any) => ({ stage: s.label, count: counts[s.code] ?? 0 })).filter((r) => r.count > 0);
