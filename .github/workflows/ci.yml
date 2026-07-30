@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install (locked, reproducible)
+        run: npm ci
+
+      # ---------------------------------------------------------------
+      # Type-error RATCHET.
+      # next.config.mjs sets typescript.ignoreBuildErrors:true, so a green
+      # build does NOT mean the types are clean. This codebase currently has
+      # a known backlog of pre-existing errors (149 as of 2026-07-30, down
+      # from 156 before Phase 1). Failing on all of them would make CI
+      # permanently red and useless.
+      # Instead we FAIL ONLY IF THE COUNT INCREASES. Existing debt is
+      # tolerated; new debt is blocked. Lower BASELINE as you pay it down.
+      # ---------------------------------------------------------------
+      - name: Type check (ratchet)
+        run: |
+          BASELINE=149
+          npx tsc --noEmit > tsc.log 2>&1 || true
+          COUNT=$(grep -c "error TS" tsc.log || true)
+          echo "TypeScript errors: $COUNT (baseline $BASELINE)"
+          grep "error TS" tsc.log | head -40 || true
+          if [ "$COUNT" -gt "$BASELINE" ]; then
+            echo "::error::Type errors increased: $COUNT > $BASELINE. Fix them or justify raising the baseline."
+            exit 1
+          fi
+          if [ "$COUNT" -lt "$BASELINE" ]; then
+            echo "::notice::Type errors decreased to $COUNT. Please lower BASELINE in .github/workflows/ci.yml."
+          fi
+
+      - name: Production build
+        run: npm run build
+
+      - name: Guard against the dead src/src tree
+        run: |
+          # Files under src/src are NOT compiled (tsconfig maps @/* -> ./src/*)
+          # and nothing imports them. Editing them silently has no effect -
+          # this already stranded the Notes tab, Finance tab and /admin/expiry.
+          # Block NEW files being added there until Phase 4 removes it.
+          COUNT=$(find src/src -type f 2>/dev/null | wc -l)
+          echo "files under src/src: $COUNT"
+          if [ "$COUNT" -gt 20 ]; then
+            echo "::error::New files added to the dead src/src tree. They will never run. Put them under src/."
+            exit 1
+          fi
