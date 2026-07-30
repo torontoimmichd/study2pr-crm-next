@@ -334,13 +334,17 @@ export async function createCaseTasks(
   };
 
   const tasks: TaskRow[] = [
-    {
-      ...base,
-      title: "Client onboarding call",
-      description: "Welcome the client to the firm. Walk through the case process, timeline, and next steps. Collect any outstanding details.",
-      due_at: hoursFromNow(24),
-      priority: "urgent",
-    },
+    // P2A — REMOVED (2026-07-30): duplicate onboarding task.
+    // The DB trigger fn_engine_on_case_created() already creates the
+    // authoritative "Onboarding call — new application" task (and queues the
+    // CLIENT_WELCOME message) on EVERY case-creation path, because it fires on
+    // the cases table. This client copy only ran from ConvertLeadWizard and
+    // NewCaseDialog, and used a different title - which is why insertTasks()'
+    // title-based dedup could not see the clash. Same failure mode as the
+    // first-call task removed in P1.3.
+    // Verified in live data: "Onboarding call — new application" and
+    // "Client onboarding call" both present across the same 4 cases.
+    // The three tasks below have NO database equivalent and are retained.
     {
       ...base,
       title: "Send document checklist",
