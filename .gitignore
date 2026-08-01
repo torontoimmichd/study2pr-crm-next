@@ -31,3 +31,13 @@ next-env.d.ts
 # Supabase CLI local machine state (project ref, pooler URL, server versions).
 # Machine-specific, not source. No secrets in it - verified 1 Aug 2026.
 supabase/.temp/
+
+# Build/tool scratch
+tsconfig.tsbuildinfo
+work/
+
+# This project is npm-based; package-lock.json is the committed lockfile.
+# A stray pnpm-lock.yaml would make Vercel switch package managers and
+# ignore it, re-opening the dependency drift Phase 2B closed.
+pnpm-lock.yaml
+yarn.lock
