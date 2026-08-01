@@ -27,3 +27,7 @@ dist-ssr
 .next/
 out/
 next-env.d.ts
+
+# Supabase CLI local machine state (project ref, pooler URL, server versions).
+# Machine-specific, not source. No secrets in it - verified 1 Aug 2026.
+supabase/.temp/
