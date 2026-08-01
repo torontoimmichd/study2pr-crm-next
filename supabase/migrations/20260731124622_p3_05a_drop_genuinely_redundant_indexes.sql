@@ -1,0 +1,42 @@
+-- ============================================================================
+-- PHASE 3.5a · DROP GENUINELY REDUNDANT INDEXES  (2 of 5 candidates)
+-- ============================================================================
+-- The performance advisor and my own first query both reported FIVE duplicate
+-- index pairs. Inspecting pg_get_indexdef() shows only TWO are real. The other
+-- three are PARTIAL indexes whose WHERE predicates differ - they only look
+-- identical if you compare indexed columns and ignore the predicate, which is
+-- exactly what a naive duplicate check does.
+--
+-- ---- DROPPED (provably redundant) ------------------------------------------
+--   cases:   cases_case_code_key   UNIQUE btree (case_code)     <- keep
+--            idx_cases_code        btree (case_code)            <- DROP
+--   clients: clients_client_code_key UNIQUE btree (client_code) <- keep
+--            idx_clients_code        btree (client_code)        <- DROP
+--   A UNIQUE index satisfies every lookup a plain index on the same column
+--   would, so the plain one is dead weight on every INSERT/UPDATE.
+--
+-- ---- KEPT (NOT duplicates - different predicates) --------------------------
+--   case_applicants_case_idx              btree (case_id)
+--   case_applicants_one_primary_per_case  UNIQUE btree (case_id) WHERE is_primary
+--        -> the second enforces "one primary applicant per case". Dropping it
+--           would remove a DATA INTEGRITY CONSTRAINT, not just an index.
+--
+--   clients_pkey         UNIQUE btree (id)
+--   idx_clients_active   btree (id) WHERE is_active = true
+--        -> partial index, smaller for active-only scans. Marginal but valid.
+--
+--   idx_leads_lifecycle        btree (lifecycle_state) WHERE state NOT IN (converted, declined)
+--   leads_lifecycle_state_idx  btree (lifecycle_state) WHERE state IN (nurturing, eligible_now, qualified_nurture)
+--        -> overlapping but distinct predicates; the second is a narrower
+--           subset used by the nurture queries.
+--
+-- IMPACT: trivial today (16 kB each) - the point is write-path hygiene and not
+--   carrying redundancy into the volume where it matters.
+--
+-- ROLLBACK:
+--   create index idx_cases_code   on public.cases   using btree (case_code);
+--   create index idx_clients_code on public.clients using btree (client_code);
+-- ============================================================================
+
+drop index if exists public.idx_cases_code;
+drop index if exists public.idx_clients_code;
