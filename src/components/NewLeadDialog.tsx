@@ -16,6 +16,7 @@ import { writeTimeline } from "@/lib/timeline";
 import { createLeadTasks } from "@/lib/taskEngine";
 import { useAuth } from "@/lib/auth-context";
 import { Trash2, UserPlus, Users } from "lucide-react";
+import { VisaCombobox, InheritedHint } from "@/components/VisaCombobox";
 
 // ── Family member draft ────────────────────────────────────────────────────────
 type FamilyRole = "spouse" | "partner" | "child" | "parent" | "sibling";
@@ -27,16 +28,18 @@ interface FamilyMemberDraft {
   email: string;
   role: FamilyRole;
   visa_type_id: string;
+  visa_sub_type_id: string;
   note: string;
 }
 
-const BLANK_MEMBER = (visaTypeId: string): FamilyMemberDraft => ({
+const BLANK_MEMBER = (visaTypeId: string, visaSubTypeId = ""): FamilyMemberDraft => ({
   id: crypto.randomUUID(),
   name: "",
   phone: "",
   email: "",
   role: "spouse",
   visa_type_id: visaTypeId,
+  visa_sub_type_id: visaSubTypeId,
   note: "",
 });
 
@@ -141,7 +144,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
   }, [open]);
 
   const addFamilyMember = () => {
-    setFamilyMembers(prev => [...prev, BLANK_MEMBER(form.interested_visa_type_id)]);
+    setFamilyMembers(prev => [...prev, BLANK_MEMBER(form.interested_visa_type_id, form.interested_visa_sub_type_id)]);
   };
 
   const removeFamilyMember = (id: string) => {
@@ -413,6 +416,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
               family_unit_id: unitData.id,
               family_role: member.role,
               interested_visa_type_id: member.visa_type_id || null,
+              interested_visa_sub_type_id: member.visa_sub_type_id || null,
               notes: member.note.trim() || null,
               lifecycle_state: "new_enquiry",
               source_code: form.source_code,
@@ -598,37 +602,33 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
             {/* Sub-type (the specific visa/service) */}
             <div className="space-y-1.5">
               <Label>Sub-type</Label>
-              <Select
+              <VisaCombobox
+                options={visaTypes.map((v) => ({ id: v.id, label: v.label }))}
                 value={form.interested_visa_type_id}
-                onValueChange={handleVisaTypeChange}
+                onChange={handleVisaTypeChange}
                 disabled={!form.interested_category_id || visaTypes.length === 0}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder={
-                    !form.interested_category_id ? "Pick category first"
-                    : visaTypes.length === 0 ? "None for this country/category"
-                    : "Select sub-type"
-                  } />
-                </SelectTrigger>
-                <SelectContent>
-                  {visaTypes.map((v) => <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
+                placeholder={
+                  !form.interested_category_id ? "Pick category first"
+                  : visaTypes.length === 0 ? "None for this country/category"
+                  : "Select sub-type"
+                }
+                searchPlaceholder="Type to search sub-types…"
+                emptyText="No sub-type matches."
+              />
             </div>
 
             {/* Optional stream — only if the sub-type has streams */}
             {subTypes.length > 0 && (
               <div className="space-y-1.5">
                 <Label>Stream <span className="text-muted-foreground font-normal">(optional)</span></Label>
-                <Select
+                <VisaCombobox
+                  options={subTypes.map((s) => ({ id: s.id, label: s.label }))}
                   value={form.interested_visa_sub_type_id}
-                  onValueChange={(v) => setForm({ ...form, interested_visa_sub_type_id: v })}
-                >
-                  <SelectTrigger><SelectValue placeholder="Select stream…" /></SelectTrigger>
-                  <SelectContent>
-                    {subTypes.map((s) => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}
-                  </SelectContent>
-                </Select>
+                  onChange={(v) => setForm({ ...form, interested_visa_sub_type_id: v })}
+                  placeholder="Select stream…"
+                  searchPlaceholder="Type to search streams…"
+                  emptyText="No stream matches."
+                />
               </div>
             )}
           </div>
@@ -742,7 +742,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
                 onChange={(e) => {
                   setHasFamily(e.target.checked);
                   if (e.target.checked && familyMembers.length === 0) {
-                    setFamilyMembers([BLANK_MEMBER(form.interested_visa_type_id)]);
+                    setFamilyMembers([BLANK_MEMBER(form.interested_visa_type_id, form.interested_visa_sub_type_id)]);
                   }
                 }}
                 className="w-4 h-4 rounded border-border accent-primary"
@@ -753,7 +753,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
                 <span className="text-[11px] text-muted-foreground">(add them to the same family unit)</span>
               </div>
             </label>
-            
+
             {hasFamily && (
               <div className="space-y-3">
                 {familyMembers.map((member, idx) => (
@@ -831,23 +831,38 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
                     <div className="space-y-1">
                       <Label className="text-xs">
                         Visa interest
-                        {form.interested_visa_type_id && (
-                          <span className="text-[10px] text-muted-foreground ml-1">(auto-filled from lead)</span>
-                        )}
+                        <InheritedHint show={!!form.interested_visa_type_id && member.visa_type_id === form.interested_visa_type_id} />
                       </Label>
-                      <Select
+                      <VisaCombobox
+                        size="sm"
+                        options={(allVisaTypes ?? []).map((v) => ({ id: v.id, label: v.label }))}
                         value={member.visa_type_id}
-                        onValueChange={(v) => updateFamilyMember(member.id, { visa_type_id: v })}
-                      >
-                        <SelectTrigger className="h-8 text-sm">
-                          <SelectValue placeholder="Select visa type…" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {(allVisaTypes ?? []).map((v) => (
-                            <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        onChange={(v) => updateFamilyMember(member.id, { visa_type_id: v, visa_sub_type_id: "" })}
+                        placeholder="Select visa type…"
+                        searchPlaceholder="Type to search…"
+                        emptyText="No visa type matches."
+                      />
+                      {(() => {
+                        const memberStreams = (allSubTypes ?? []).filter((s) => s.visa_type_id === member.visa_type_id);
+                        if (memberStreams.length === 0) return null;
+                        return (
+                          <div className="pt-1">
+                            <Label className="text-xs">
+                              Stream <span className="text-muted-foreground font-normal">(optional)</span>
+                              <InheritedHint show={!!form.interested_visa_sub_type_id && member.visa_sub_type_id === form.interested_visa_sub_type_id} />
+                            </Label>
+                            <VisaCombobox
+                              size="sm"
+                              options={memberStreams.map((s) => ({ id: s.id, label: s.label }))}
+                              value={member.visa_sub_type_id}
+                              onChange={(v) => updateFamilyMember(member.id, { visa_sub_type_id: v })}
+                              placeholder="Select stream…"
+                              searchPlaceholder="Type to search…"
+                              emptyText="No stream matches."
+                            />
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Relationship note */}
