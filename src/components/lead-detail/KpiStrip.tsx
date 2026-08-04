@@ -2,10 +2,11 @@
 
 // src/components/lead-detail/KpiStrip.tsx
 import { Card } from "@/components/ui/card";
-import type { Lead, ProspectiveAppRow, ChainTask } from "@/lib/types";
+import type { ApplicationRow, Lead, ProspectiveAppRow, ChainTask } from "@/lib/types";
 
 interface Props {
   lead: Lead;
+  application: ApplicationRow | null;
   prospective: ProspectiveAppRow[];
   nextAction: ChainTask | null;
 }
@@ -27,10 +28,10 @@ function slaRemaining(dueAt: string | null | undefined) {
   return { label: `${days} days`, color: "text-emerald-700" };
 }
 
-export function KpiStrip({ lead, prospective, nextAction }: Props) {
+export function KpiStrip({ lead, application, prospective, nextAction }: Props) {
   const familyLTV = prospective.reduce((sum, p) => sum + (p.estimated_fee_cad || 0), 0);
   const sla = slaRemaining(nextAction?.sla_due_at);
-  const serviceFee = lead.service_fee ?? lead.quoted_fee_inr ?? null;
+  const serviceFee = application?.quoted_fee_inr ?? application?.fee ?? lead.service_fee ?? lead.quoted_amount ?? null;
 
   const tiles = [
     { label: "Open activities", value: String(lead.open_activities_count ?? 0) },

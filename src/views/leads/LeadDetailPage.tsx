@@ -167,7 +167,7 @@ export default function LeadDetailPage() {
   const saveNotes = async () => {
     if (!lead || !leadId) return;
     setSavingNotes(true);
-    const { error } = await supabase.from("leads").update({ notes: editingNotes } as never).eq("id", leadId);
+    const { error } = await supabase.from("leads").update({ notes: editingNotes }).eq("id", leadId);
     if (error) { toast.error(error.message); setSavingNotes(false); return; }
     void writeTimeline({
       event_type: "note_added",
@@ -203,7 +203,7 @@ export default function LeadDetailPage() {
         onEmail={handleEmail}
       />
 
-      <KpiStrip lead={lead} prospective={prospective} nextAction={nextAction} />
+      <KpiStrip lead={lead} application={applications[0] ?? null} prospective={prospective} nextAction={nextAction} />
 
       <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-3 mt-3">
         {/* Sidebar */}
@@ -221,7 +221,7 @@ export default function LeadDetailPage() {
             familyUnitId={lead.family_unit_id ?? null}
             onMembersChanged={setFamilyMembers}
           />
-          <FeeAssignmentCard lead={lead} />
+          <FeeAssignmentCard lead={lead} application={applications[0] ?? null} />
         </aside>
 
         {/* Main content */}
@@ -458,6 +458,7 @@ function LeadTasksTab({ leadId, leadName, onTasksChanged }: LeadTasksTabProps) {
 
   const { data: tasks = [], isLoading } = useQuery<TaskRow[]>({
     queryKey: ["lead-tasks", leadId],
+    refetchInterval: 60_000,
     queryFn: async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { data, error } = await (supabase as any)
@@ -468,7 +469,10 @@ function LeadTasksTab({ leadId, leadName, onTasksChanged }: LeadTasksTabProps) {
       if (error) { console.warn("[LeadTasksTab]", error.message); return []; }
 
       // Batch-resolve assigned_to names
-      const rows = (data ?? []) as TaskRow[];
+      const now = Date.now();
+      const rows = ((data ?? []) as TaskRow[]).filter((task) =>
+        task.status_code === "completed" || !task.due_at || new Date(task.due_at).getTime() <= now,
+      );
       const assigneeIds = Array.from(new Set(rows.map((r) => r.assigned_to).filter(Boolean))) as string[];
       let nameMap = new Map<string, string>();
       if (assigneeIds.length > 0) {

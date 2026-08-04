@@ -39,6 +39,11 @@ export function FamilyUnitCard({ members: initialMembers, currentLead, familyUni
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const totalLTV = members.reduce((s, m) => s + (m.expected_revenue_cad || 0), 0);
+  const visibleMembers = members.filter((member) => {
+    const isCurrentPrimary = currentLead.family_role === "primary"
+      && (member.lead_id === currentLead.id || member.client_id === currentLead.id);
+    return !isCurrentPrimary;
+  });
 
   const handleAdded = (newMember: FamilyMember) => {
     const updated = [newMember, ...members];
@@ -63,7 +68,7 @@ export function FamilyUnitCard({ members: initialMembers, currentLead, familyUni
         )}
 
         <div className="divide-y">
-          {members.map(m => {
+          {visibleMembers.map(m => {
             const isCurrent = m.lead_id === currentLead.id || m.client_id === currentLead.id;
             return (
               <button

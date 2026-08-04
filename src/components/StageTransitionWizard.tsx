@@ -187,6 +187,10 @@ export function StageTransitionWizard({ open, onOpenChange, currentStage, leadDa
   const validate = (): boolean => {
     if (!target) return false;
 
+    if (target !== "waiting" && (!form.review_notes?.trim() || form.review_notes.trim().length < 20)) {
+      toast.error("A stage-change note of at least 20 characters is required"); return false;
+    }
+
     if (target === "waiting") {
       const reason = form.waiting_reason;
       if (!reason) { toast.error("Waiting reason is required"); return false; }
@@ -318,7 +322,7 @@ export function StageTransitionWizard({ open, onOpenChange, currentStage, leadDa
           from: (t: string) => { insert: (v: Record<string, unknown>) => Promise<{ error: { message: string } | null }> };
         }).from("entity_notes").insert({
           lead_id:   leadData?.id,
-          note_type: "stage_change",
+          note_type: "internal",
           body:      noteEntry,
           created_by: profile?.id ?? null,
         });
@@ -417,9 +421,7 @@ export function StageTransitionWizard({ open, onOpenChange, currentStage, leadDa
                 <div className="space-y-1.5">
                   <Label htmlFor="tz-review-notes">
                     Review notes
-                    {["cold","not_eligible","lost"].includes(target) && (
-                      <span className="text-destructive ml-1">*</span>
-                    )}
+                    <span className="text-destructive ml-1">*</span>
                   </Label>
                   <Textarea
                     id="tz-review-notes"

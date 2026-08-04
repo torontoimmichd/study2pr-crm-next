@@ -58,7 +58,7 @@ export default function Documents() {
 
       const { data: cases } = await supabase
         .from("cases")
-        .select("id, case_ref, client_id")
+        .select("id, case_code, client_id")
         .in("id", caseIds);
 
       const clientIds = [...new Set((cases ?? []).map((c) => c.client_id).filter(Boolean))];
@@ -70,7 +70,7 @@ export default function Documents() {
         ((clients ?? []) as { id: string; full_name: string }[]).map((c) => [c.id, c.full_name])
       );
       const caseMap = new Map(
-        ((cases ?? []) as { id: string; case_ref: string; client_id: string }[]).map((c) => [c.id, { ref: c.case_ref, name: clientMap.get(c.client_id) ?? null }])
+        ((cases ?? []) as { id: string; case_code: string | null; client_id: string }[]).map((c) => [c.id, { ref: c.case_code, name: clientMap.get(c.client_id) ?? null }])
       );
 
       return (data ?? []).map((r) => ({

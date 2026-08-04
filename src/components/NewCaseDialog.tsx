@@ -82,14 +82,14 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
     (async () => {
       const { data } = await supabase
         .from("leads")
-        .select("id, full_name, client_id")
+        .select("id, full_name, converted_client_id")
         .eq("id", defaultLeadId)
         .single();
       if (!data) return;
       setResolvedLeadName(data.full_name);
-      if (data.client_id) {
-        setResolvedClientId(data.client_id as string);
-        setForm((f) => ({ ...f, client_id: data.client_id as string }));
+      if (data.converted_client_id) {
+        setResolvedClientId(data.converted_client_id);
+        setForm((f) => ({ ...f, client_id: data.converted_client_id }));
         setLeadNotConverted(false);
       } else {
         setLeadNotConverted(true);

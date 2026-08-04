@@ -139,8 +139,17 @@ export default function CaseDetail() {
 
   const moveStage = async (newStage: string) => {
     if (!caseRow || newStage === caseRow.current_stage_code) return;
+    const note = window.prompt(`Why is this application moving to ${newStage.replace(/_/g, " ")}?`);
+    if (!note || note.trim().length < 20) {
+      toast.error("A stage-change note of at least 20 characters is required");
+      return;
+    }
     const old = caseRow.current_stage_code;
-    const { error } = await supabase.from("cases").update({ current_stage_code: newStage, stage_entered_at: new Date().toISOString() }).eq("id", id!);
+    const { error } = await supabase.from("cases").update({
+      current_stage_code: newStage,
+      stage_entered_at: new Date().toISOString(),
+      pending_stage_note: note.trim(),
+    }).eq("id", id!);
     if (error) { toast.error(error.message); return; }
     // P1.2 — REMOVED (2026-07-30): duplicate stage-history write.
     // Trigger trg_cases_stage -> log_stage_change() already inserts this row and

@@ -22,6 +22,7 @@ import {
   DollarSign, Briefcase, AlertCircle, User, Info, Plus, Loader2,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import { fmtDateTimeIST, fmtRelative } from "@/lib/format";
 import { TIMELINE_META } from "@/lib/timeline";
 import { Button } from "@/components/ui/button";
@@ -75,6 +76,12 @@ interface TimelineEvent {
   is_system: boolean;
   occurred_at: string;
   source: "timeline" | "audit";
+}
+
+function jsonObject(value: Json | null): Record<string, unknown> | null {
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : null;
 }
 
 interface Props {
@@ -160,17 +167,15 @@ export function EntityTimeline({ leadId, caseId, clientId, allowNotes = true }: 
         const bucket = Math.floor(new Date(e.occurred_at).getTime() / 10000);
         timelineAuditIds.add(`${e.event_type}_${bucket}`);
       });
-      const auditEvents: TimelineEvent[] = (auditRows ?? []).map((r: {
-        id: string; action: string; entity_type: string; entity_id: string;
-        occurred_at: string; actor_id: string | null; changes: Record<string, unknown> | null;
-      }) => {
-        const et = mapAuditAction(r.action, r.changes);
+      const auditEvents: TimelineEvent[] = (auditRows ?? []).map((r) => {
+        const changes = jsonObject(r.changes);
+        const et = mapAuditAction(r.action, changes);
         return {
           id: `audit-${r.id}`,
           event_type: et.event_type,
           title: et.title,
           body: et.body,
-          metadata: r.changes,
+          metadata: changes,
           actor_id: r.actor_id,
           actor_name: r.actor_id ? (actorMap.get(r.actor_id) ?? "Unknown") : "System",
           is_system: !r.actor_id,

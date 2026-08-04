@@ -46,15 +46,6 @@ const OUTCOMES = [
   { value: "disconnected",      label: "Disconnected / dropped" },
 ];
 
-const EMOTIONS = [
-  { value: "very_positive",   label: "Very positive — enthusiastic" },
-  { value: "positive",        label: "Positive — interested" },
-  { value: "neutral",         label: "Neutral — polite" },
-  { value: "hesitant",        label: "Hesitant — unsure" },
-  { value: "negative",        label: "Negative — resistant" },
-  { value: "very_negative",   label: "Very negative — hostile" },
-];
-
 const OBJECTIONS = [
   { value: "none",             label: "None" },
   { value: "fee_too_high",     label: "Fee too high" },
@@ -72,8 +63,6 @@ const CONNECTED_OUTCOMES = new Set(["connected", "connected_brief", "callback_re
 const EMPTY_FORM = {
   direction: "outbound" as "outbound" | "inbound",
   outcome: "no_answer",
-  duration_seconds: "",
-  emotional_state: "",
   objection: "",
   promise_made: "",
   next_step: "",
@@ -117,8 +106,6 @@ export function LogCallDialog({
       staff_id: profile?.id ?? null,
       direction: form.direction,
       outcome: form.outcome,
-      duration_seconds: form.duration_seconds ? Number(form.duration_seconds) : null,
-      emotional_state: isConnected && form.emotional_state ? form.emotional_state : null,
       objection: isConnected && form.objection && form.objection !== "none" ? form.objection : null,
       promise_made: form.promise_made.trim() || null,
       next_step: form.next_step.trim() || null,
@@ -141,9 +128,7 @@ export function LogCallDialog({
 
     // Timeline entry
     const outcomeLabel = OUTCOMES.find((o) => o.value === form.outcome)?.label ?? form.outcome;
-    const emotionLabel = EMOTIONS.find((em) => em.value === form.emotional_state)?.label ?? "";
     const body = [
-      emotionLabel && `Emotional state: ${emotionLabel}`,
       form.objection && `Objection: ${OBJECTIONS.find((o) => o.value === form.objection)?.label ?? form.objection}`,
       form.promise_made && `Promise: ${form.promise_made}`,
       form.next_step && `Next step: ${form.next_step}`,
@@ -156,7 +141,6 @@ export function LogCallDialog({
       body: body || null,
       metadata: {
         outcome: form.outcome,
-        duration_seconds: payload.duration_seconds,
         next_contact_at: payload.next_contact_at,
       },
       lead_id: leadId ?? null,
@@ -221,37 +205,10 @@ export function LogCallDialog({
             </div>
           </div>
 
-          {/* Duration */}
-          <div className="space-y-1.5">
-            <Label htmlFor="call-duration">Duration (seconds)</Label>
-            <Input
-              id="call-duration"
-              type="number"
-              min={0}
-              placeholder="e.g. 180 for 3 min"
-              value={form.duration_seconds}
-              onChange={(e) => setForm({ ...form, duration_seconds: e.target.value })}
-            />
-          </div>
-
           {/* Connected-only fields */}
           {isConnected && (
             <>
               <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label>Client emotional state</Label>
-                  <Select
-                    value={form.emotional_state}
-                    onValueChange={(v) => setForm({ ...form, emotional_state: v })}
-                  >
-                    <SelectTrigger><SelectValue placeholder="Select…" /></SelectTrigger>
-                    <SelectContent>
-                      {EMOTIONS.map((em) => (
-                        <SelectItem key={em.value} value={em.value}>{em.label}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
                 <div className="space-y-1.5">
                   <Label>Objection raised</Label>
                   <Select

@@ -2,9 +2,9 @@
 
 // src/components/lead-detail/FeeAssignmentCard.tsx
 import { Card } from "@/components/ui/card";
-import type { Lead } from "@/lib/types";
+import type { ApplicationRow, Lead } from "@/lib/types";
 
-export function FeeAssignmentCard({ lead }: { lead: Lead }) {
+export function FeeAssignmentCard({ lead, application }: { lead: Lead; application: ApplicationRow | null }) {
   const fmtINR = (n: number | null | undefined) =>
     n == null
       ? "—"
@@ -12,7 +12,7 @@ export function FeeAssignmentCard({ lead }: { lead: Lead }) {
           style: "currency", currency: "INR", maximumFractionDigits: 0
         }).format(n);
 
-  const quotedFee = lead.quoted_fee_inr ?? lead.quoted_amount ?? null;
+  const quotedFee = application?.quoted_fee_inr ?? application?.fee ?? lead.quoted_amount ?? null;
   const serviceFee = lead.service_fee ?? null;
 
   return (
