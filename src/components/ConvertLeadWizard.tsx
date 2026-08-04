@@ -377,6 +377,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
 
       const extraNotes = [
         applicationType !== "single" ? `Type: ${applicationType}` : null,
+        `Discount: ${discountCat} (${discountPct || 0}%)`,
         govtFeeBy !== "client" ? `Govt fee: ${govtFeeBy}` : null,
         applicants.length > 1 ? `Members: ${applicants.map(a => `${a.name} (${a.relationship})`).join(", ")}` : null,
         lead.notes ? `Lead notes: ${lead.notes}` : null,
@@ -629,7 +630,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                     <Select value={filingOfficer} onValueChange={setFilingOfficer}>
                       <SelectTrigger className="h-8 text-sm"><SelectValue placeholder={staffList === undefined ? "Loading…" : "Select…"} /></SelectTrigger>
                       <SelectContent>
-                        {(staffList ?? []).filter(s => ["owner","admin","senior_advisor","senior_counsellor","manager"].includes(s.role)).map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}
+                        {(staffList ?? []).filter(s => ["owner","admin","senior_advisor","senior_counsellor","manager","filing_officer"].includes(s.role)).map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>

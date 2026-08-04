@@ -101,10 +101,54 @@ export default function AdminVisaTypes() {
 
   const handleDelete = async () => {
     if (!deleting) return;
-    const { error } = await db.from("visa_types").delete().eq("id", deleting.id);
-    if (error) { toast.error("Could not delete: " + error.message); return; }
-    await writeAudit({ action: "DELETE", entity_type: "visa_types", entity_id: deleting.id, changes: { code: deleting.code } });
-    toast.success("Sub-type deleted");
+
+    // A visa type may be referenced by historic applications or live leads. Keep
+    // those records intact and hide the type from new-record pickers instead.
+    const [{ count: applicationCount, error: applicationsError }, { count: leadCount, error: leadsError }] = await Promise.all([
+      db.from("cases").select("id", { count: "exact", head: true }).eq("visa_type_id", deleting.id),
+      db.from("leads").select("id", { count: "exact", head: true }).eq("interested_visa_type_id", deleting.id),
+    ]);
+
+    if (applicationsError || leadsError) {
+      toast.error("Could not check where this sub-type is in use. Please try again.");
+      return;
+    }
+
+    const isInUse = (applicationCount ?? 0) > 0 || (leadCount ?? 0) > 0;
+    if (isInUse) {
+      const { error } = await db.from("visa_types").update({ is_active: false }).eq("id", deleting.id);
+      if (error) { toast.error("Could not archive: " + error.message); return; }
+      await writeAudit({
+        action: "UPDATE",
+        entity_type: "visa_types",
+        entity_id: deleting.id,
+        changes: { code: deleting.code, is_active: false, archived: true },
+      });
+      toast.success(`Sub-type archived. It is used by ${applicationCount ?? 0} application(s) and ${leadCount ?? 0} lead(s), so their history was kept.`);
+    } else {
+      const { error } = await db.from("visa_types").delete().eq("id", deleting.id);
+      if (error) {
+        // A reference may have been created just after the pre-check. Archive is
+        // still the correct outcome in that race, rather than exposing an FK error.
+        if (error.code === "23503") {
+          const { error: archiveError } = await db.from("visa_types").update({ is_active: false }).eq("id", deleting.id);
+          if (!archiveError) {
+            await writeAudit({ action: "UPDATE", entity_type: "visa_types", entity_id: deleting.id, changes: { code: deleting.code, is_active: false, archived: true } });
+            toast.success("Sub-type was archived because it is now in use.");
+          } else {
+            toast.error("Could not archive: " + archiveError.message);
+            return;
+          }
+        } else {
+          toast.error("Could not delete: " + error.message);
+          return;
+        }
+      } else {
+        await writeAudit({ action: "DELETE", entity_type: "visa_types", entity_id: deleting.id, changes: { code: deleting.code } });
+        toast.success("Sub-type deleted");
+      }
+    }
+
     setDeleting(null);
     qc.invalidateQueries({ queryKey: ["admin-visa-types"] });
   };
@@ -213,7 +257,7 @@ export default function AdminVisaTypes() {
         open={!!deleting}
         onOpenChange={(o) => !o && setDeleting(null)}
         title={`Delete ${deleting?.label}?`}
-        description="This removes the sub-type from all dropdowns. Existing cases keep their reference."
+        description="Unused sub-types are deleted permanently. If it is used by a lead or application, it will be archived instead so existing records remain accurate."
         confirmLabel="Delete"
         destructive
         onConfirm={handleDelete}
