@@ -55,7 +55,7 @@ export default function ApplicationsPage() {
       // Cases
       let casesQ = supabase
         .from("cases")
-        .select("*, client:client_id(full_name), family_unit:family_unit_id(unit_name), case_manager:case_manager_id(full_name), visa:visa_type_id(label)")
+        .select("*, client:client_id(full_name, family_role), family_unit:family_unit_id(unit_name), case_manager:case_manager_id(full_name), visa:visa_type_id(label)")
         .order("created_at", { ascending: false })
         .limit(200);
 
@@ -81,14 +81,13 @@ export default function ApplicationsPage() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mappedCases: AppRowType[] = ((casesRes.data || []) as any[]).map((c: any) => ({
         ...c,
-        client_name: c.lead
-          ? (c.lead.full_name || "—")
-          : "—",
+        client_name: c.client?.full_name || c.lead?.full_name || "—",
         family_unit_name: c.family_unit?.unit_name || null,
-        assigned_to_name: c.assignee?.full_name || null,
+        assigned_to_name: c.case_manager?.full_name || null,
         stage: c.stage || c.current_stage_code || null,
         case_number: c.case_number || c.case_ref || null,
         fee: c.fee || c.quoted_fee_inr || null,
+        for_family_role: c.for_family_role || c.family_role || c.client?.family_role || null,
       }));
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -341,12 +340,21 @@ function PipelineView({
             </p>
           </div>
           <div className="border-t border-slate-200">
-            {showActive && group.cases.map(c => (
+            {showActive && [...group.cases].sort((a, b) => {
+              const role = (row: AppRowType) => String(row.for_family_role || "").toLowerCase();
+              const aPrimary = role(a) === "primary" || role(a) === "principal";
+              const bPrimary = role(b) === "primary" || role(b) === "principal";
+              if (aPrimary !== bPrimary) return aPrimary ? -1 : 1;
+              return String(a.created_at ?? "").localeCompare(String(b.created_at ?? ""));
+            }).map((c, index) => (
               <ApplicationRow
                 key={c.id}
                 app={c}
                 context="applications_page"
                 showFamilyContext={false}
+                familyChild={group.cases.length > 1 && index > 0}
+                familyRole={c.for_family_role}
+                familyParentName={group.name}
                 onUpdated={(patch) => onUpdateCase(c.id, patch)}
               />
             ))}

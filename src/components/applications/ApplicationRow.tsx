@@ -7,7 +7,7 @@ import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/h
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { fmtRelative } from "@/lib/format";
-import { Link as LinkIcon, Clock, User as UserIcon, Activity } from "lucide-react";
+import { Link as LinkIcon, Clock, User as UserIcon, Activity, CornerDownRight, UsersRound } from "lucide-react";
 import type { ApplicationRow as AppRowType } from "@/lib/types";
 
 export type RowContext = "lead_detail" | "applications_page" | "manager_drill";
@@ -16,6 +16,9 @@ interface Props {
   app: AppRowType;
   context: RowContext;
   showFamilyContext?: boolean;
+  familyChild?: boolean;
+  familyRole?: string | null;
+  familyParentName?: string | null;
   onUpdated?: (updated: Partial<AppRowType>) => void;
   onClick?: () => void;
 }
@@ -111,7 +114,7 @@ function CaseHoverContent({ app, stage }: { app: AppRowType; stage: string }) {
   );
 }
 
-export function ApplicationRow({ app, context, showFamilyContext, onUpdated, onClick }: Props) {
+export function ApplicationRow({ app, context, showFamilyContext, familyChild, familyRole, familyParentName, onUpdated, onClick }: Props) {
   const isChainSpawned = !!app.source_prospective_application_id;
   const checklistTotal = 7;
   const checklistStep = app.checklist_step || 0;
@@ -130,6 +133,7 @@ export function ApplicationRow({ app, context, showFamilyContext, onUpdated, onC
   const familyName = app.family_unit_name;
   const visaName = rawApp.visa?.label || app.visa_type_name || app.application_type || "—";
   const assigneeName = rawApp.case_manager?.full_name || app.assigned_to_name || "—";
+  const relationship = familyRole ? familyRole.replace(/_/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()) : null;
 
   return (
     <div
@@ -159,9 +163,18 @@ export function ApplicationRow({ app, context, showFamilyContext, onUpdated, onC
       </div>
 
       {context !== "lead_detail" && (
-        <div className="flex-1 min-w-[140px]">
+        <div className={`flex-1 min-w-[140px] ${familyChild ? "pl-7 relative" : ""}`}>
+          {familyChild && (
+            <span className="absolute left-1 top-1/2 -translate-y-1/2 flex items-center gap-1 text-sky-500" aria-hidden="true">
+              <CornerDownRight className="h-4 w-4" />
+              <UsersRound className="h-3.5 w-3.5" />
+            </span>
+          )}
           <p className="text-sm font-medium truncate">{clientName}</p>
-          {showFamilyContext && app.family_unit_name && (
+          {familyChild && relationship && (
+            <p className="text-[10px] text-muted-foreground truncate">{relationship}{familyParentName ? ` of ${familyParentName}` : ""}</p>
+          )}
+          {showFamilyContext && app.family_unit_name && !familyChild && (
             <p className="text-[10px] text-muted-foreground truncate">↳ {app.family_unit_name}</p>
           )}
         </div>
