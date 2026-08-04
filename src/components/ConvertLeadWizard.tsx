@@ -527,6 +527,26 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
             memberClient = createdMember;
           }
           conversionClients.push({ client: memberClient, leadId: memberLead.id, applicant: member });
+
+          // Keep the legacy family-member view in sync with the client/case records.
+          // This insert is intentionally best-effort because older installations may
+          // not have the optional family_members table columns yet.
+          const { data: existingFamilyMember } = await (supabase as any)
+            .from("family_members")
+            .select("id")
+            .eq("principal_client_id", client.id)
+            .eq("full_name", member.name.trim())
+            .maybeSingle();
+          if (!existingFamilyMember) {
+            await (supabase as any).from("family_members").insert({
+              principal_client_id: client.id,
+              full_name: member.name.trim(),
+              relationship: memberLead.family_role || "member",
+              is_dependent: true,
+              is_included_on_current_case: true,
+              notes: member.notes.trim() || null,
+            });
+          }
         }
       }
 

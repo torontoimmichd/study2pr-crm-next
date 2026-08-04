@@ -90,18 +90,12 @@ export default function Clients() {
           supabase.from("cases").select("client_id").in("client_id", ids).eq("is_archived", false),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (supabase as any).from("family_members")
-            .select("id, principal_client_id, client_id, full_name, relationship, phone")
+            .select("id, principal_client_id, full_name, relationship, phone")
             .in("principal_client_id", ids),
         ]);
         casesRes.data?.forEach((c) => caseCounts.set(c.client_id, (caseCounts.get(c.client_id) ?? 0) + 1));
-        const rawFams = (famRes.data ?? []) as Omit<FamilyRow, "linked_code">[];
-        const linkedIds = rawFams.map((f) => f.client_id).filter(Boolean) as string[];
-        const codeMap = new Map<string, string | null>();
-        if (linkedIds.length) {
-          const { data: lc } = await supabase.from("clients").select("id, client_code").in("id", linkedIds);
-          (lc ?? []).forEach((c) => codeMap.set(c.id, c.client_code));
-        }
-        fams = rawFams.map((f) => ({ ...f, linked_code: f.client_id ? (codeMap.get(f.client_id) ?? null) : null }));
+        const rawFams = (famRes.data ?? []) as Array<Omit<FamilyRow, "linked_code" | "client_id"> & { client_id?: string | null }>;
+        fams = rawFams.map((f) => ({ ...f, client_id: f.client_id ?? null, linked_code: null }));
       }
 
       const famByPrincipal: Record<string, FamilyRow[]> = {};
