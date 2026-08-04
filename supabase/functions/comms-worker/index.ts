@@ -240,9 +240,11 @@ async function handleOutbound(sb: SupabaseClient, row: OutboundRow): Promise<"se
 
   // One approved Meta template is reused for the scheduled check-ins. This
   // keeps the business inside the three-template limit and avoids near-duplicates.
-  const metaTemplateName = row.template_code.startsWith("LEAD_FU_")
-    ? "LEAD_FU_CHECKIN"
-    : row.template_code;
+  const metaTemplateName = row.template_code === "LEAD_ACK_D0"
+    ? "lead_ack_d0"
+    : row.template_code.startsWith("LEAD_FU_")
+      ? "lead_fu_checkin"
+      : row.template_code.toLowerCase();
   const { data: template } = await sb.from("wa_templates")
     .select("name, language, status, body")
     .eq("name", metaTemplateName)
