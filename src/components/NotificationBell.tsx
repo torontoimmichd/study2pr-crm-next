@@ -14,7 +14,7 @@
  */
 
 import { useEffect, useState, useCallback, useRef } from "react";
-import { Bell, CheckCheck, AlertTriangle, Clock, ChevronRight } from "lucide-react";
+import { Bell, Check, CheckCheck, AlertTriangle, Clock, ChevronRight, AlarmClock } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -22,6 +22,7 @@ import { useAuth } from "@/lib/auth-context";
 import { fmtRelative } from "@/lib/format";
 import { Link } from "@/lib/router-compat";
 import { cn } from "@/lib/utils";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const db = supabase as any;
 
@@ -32,6 +33,7 @@ interface Notif {
   body?: string | null;
   href?: string;
   at: string;
+  taskId?: string;
 }
 
 const POLL_MS = 2 * 60 * 1000; // re-fetch every 2 min
@@ -40,6 +42,7 @@ export function NotificationBell() {
   const { profile } = useAuth();
   const [notifs, setNotifs] = useState<Notif[]>([]);
   const [open, setOpen] = useState(false);
+  const [updatingTaskId, setUpdatingTaskId] = useState<string | null>(null);
   const [lastSeen, setLastSeen] = useState<string>(() =>
     localStorage.getItem("notif_last_seen") ?? new Date(0).toISOString()
   );
@@ -49,9 +52,6 @@ export function NotificationBell() {
     if (!profile?.id) return;
 
     const now = new Date().toISOString();
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
-    const todayEndISO = todayEnd.toISOString();
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0);
 
@@ -72,7 +72,7 @@ export function NotificationBell() {
       .eq("assigned_to", profile.id)
       .eq("status_code", "open")
       .gte("due_at", startOfDay.toISOString())
-      .lte("due_at", todayEndISO)
+      .lte("due_at", now)
       .order("due_at", { ascending: true })
       .limit(10);
 
@@ -93,6 +93,7 @@ export function NotificationBell() {
         body: "Overdue",
         href: t.lead_id ? `/leads/${t.lead_id}` : t.case_id ? `/cases/${t.case_id}` : undefined,
         at: t.due_at ?? now,
+        taskId: t.id,
       })),
       ...((dueToday ?? []) as any[]).map((t: any) => ({
         id: `dt-${t.id}`,
@@ -101,6 +102,7 @@ export function NotificationBell() {
         body: `Due ${fmtRelative(t.due_at)}`,
         href: t.lead_id ? `/leads/${t.lead_id}` : t.case_id ? `/cases/${t.case_id}` : undefined,
         at: t.due_at ?? now,
+        taskId: t.id,
       })),
       ...((timeline ?? []) as any[]).map((e: any) => ({
         id: `tl-${e.id}`,
@@ -157,8 +159,28 @@ export function NotificationBell() {
   };
 
   const newCount = notifs.filter((n) =>
-    n.type === "timeline" || n.type === "overdue"
+    n.type === "timeline" || n.type === "overdue" || n.type === "due_today"
   ).length;
+
+  const completeTask = async (taskId: string) => {
+    setUpdatingTaskId(taskId);
+    const { error } = await db.from("tasks").update({
+      status_code: "done",
+      completed_at: new Date().toISOString(),
+    }).eq("id", taskId);
+    setUpdatingTaskId(null);
+    if (error) return;
+    void fetch();
+  };
+
+  const snoozeTask = async (taskId: string, days: number) => {
+    setUpdatingTaskId(taskId);
+    const dueAt = new Date(Date.now() + Math.min(days, 15) * 24 * 60 * 60 * 1000).toISOString();
+    const { error } = await db.from("tasks").update({ due_at: dueAt }).eq("id", taskId);
+    setUpdatingTaskId(null);
+    if (error) return;
+    void fetch();
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -201,7 +223,14 @@ export function NotificationBell() {
           ) : (
             <ul className="divide-y divide-border">
               {notifs.map((n) => (
-                <NotifRow key={n.id} notif={n} onClose={() => setOpen(false)} />
+                <NotifRow
+                  key={n.id}
+                  notif={n}
+                  onClose={() => setOpen(false)}
+                  onComplete={completeTask}
+                  onSnooze={snoozeTask}
+                  busy={updatingTaskId === n.taskId}
+                />
               ))}
             </ul>
           )}
@@ -222,7 +251,19 @@ export function NotificationBell() {
   );
 }
 
-function NotifRow({ notif, onClose }: { notif: Notif; onClose: () => void }) {
+function NotifRow({
+  notif,
+  onClose,
+  onComplete,
+  onSnooze,
+  busy,
+}: {
+  notif: Notif;
+  onClose: () => void;
+  onComplete: (taskId: string) => void;
+  onSnooze: (taskId: string, days: number) => void;
+  busy: boolean;
+}) {
   const icon = {
     overdue:   <AlertTriangle className="h-4 w-4 text-destructive shrink-0" />,
     due_today: <Clock className="h-4 w-4 text-warning shrink-0" />,
@@ -231,12 +272,7 @@ function NotifRow({ notif, onClose }: { notif: Notif; onClose: () => void }) {
   }[notif.type];
 
   const content = (
-    <li
-      className={cn(
-        "flex items-start gap-3 px-4 py-3 hover:bg-muted/30 transition-colors",
-        notif.type === "overdue" && "bg-destructive/5"
-      )}
-    >
+    <>
       <div className="mt-0.5">{icon}</div>
       <div className="flex-1 min-w-0">
         <div className="text-sm font-medium truncate">{notif.title}</div>
@@ -246,15 +282,47 @@ function NotifRow({ notif, onClose }: { notif: Notif; onClose: () => void }) {
         <div className="text-[11px] text-muted-foreground mt-1">{fmtRelative(notif.at)}</div>
       </div>
       {notif.href && <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0 mt-1" />}
-    </li>
+    </>
   );
 
-  if (notif.href) {
-    return (
-      <Link to={notif.href} onClick={onClose} className="block">
-        {content}
-      </Link>
-    );
-  }
-  return <>{content}</>;
+  return (
+    <li className={cn("px-4 py-3 hover:bg-muted/30 transition-colors", notif.type === "overdue" && "bg-destructive/5")}>
+      <div className="flex items-start gap-3">
+        {notif.href ? <Link to={notif.href} onClick={onClose} className="contents">{content}</Link> : content}
+      </div>
+      {notif.taskId && (
+        <div className="mt-2 ml-7 flex items-center gap-1.5">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="h-7 w-7"
+                disabled={busy}
+                onClick={() => onComplete(notif.taskId!)}
+                aria-label="Mark task done"
+              >
+                <Check className="h-3.5 w-3.5" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Mark done</TooltipContent>
+          </Tooltip>
+          {[1, 3, 7, 15].map((days) => (
+            <Button
+              key={days}
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-[11px]"
+              disabled={busy}
+              onClick={() => onSnooze(notif.taskId!, days)}
+            >
+              <AlarmClock className="mr-1 h-3 w-3" /> {days}d
+            </Button>
+          ))}
+        </div>
+      )}
+    </li>
+  );
 }
