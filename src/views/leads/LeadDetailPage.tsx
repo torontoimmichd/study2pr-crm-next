@@ -153,17 +153,16 @@ export default function LeadDetailPage() {
         .filter((member: { lifecycle_state?: string | null; converted_client_id?: string | null }) =>
           member.lifecycle_state !== "converted" || !member.converted_client_id)
         .forEach((member: { id: string; full_name: string; family_role?: string | null }) => {
-        familyMembersByKey.set(`${member.id}:`, {
-          id: member.id,
-          lead_id: member.id,
-          client_id: null,
-          full_name: member.full_name,
-          family_role: member.family_role || "member",
-          primary_application: null,
-          expected_revenue_cad: null,
+          familyMembersByKey.set(`${member.id}:`, {
+            id: member.id,
+            lead_id: member.id,
+            client_id: null,
+            full_name: member.full_name,
+            family_role: member.family_role || "member",
+            primary_application: null,
+            expected_revenue_cad: null,
+          });
         });
-        });
-      });
       (familyClientsRes.data || []).forEach((member: { id: string; full_name: string; family_role?: string | null }) => {
         familyMembersByKey.set(`:${member.id}`, {
           id: member.id,
