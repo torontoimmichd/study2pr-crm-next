@@ -145,6 +145,22 @@ export default function LeadDetailPage() {
       setLead(ld);
       setEditingNotes(ld.notes ?? "");
 
+      // Some older records carry the family relationship on the case rather
+      // than on clients.family_unit_id. Pull those case clients into the same
+      // family list so the lead card matches the Applications view.
+      const caseClientIds = Array.from(new Set(
+        ((casesRes.data || []) as Array<{ client_id?: string | null }>)
+          .map((application) => application.client_id)
+          .filter(Boolean) as string[]
+      ));
+      const knownFamilyClientIds = new Set(
+        (familyClientsRes.data || []).map((member: { id: string }) => member.id)
+      );
+      const missingCaseClientIds = caseClientIds.filter((clientId) => !knownFamilyClientIds.has(clientId));
+      const caseClientsRes = missingCaseClientIds.length
+        ? await (supabase as any).from("clients").select("id, full_name, family_role").in("id", missingCaseClientIds)
+        : { data: [] };
+
       const familyMembersByKey = new Map<string, FamilyMember>();
       ((familyRes.data || []) as FamilyMember[]).forEach((member) => {
         familyMembersByKey.set(`${member.lead_id ?? ""}:${member.client_id ?? ""}`, member);
@@ -163,7 +179,7 @@ export default function LeadDetailPage() {
             expected_revenue_cad: null,
           });
         });
-      (familyClientsRes.data || []).forEach((member: { id: string; full_name: string; family_role?: string | null }) => {
+      ([...(familyClientsRes.data || []), ...(caseClientsRes.data || [])]).forEach((member: { id: string; full_name: string; family_role?: string | null }) => {
         familyMembersByKey.set(`:${member.id}`, {
           id: member.id,
           lead_id: null,
