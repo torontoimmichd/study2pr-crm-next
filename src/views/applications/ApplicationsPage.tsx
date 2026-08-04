@@ -17,12 +17,13 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Layers, Loader2 } from "lucide-react";
+import { Search, Layers, Loader2, ArrowRightLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ApplicationRow } from "@/components/applications/ApplicationRow";
 import { ProspectiveRow } from "@/components/applications/ProspectiveRow";
 import { ProspectiveDetailSheet } from "@/components/applications/ProspectiveDetailSheet";
 import { BulkProcessProspectivesSheet } from "@/components/applications/BulkProcessProspectivesSheet";
+import { StaffTransferDialog } from "@/components/StaffTransferDialog";
 import { useRealtimeChannel } from "@/hooks/useRealtimeChannel";
 import type { ApplicationRow as AppRowType, ProspectiveAppRow } from "@/lib/types";
 
@@ -44,6 +45,7 @@ export default function ApplicationsPage() {
   // Sheet state — page stays mounted
   const [openProspectiveId, setOpenProspectiveId] = useState<string | null>(null);
   const [bulkOpen, setBulkOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
 
   // Fetch data on tab/filter change
   useEffect(() => {
@@ -53,7 +55,7 @@ export default function ApplicationsPage() {
       // Cases
       let casesQ = supabase
         .from("cases")
-        .select("*, lead:lead_id(full_name, family_unit_id), family_unit:family_unit_id(unit_name), assignee:assigned_to(full_name)")
+        .select("*, client:client_id(full_name), family_unit:family_unit_id(unit_name), case_manager:case_manager_id(full_name), visa:visa_type_id(label)")
         .order("created_at", { ascending: false })
         .limit(200);
 
@@ -183,17 +185,26 @@ export default function ApplicationsPage() {
   }).length;
 
   return (
-    <div className="bg-slate-50 min-h-screen p-4 lg:p-6">
-      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
-        <h1 className="text-2xl font-bold">Applications</h1>
-        <Button
-          variant={prospectivesDueIn7Days > 0 ? "default" : "outline"}
-          disabled={prospectivesDueIn7Days === 0}
-          onClick={() => setBulkOpen(true)}
-        >
-          <Layers className="w-4 h-4 mr-1" />
-          Bulk process {prospectivesDueIn7Days > 0 && `(${prospectivesDueIn7Days})`}
-        </Button>
+    <div className="min-h-screen p-4 lg:p-6">
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2 rounded-xl border border-white/80 bg-gradient-to-r from-indigo-50 via-white to-amber-50 px-4 py-3 shadow-sm">
+        <div>
+          <h1 className="text-2xl font-bold">Applications</h1>
+          <p className="text-xs text-muted-foreground mt-0.5">Active cases, family applications, and future opportunities</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={() => setTransferOpen(true)}>
+            <ArrowRightLeft className="w-4 h-4 mr-1" />
+            Transfer
+          </Button>
+          <Button
+            variant={prospectivesDueIn7Days > 0 ? "default" : "outline"}
+            disabled={prospectivesDueIn7Days === 0}
+            onClick={() => setBulkOpen(true)}
+          >
+            <Layers className="w-4 h-4 mr-1" />
+            Bulk process {prospectivesDueIn7Days > 0 && `(${prospectivesDueIn7Days})`}
+          </Button>
+        </div>
       </div>
 
       <Tabs value={tab} onValueChange={v => setTab(v as StatusTab)}>
@@ -293,6 +304,12 @@ export default function ApplicationsPage() {
           // Force tab re-render to refresh data
           setTab(t => t);
         }}
+      />
+      <StaffTransferDialog
+        open={transferOpen}
+        onOpenChange={setTransferOpen}
+        defaultType="applications"
+        onTransferred={() => setTab(t => t)}
       />
     </div>
   );

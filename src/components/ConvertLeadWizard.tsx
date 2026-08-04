@@ -73,6 +73,9 @@ interface Lead {
   country_of_interest?: string | null;
   notes: string | null;
   interested_visa_type_id: string | null;
+  interested_visa_sub_type_id?: string | null;
+  family_unit_id?: string | null;
+  family_role?: string | null;
   lifecycle_state: string;
   enquiry_client_id?: string | null; // set when this lead is a repeat enquiry from an existing client
 }
@@ -138,7 +141,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
   // Visa details
   const [destinationCountry, setDestinationCountry] = useState(lead.country_of_interest ?? "");
   const [visaTypeId,    setVisaTypeId]    = useState(lead.interested_visa_type_id ?? "");
-  const [visaSubTypeId, setVisaSubTypeId] = useState("");
+  const [visaSubTypeId, setVisaSubTypeId] = useState(lead.interested_visa_sub_type_id ?? "");
   const [baseFee,       setBaseFee]       = useState(0);
   const [applicationType, setApplicationType] = useState<"single" | "family" | "group">("single");
 
@@ -292,11 +295,11 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
       // (matched by phone/email on creation, or via the client's "New enquiry"
       // button). Reuse that client and just add a new application — never create
       // a duplicate person.
-      let linkedClient: { id: string } | null = null;
+      let linkedClient: { id: string; family_unit_id?: string | null } | null = null;
       if (lead.enquiry_client_id) {
         const { data: lc } = await supabase
           .from("clients")
-          .select("id")
+          .select("id, family_unit_id")
           .eq("id", lead.enquiry_client_id)
           .maybeSingle();
         if (lc) linkedClient = lc;
@@ -308,7 +311,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
       if (!linkedClient) {
         const { data: bySource } = await supabase
           .from("clients")
-          .select("id")
+          .select("id, family_unit_id")
           .eq("source_lead_id", lead.id)
           .maybeSingle();
         if (bySource) linkedClient = bySource;
@@ -327,29 +330,47 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const { data: byContact } = await (supabase as any)
             .from("clients")
-            .select("id")
+            .select("id, family_unit_id")
             .or(ors.join(","))
             .limit(1);
-          if (byContact && byContact[0]) linkedClient = { id: byContact[0].id };
+          if (byContact && byContact[0]) linkedClient = byContact[0];
         }
       }
 
       const existingClient = linkedClient;
 
-      let client: { id: string };
+      let client: { id: string; family_unit_id?: string | null };
       if (existingClient) {
+        const clientPatch = {
+          full_name: clientName.trim(),
+          email: clientEmail.trim() || null,
+          phone: clientPhone.trim() || null,
+          country_of_citizenship: clientCountry || null,
+          family_unit_id: existingClient.family_unit_id ?? lead.family_unit_id ?? null,
+          family_role: lead.family_unit_id && !existingClient.family_unit_id ? (lead.family_role ?? "primary") : undefined,
+          is_active: true,
+        };
         const { data: updated, error: updateErr } = await supabase
           .from("clients")
-          .update({ full_name: clientName.trim(), email: clientEmail.trim() || null, phone: clientPhone.trim() || null, country_of_citizenship: clientCountry || null, is_active: true })
+          .update(clientPatch)
           .eq("id", existingClient.id)
-          .select("id").single();
+          .select("id, family_unit_id").single();
         if (updateErr || !updated) { toast.error(updateErr?.message ?? "Failed to update existing client"); setBusy(false); return; }
         client = updated;
       } else {
         const { data: created, error: clientErr } = await supabase
           .from("clients")
-          .insert({ full_name: clientName.trim(), email: clientEmail.trim() || null, phone: clientPhone.trim() || null, country_of_citizenship: clientCountry || null, source_lead_id: lead.id, is_active: true })
-          .select("id").single();
+          .insert({
+            full_name: clientName.trim(),
+            email: clientEmail.trim() || null,
+            phone: clientPhone.trim() || null,
+            country_of_citizenship: clientCountry || null,
+            family_unit_id: lead.family_unit_id ?? null,
+            family_role: lead.family_unit_id ? (lead.family_role ?? "primary") : null,
+            source_lead_id: lead.id,
+            is_active: true,
+          })
+          .select("id, family_unit_id").single();
         if (clientErr || !created) { toast.error(clientErr?.message ?? "Failed to create client"); setBusy(false); return; }
         client = created;
       }
@@ -371,6 +392,8 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
           current_stage_code: defaultStage ?? "intake",
           case_manager_id: caseManager,
           senior_advisor_id: filingOfficer,
+          family_unit_id: lead.family_unit_id ?? client.family_unit_id ?? null,
+          target_submission_date: submissionDate || null,
           quoted_fee_inr: totalDue || null,
           notes: extraNotes || null, is_archived: false,
           payment_plan_enabled: stagesEnabled,

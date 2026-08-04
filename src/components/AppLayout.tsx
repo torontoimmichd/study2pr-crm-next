@@ -17,7 +17,7 @@ export function AppLayout({ children }: { children?: ReactNode }) {
         <AppSidebar />
         <div className="flex-1 min-w-0 flex flex-col">
           {/* Top bar with hamburger trigger and notification bell */}
-          <header className="h-12 flex items-center justify-between border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-20 px-2">
+          <header className="h-12 flex items-center justify-between border-b border-white/70 bg-gradient-to-r from-white/80 via-sky-50/80 to-amber-50/80 backdrop-blur-sm sticky top-0 z-20 px-2 shadow-sm">
             <SidebarTrigger />
             <GlobalSearch />
             <NotificationBell />
@@ -41,7 +41,7 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, subtitle, actions }: PageHeaderProps) {
   return (
-    <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-12 z-10">
+    <div className="border-b border-white/70 bg-gradient-to-r from-indigo-50/95 via-white/90 to-amber-50/95 backdrop-blur-sm sticky top-12 z-10 shadow-sm">
       <div className="px-6 py-4 flex items-center justify-between gap-4">
         <div className="min-w-0">
           <h1 className="font-display text-2xl text-navy leading-tight truncate">{title}</h1>

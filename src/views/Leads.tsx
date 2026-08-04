@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "@/lib/router-compat";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Search, Plus, Inbox, Download, MoreHorizontal, Phone, MessageCircle, ArrowRight, ExternalLink } from "lucide-react";
+import { Search, Plus, Inbox, Download, MoreHorizontal, Phone, MessageCircle, ArrowRight, ExternalLink, ArrowRightLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/AppLayout";
 import { LeadStatusPill } from "@/components/StatusPill";
@@ -19,6 +19,7 @@ import { NewLeadDialog } from "@/components/NewLeadDialog";
 import { ConvertLeadWizard } from "@/components/ConvertLeadWizard";
 import { LogCallDialog } from "@/components/LogCallDialog";
 import { OutreachDialog } from "@/components/OutreachDialog";
+import { StaffTransferDialog } from "@/components/StaffTransferDialog";
 import { downloadCsv } from "@/lib/csv";
 import { toast } from "sonner";
 
@@ -53,6 +54,21 @@ const STAGE_FILTERS = [
   { key: "lost",          label: "Lost",          values: ["lost"] },
 ];
 
+const STAGE_CHIP_COLORS: Record<string, string> = {
+  all: "bg-white text-slate-700 border-slate-200 hover:border-indigo-300",
+  active: "bg-indigo-50 text-indigo-700 border-indigo-200 hover:bg-indigo-100",
+  new_enquiry: "bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100",
+  contacted: "bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100",
+  assessed: "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100",
+  proposal_sent: "bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100",
+  negotiating: "bg-amber-50 text-amber-800 border-amber-200 hover:bg-amber-100",
+  waiting: "bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100",
+  nurturing: "bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100",
+  cold: "bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200",
+  not_eligible: "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100",
+  lost: "bg-red-50 text-red-700 border-red-200 hover:bg-red-100",
+};
+
 const ANY = "__any__";
 const UNASSIGNED = "__unassigned__";
 
@@ -64,8 +80,8 @@ export default function Leads() {
   // Row action dialogs (convert / call / whatsapp)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [actionLead, setActionLead] = useState<any | null>(null);
-  const [actionKind, setActionKind] = useState<"convert" | "call" | "wa" | null>(null);
-  const openAction = (lead: unknown, kind: "convert" | "call" | "wa") => { setActionLead(lead); setActionKind(kind); };
+  const [actionKind, setActionKind] = useState<"convert" | "call" | "wa" | "transfer" | null>(null);
+  const openAction = (lead: unknown, kind: "convert" | "call" | "wa" | "transfer") => { setActionLead(lead); setActionKind(kind); };
   const closeAction = () => { setActionKind(null); setActionLead(null); };
   const lc = params.get("lc") ?? params.get("status") ?? "all"; // support legacy ?status= param
   const [search, setSearch] = useState("");
@@ -120,7 +136,7 @@ export default function Leads() {
     let q = (supabase as any)
       .from("leads")
       .select(
-        "id, full_name, email, phone, notes, lifecycle_state, source_code, country_of_residence, country_of_interest, interested_country, interested_category_id, created_at, updated_at, assigned_to, interested_visa_type_id, enquiry_client_id",
+        "id, full_name, email, phone, notes, lifecycle_state, source_code, country_of_residence, country_of_interest, interested_country, interested_category_id, interested_visa_sub_type_id, nationality, family_unit_id, family_role, created_at, updated_at, assigned_to, interested_visa_type_id, enquiry_client_id",
       )
       .neq("lifecycle_state", "converted") // converted leads live in Clients/Applications, not here
       .order("updated_at", { ascending: false });
@@ -246,6 +262,9 @@ export default function Leads() {
             <Button variant="outline" size="sm" onClick={exportCsv}>
               <Download className="h-4 w-4 mr-1.5" /> Export CSV
             </Button>
+            <Button variant="outline" size="sm" onClick={() => openAction(null, "transfer")}>
+              <ArrowRightLeft className="h-4 w-4 mr-1.5" /> Transfer
+            </Button>
             <Button onClick={() => setOpen(true)} className="bg-primary hover:bg-primary/90">
               <Plus className="h-4 w-4 mr-1.5" /> New Lead
             </Button>
@@ -263,10 +282,10 @@ export default function Leads() {
               <button
                 key={f.key}
                 onClick={() => setStatus(f.key)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors border shadow-sm ${
                   active
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:text-foreground"
+                    ? "bg-primary text-primary-foreground border-primary shadow-primary/20"
+                    : STAGE_CHIP_COLORS[f.key] ?? "bg-white text-slate-700 border-slate-200"
                 }`}
               >
                 {f.label}
@@ -431,6 +450,9 @@ export default function Leads() {
                           <DropdownMenuItem onClick={() => openAction(l, "convert")}>
                             <ArrowRight className="h-4 w-4 mr-2" /> Convert → Client + App
                           </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => openAction(l, "transfer")}>
+                            <ArrowRightLeft className="h-4 w-4 mr-2" /> Transfer lead
+                          </DropdownMenuItem>
                           <DropdownMenuItem onClick={() => openAction(l, "call")}>
                             <Phone className="h-4 w-4 mr-2" /> Log call
                           </DropdownMenuItem>
@@ -480,6 +502,17 @@ export default function Leads() {
         leadName={actionLead?.full_name}
         leadPhone={actionLead?.phone}
         leadEmail={actionLead?.email}
+      />
+      <StaffTransferDialog
+        open={actionKind === "transfer"}
+        onOpenChange={(v) => { if (!v) closeAction(); }}
+        defaultType="leads"
+        defaultFromStaffId={actionLead?.assigned_to ?? null}
+        defaultRecordId={actionLead?.id ?? null}
+        onTransferred={() => {
+          void refetch();
+          void qc.invalidateQueries({ queryKey: ["leads-counts"] });
+        }}
       />
     </div>
   );

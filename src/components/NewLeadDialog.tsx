@@ -320,7 +320,6 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
     e.preventDefault();
 
     if (!form.first_name.trim()) { toast.error("First name is required"); return; }
-    if (!form.last_name.trim()) { toast.error("Last name is required"); return; }
     if (!form.country_of_residence) { toast.error("Country of residence is required"); return; }
     if (!form.nationality) { toast.error("Nationality is required"); return; }
     if (!form.source_code) { toast.error("Pick a source"); return; }
@@ -336,12 +335,12 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
     }
 
     setSubmitting(true);
-    const fullName = `${form.first_name.trim()} ${form.last_name.trim()}`;
+    const fullName = [form.first_name.trim(), form.last_name.trim()].filter(Boolean).join(" ");
 
     const payload = {
       full_name: fullName,
       first_name: form.first_name.trim(),
-      last_name: form.last_name.trim(),
+      last_name: form.last_name.trim() || null,
       email: form.email.trim() || null,
       phone: combined,
       nationality: form.nationality || null,
@@ -460,11 +459,12 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto p-0">
+        <DialogHeader className="px-5 pt-5 pb-3 border-b bg-gradient-to-r from-indigo-50 via-white to-emerald-50">
           <DialogTitle className="font-display text-navy">New Lead</DialogTitle>
+          <p className="text-xs text-muted-foreground">Inbound enquiry profile</p>
         </DialogHeader>
-        <form onSubmit={onSubmit} className="space-y-3 pb-1">
+        <form onSubmit={onSubmit} className="space-y-3 px-5 py-4">
 
           {/* First + Last name (both mandatory) */}
           <div className="grid grid-cols-2 gap-3">
@@ -479,13 +479,12 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="lead-last-name">Last name *</Label>
+              <Label htmlFor="lead-last-name">Last name <span className="text-muted-foreground font-normal">(optional)</span></Label>
               <Input
                 id="lead-last-name"
                 value={form.last_name}
                 onChange={(e) => setForm({ ...form, last_name: e.target.value })}
                 placeholder="Sharma"
-                required
               />
             </div>
           </div>

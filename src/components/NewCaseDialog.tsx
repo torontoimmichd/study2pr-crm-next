@@ -42,6 +42,11 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
   const [resolvedClientId, setResolvedClientId] = useState<string>(clientId ?? defaultClientId ?? "");
   const [resolvedLeadName, setResolvedLeadName] = useState<string | null>(null);
   const [leadNotConverted, setLeadNotConverted] = useState(false);
+  const [leadPrefill, setLeadPrefill] = useState<{
+    family_unit_id: string | null;
+    notes: string | null;
+    country_of_interest: string | null;
+  } | null>(null);
 
   const [form, setForm] = useState({
     client_id: clientId ?? defaultClientId ?? "",
@@ -73,6 +78,7 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
     });
     setResolvedClientId(baseClientId);
     setResolvedLeadName(null);
+    setLeadPrefill(null);
     setLeadNotConverted(false);
   }, [open, clientId, defaultClientId]);
 
@@ -82,11 +88,21 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
     (async () => {
       const { data } = await supabase
         .from("leads")
-        .select("id, full_name, converted_client_id")
+        .select("id, full_name, converted_client_id, interested_visa_type_id, interested_visa_sub_type_id, family_unit_id, notes, country_of_interest")
         .eq("id", defaultLeadId)
         .single();
       if (!data) return;
       setResolvedLeadName(data.full_name);
+      setLeadPrefill({
+        family_unit_id: data.family_unit_id ?? null,
+        notes: data.notes ?? null,
+        country_of_interest: data.country_of_interest ?? null,
+      });
+      setForm((f) => ({
+        ...f,
+        visa_type_id: data.interested_visa_type_id ?? f.visa_type_id,
+        visa_sub_type_id: data.interested_visa_sub_type_id ?? f.visa_sub_type_id,
+      }));
       if (data.converted_client_id) {
         setResolvedClientId(data.converted_client_id);
         setForm((f) => ({ ...f, client_id: data.converted_client_id }));
@@ -141,6 +157,18 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
     }));
   };
 
+  useEffect(() => {
+    if (!open || !visas || !form.visa_type_id) return;
+    const visa = visas.find((v) => v.id === form.visa_type_id);
+    const base = visa?.base_fee_inr ?? 0;
+    if (base <= 0) return;
+    setForm((f) => ({
+      ...f,
+      base_fee_inr: f.base_fee_inr || base,
+      quoted_fee_inr: f.quoted_fee_inr || String(Math.round(base * (1 - f.discount_pct / 100))),
+    }));
+  }, [form.visa_type_id, open, visas]);
+
   // Recompute final fee when discount changes
   const handleDiscountChange = (rawVal: string) => {
     let pct = Math.min(Math.max(Number(rawVal) || 0, 0), maxDiscount);
@@ -170,6 +198,8 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
       visa_sub_type_id: form.visa_sub_type_id || null,
       quoted_fee_inr: form.quoted_fee_inr ? Number(form.quoted_fee_inr) : 0,
       priority: form.priority,
+      family_unit_id: leadPrefill?.family_unit_id ?? null,
+      notes: leadPrefill?.notes ? `Lead notes: ${leadPrefill.notes}` : null,
       current_stage_code: "intake",
     };
     const { data, error } = await supabase.from("cases").insert(payload).select("id").single();
@@ -208,6 +238,18 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
         </DialogHeader>
 
         <form onSubmit={onSubmit} className="space-y-4">
+          {leadPrefill && (
+            <div className="rounded-lg border border-sky-200 bg-sky-50/80 p-3 text-xs text-sky-950">
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-semibold">Lead data loaded</span>
+                {leadPrefill.family_unit_id && <Badge variant="secondary" className="text-[10px]">family linked</Badge>}
+              </div>
+              <div className="mt-1.5 grid grid-cols-1 sm:grid-cols-2 gap-1 text-sky-900/80">
+                <span>Destination: {leadPrefill.country_of_interest || "Not captured"}</span>
+                <span>Notes: {leadPrefill.notes ? "Included in application notes" : "No notes on lead"}</span>
+              </div>
+            </div>
+          )}
           {/* Client picker */}
           {showClientPicker && !resolvedClientId ? (
             <div className="space-y-1.5">

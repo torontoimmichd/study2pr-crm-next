@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MarkOutcomePopover } from "./MarkOutcomePopover";
 import { CaseQuickViewSheet } from "./CaseQuickViewSheet";
+import { StaffTransferDialog } from "@/components/StaffTransferDialog";
 import { useNavigate } from "@/lib/router-compat";
 import type { ApplicationRow } from "@/lib/types";
 
@@ -22,6 +23,7 @@ export function CaseQuickActionsMenu({ app, onUpdated }: Props) {
   const navigate = useNavigate();
   const [outcomeOpen, setOutcomeOpen] = useState<"approved" | "refused" | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
 
   return (
     <>
@@ -43,7 +45,7 @@ export function CaseQuickActionsMenu({ app, onUpdated }: Props) {
             <XCircle className="w-3.5 h-3.5 mr-2 text-red-600" /> Mark refused
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => {/* TODO: reassign */}}>
+          <DropdownMenuItem onClick={() => setTransferOpen(true)}>
             <UserPlus className="w-3.5 h-3.5 mr-2" /> Reassign
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => {/* TODO: add note */}}>
@@ -80,6 +82,15 @@ export function CaseQuickActionsMenu({ app, onUpdated }: Props) {
         open={quickViewOpen}
         onOpenChange={setQuickViewOpen}
         onUpdated={onUpdated}
+      />
+
+      <StaffTransferDialog
+        open={transferOpen}
+        onOpenChange={setTransferOpen}
+        defaultType="applications"
+        defaultFromStaffId={(app as ApplicationRow & { case_manager_id?: string | null }).case_manager_id ?? app.assigned_to ?? null}
+        defaultRecordId={app.id}
+        onTransferred={() => onUpdated({ assigned_to: undefined })}
       />
     </>
   );

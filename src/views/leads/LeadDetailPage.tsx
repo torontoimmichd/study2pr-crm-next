@@ -185,7 +185,7 @@ export default function LeadDetailPage() {
   if (!lead) return <div className="p-8 text-center">Lead not found.</div>;
 
   return (
-    <div className="bg-slate-50 min-h-screen p-4 lg:p-6">
+    <div className="min-h-screen p-4 lg:p-6">
       <div className="mb-3">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4 mr-1" /> Back

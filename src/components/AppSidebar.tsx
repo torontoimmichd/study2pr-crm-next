@@ -205,20 +205,20 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="icon"
-      className="border-r border-sidebar-border"
+      className="border-r border-white/70 bg-gradient-to-b from-indigo-50 via-sky-50 to-amber-50 shadow-xl"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
       {/* Brand */}
-      <SidebarHeader className="border-b border-sidebar-border">
+      <SidebarHeader className="border-b border-white/70 bg-gradient-to-r from-indigo-600 via-sky-500 to-emerald-500 text-white">
         <div className={cn("flex items-center gap-2 px-2 py-2", !showExpanded && "justify-center px-0")}>
-          <div className="h-8 w-8 rounded-md bg-gold flex items-center justify-center shadow-sm shrink-0">
-            <Crown className="h-4 w-4 text-gold-foreground" />
+          <div className="h-8 w-8 rounded-md bg-white/20 ring-1 ring-white/40 flex items-center justify-center shadow-sm shrink-0">
+            <Crown className="h-4 w-4 text-white" />
           </div>
           {showExpanded && (
             <div className="min-w-0">
               <div className="font-display text-lg leading-none text-white truncate">Study2PR</div>
-              <div className="text-[10px] uppercase tracking-widest text-sidebar-foreground/60 mt-0.5">
+              <div className="text-[10px] uppercase tracking-widest text-white/75 mt-0.5">
                 CRM
               </div>
             </div>
@@ -234,7 +234,7 @@ export function AppSidebar() {
           if (!items.length) return null;
           return (
             <SidebarGroup key={group.label}>
-              <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-sidebar-foreground/50">
+              <SidebarGroupLabel className="text-[10px] uppercase tracking-widest text-indigo-500/80">
                 {group.label}
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -254,13 +254,13 @@ export function AppSidebar() {
                         {active && (
                           <span
                             aria-hidden
-                            className="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full bg-gold"
+                            className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-1 rounded-r-full bg-gradient-to-b from-indigo-500 to-emerald-400"
                           />
                         )}
                         <Icon
                           className={cn(
                             "h-4 w-4 shrink-0",
-                            item.goldIcon ? "text-gold" : active ? "text-gold" : "opacity-70",
+                            item.goldIcon ? "text-amber-500" : active ? "text-indigo-600" : "text-slate-500",
                           )}
                         />
                         {showExpanded && (
@@ -271,8 +271,8 @@ export function AppSidebar() {
                                 className={cn(
                                   "ml-auto text-[10px] font-medium px-1.5 py-0.5 rounded-full min-w-[18px] text-center",
                                   item.badgeKey === "ircc" || item.badgeKey === "inbox"
-                                    ? "bg-destructive/15 text-destructive"
-                                    : "bg-sidebar-accent text-sidebar-accent-foreground",
+                                    ? "bg-rose-100 text-rose-700"
+                                    : "bg-indigo-100 text-indigo-700",
                                 )}
                               >
                                 {badge > 99 ? "99+" : badge}
@@ -288,7 +288,7 @@ export function AppSidebar() {
                         asChild
                         isActive={active}
                         className={cn(
-                          "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground",
+                          "rounded-lg hover:bg-white/80 hover:text-indigo-700 data-[active=true]:bg-white data-[active=true]:text-indigo-700 data-[active=true]:shadow-sm",
                         )}
                       >
                         {inner}
@@ -320,22 +320,22 @@ export function AppSidebar() {
 
       {/* User footer */}
       {profile && (
-        <SidebarFooter className="border-t border-sidebar-border">
+        <SidebarFooter className="border-t border-white/70 bg-white/55">
           <div className={cn("flex items-center gap-2.5 px-2 py-2", !showExpanded && "justify-center px-0")}>
-            <div className="h-9 w-9 rounded-full bg-sidebar-accent flex items-center justify-center text-sm font-medium text-sidebar-accent-foreground shrink-0">
+            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-indigo-500 to-emerald-400 flex items-center justify-center text-sm font-medium text-white shadow-sm shrink-0">
               {initials(profile.full_name)}
             </div>
             {showExpanded && (
               <>
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{profile.full_name}</div>
-                  <div className="text-[11px] text-sidebar-foreground/60 capitalize truncate">
+                  <div className="text-[11px] text-indigo-500/70 capitalize truncate">
                     {profile.role.replace(/_/g, " ")}
                   </div>
                 </div>
                 <button
                   onClick={() => void signOut()}
-                  className="p-1.5 rounded hover:bg-sidebar-accent transition-colors"
+                  className="p-1.5 rounded hover:bg-indigo-100 hover:text-indigo-700 transition-colors"
                   title="Sign out"
                   aria-label="Sign out"
                 >

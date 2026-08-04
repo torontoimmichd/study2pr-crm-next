@@ -22,7 +22,7 @@
     --popover-foreground: 224 35% 20%;
 
     /* Soft indigo primary — bright, friendly, still professional */
-    --primary: 236 75% 62%;           /* #5A63EC soft indigo */
+    --primary: 235 82% 60%;           /* vivid indigo */
     --primary-foreground: 0 0% 100%;
     --primary-glow: 236 85% 76%;
 
@@ -31,11 +31,11 @@
     --navy-foreground: 40 30% 98%;
 
     /* Bright sky accent (links, highlights) */
-    --accent: 199 85% 48%;            /* #0FA3E9 sky */
+    --accent: 190 90% 43%;            /* electric teal */
     --accent-foreground: 0 0% 100%;
 
     /* Gold — brand identity, active states */
-    --gold: 42 65% 50%;               /* #D2A93A */
+    --gold: 39 88% 54%;               /* warm marigold */
     --gold-foreground: 224 40% 20%;
     --gold-soft: 42 70% 88%;
 
@@ -86,14 +86,14 @@
     --card-border-hover: 42 60% 75%;
     --popover: 0 0% 100%;
     --popover-foreground: 224 35% 20%;
-    --primary: 236 75% 62%;
+    --primary: 235 82% 60%;
     --primary-foreground: 0 0% 100%;
     --primary-glow: 236 85% 76%;
     --navy: 224 40% 24%;
     --navy-foreground: 40 30% 98%;
-    --accent: 199 85% 48%;
+    --accent: 190 90% 43%;
     --accent-foreground: 0 0% 100%;
-    --gold: 42 65% 50%;
+    --gold: 39 88% 54%;
     --gold-foreground: 224 40% 20%;
     --gold-soft: 42 70% 88%;
     --secondary: 40 35% 94%;
@@ -171,12 +171,14 @@
 
 @layer components {
   .card-surface {
-    @apply border border-border rounded-xl transition-all;
-    background: linear-gradient(180deg, hsl(var(--card)), hsl(40 35% 99%));
+    @apply border border-white/80 rounded-xl transition-all;
+    background:
+      linear-gradient(180deg, hsl(var(--card) / 0.96), hsl(40 55% 99% / 0.96)),
+      linear-gradient(90deg, hsl(235 82% 60% / 0.08), hsl(190 90% 43% / 0.06), hsl(39 88% 54% / 0.08));
     box-shadow: var(--shadow-card);
   }
   .card-surface:hover {
-    border-color: hsl(var(--card-border-hover));
+    border-color: hsl(var(--primary) / 0.28);
     box-shadow: var(--shadow-elevated);
   }
   .stat-value {

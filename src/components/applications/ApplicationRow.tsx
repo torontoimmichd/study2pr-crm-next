@@ -42,6 +42,8 @@ function fmtINR(n: number | null | undefined): string {
 // ── Hover popover content: recent activity + stage + next task + assignee ──
 function CaseHoverContent({ app, stage }: { app: AppRowType; stage: string }) {
   const caseRef = app.case_number || app.case_ref || app.id.slice(0, 8);
+  const rawApp = app as AppRowType & { case_manager?: { full_name?: string | null } | null };
+  const assigneeName = rawApp.case_manager?.full_name || app.assigned_to_name || "Unassigned";
   const { data: events, isLoading } = useQuery({
     queryKey: ["case-hover-activity", app.id],
     staleTime: 30_000,
@@ -67,7 +69,7 @@ function CaseHoverContent({ app, stage }: { app: AppRowType; stage: string }) {
       <div className="grid grid-cols-1 gap-1.5 text-xs">
         <div className="flex items-center gap-1.5 text-muted-foreground">
           <UserIcon className="h-3.5 w-3.5" />
-          <span>Working on it: <span className="text-foreground font-medium">{app.assigned_to_name || "Unassigned"}</span></span>
+          <span>Working on it: <span className="text-foreground font-medium">{assigneeName}</span></span>
         </div>
         <div className="flex items-start gap-1.5 text-muted-foreground">
           <Clock className="h-3.5 w-3.5 mt-0.5" />
@@ -116,7 +118,18 @@ export function ApplicationRow({ app, context, showFamilyContext, onUpdated, onC
   const paid = app.paid_amount || 0;
   const fee = app.fee || app.quoted_fee_inr || 0;
   const stage = app.stage || app.current_stage_code || "new";
-  const caseRef = app.case_number || app.case_ref || app.id.slice(0, 8);
+  const rawApp = app as AppRowType & {
+    application_number?: string | null;
+    case_code?: string | null;
+    case_manager?: { full_name?: string | null } | null;
+    client?: { full_name?: string | null } | null;
+    visa?: { label?: string | null } | null;
+  };
+  const caseRef = app.case_number || rawApp.case_code || rawApp.application_number || app.case_ref || app.id.slice(0, 8);
+  const clientName = rawApp.client?.full_name || app.client_name || "—";
+  const familyName = app.family_unit_name;
+  const visaName = rawApp.visa?.label || app.visa_type_name || app.application_type || "—";
+  const assigneeName = rawApp.case_manager?.full_name || app.assigned_to_name || "—";
 
   return (
     <div
@@ -147,7 +160,7 @@ export function ApplicationRow({ app, context, showFamilyContext, onUpdated, onC
 
       {context !== "lead_detail" && (
         <div className="flex-1 min-w-[140px]">
-          <p className="text-sm font-medium truncate">{app.client_name || "—"}</p>
+          <p className="text-sm font-medium truncate">{clientName}</p>
           {showFamilyContext && app.family_unit_name && (
             <p className="text-[10px] text-muted-foreground truncate">↳ {app.family_unit_name}</p>
           )}
@@ -155,7 +168,7 @@ export function ApplicationRow({ app, context, showFamilyContext, onUpdated, onC
       )}
 
       <div className="flex-1 min-w-[120px]">
-        <p className="text-sm truncate">{app.visa_type_name || app.application_type || "—"}</p>
+        <p className="text-sm truncate">{visaName}</p>
         {app.country && (
           <p className="text-[10px] text-muted-foreground">{app.country}</p>
         )}
@@ -198,7 +211,7 @@ export function ApplicationRow({ app, context, showFamilyContext, onUpdated, onC
 
       {context !== "lead_detail" && (
         <div className="w-24 shrink-0">
-          <p className="text-[11px] truncate">{app.assigned_to_name || "—"}</p>
+          <p className="text-[11px] truncate">{assigneeName}</p>
         </div>
       )}
 
