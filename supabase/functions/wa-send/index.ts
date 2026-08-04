@@ -93,6 +93,24 @@ Deno.serve(async (req: Request) => {
     }), { status: 409, headers: { ...CORS, "content-type": "application/json" } });
   }
 
+  if (body.template?.name === "hello_world") {
+    return new Response(JSON.stringify({
+      error: "hello_world is a Meta test template and cannot be sent to production numbers. Create an approved business template instead.",
+    }), { status: 422, headers: { ...CORS, "content-type": "application/json" } });
+  }
+
+  if (body.template) {
+    const { data: approvedTemplate } = await sb.from("wa_templates")
+      .select("name, status")
+      .eq("name", body.template.name)
+      .maybeSingle();
+    if (!approvedTemplate || approvedTemplate.status !== "approved") {
+      return new Response(JSON.stringify({
+        error: `WhatsApp template "${body.template.name}" is not approved for production sending.`,
+      }), { status: 422, headers: { ...CORS, "content-type": "application/json" } });
+    }
+  }
+
   const costCategory = body.template
     ? `template_${(await templateCategory(sb, body.template.name)) ?? "utility"}`
     : "service_in_window";

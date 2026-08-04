@@ -8,6 +8,8 @@
  * Secrets: WORKER_SECRET, WHATSAPP_ACCESS_TOKEN
  *
  * Job types handled (Sprint 1): wa_inbound | wa_status
+ * Also drains due WhatsApp rows from outbound_messages. Lead creation queues
+ * the welcome row in PostgreSQL; this worker is the only sender for that queue.
  * Extension points: 'email_inbound' → Sprint 2 · 'call_event' → Sprint 2 ·
  *                   'sla_check' → Sprint 3 · 'ai_summarize' → Sprint 4.
  */
@@ -31,6 +33,16 @@ interface ResolveResult {
   lead_id?: string | null;
   identity_id?: string | null;
 }
+interface OutboundRow {
+  id: string;
+  template_code: string | null;
+  to_contact: string | null;
+  body: string | null;
+  related_lead_id: string | null;
+  created_by: string | null;
+  attempts: number;
+}
+interface WaTemplateRow { name: string; language: string; status: string; body: string }
 
 const MAX_MEDIA_BYTES = 25 * 1024 * 1024; // oversized media → reject, keep text event
 
@@ -204,6 +216,142 @@ async function handleStatus(sb: SupabaseClient, job: JobRow): Promise<void> {
     .eq("provider_message_id", st.id);
 }
 
+function firstName(fullName: string | null): string {
+  return fullName?.trim().split(/\s+/)[0] ?? "there";
+}
+
+function templateParameters(body: string, fullName: string | null): Array<{ type: "text"; text: string }> {
+  const matches = [...body.matchAll(/\{\{\s*([^}]+?)\s*\}\}/g)];
+  if (matches.length === 0) return [];
+  const values: Record<string, string> = {
+    "1": firstName(fullName),
+    "first_name": firstName(fullName),
+    "2": "Study2PR Team",
+    "counselor_name": "Study2PR Team",
+  };
+  return matches.map((match) => ({ type: "text", text: values[match[1]] ?? "Study2PR Team" }));
+}
+
+async function handleOutbound(sb: SupabaseClient, row: OutboundRow): Promise<"sent" | "waiting" | "failed"> {
+  if (!row.template_code) {
+    await sb.from("outbound_messages").update({ status: "failed", attempts: row.attempts + 1, error_message: "Missing WhatsApp template code." }).eq("id", row.id);
+    return "failed";
+  }
+
+  // The Meta template name is deliberately the same as the engine code. This
+  // makes approval and audit traceable and prevents arbitrary template sends.
+  const { data: template } = await sb.from("wa_templates")
+    .select("name, language, status, body")
+    .eq("name", row.template_code)
+    .maybeSingle() as { data: WaTemplateRow | null };
+  if (!template || template.status !== "approved") {
+    await sb.from("outbound_messages").update({
+      error_message: `Waiting for approved Meta template: ${row.template_code}`,
+    }).eq("id", row.id);
+    return "waiting";
+  }
+
+  let fullName: string | null = null;
+  let conversationId: string | null = null;
+  if (row.related_lead_id) {
+    const { data: lead } = await sb.from("leads")
+      .select("id, full_name, phone, org_id, assigned_to")
+      .eq("id", row.related_lead_id).maybeSingle();
+    fullName = (lead?.full_name as string | null) ?? null;
+    if (!row.to_contact) row.to_contact = (lead?.phone as string | null) ?? null;
+
+    const { data: existing } = await sb.from("conversations")
+      .select("id")
+      .eq("lead_id", row.related_lead_id)
+      .eq("channel", "whatsapp")
+      .order("updated_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    conversationId = existing?.id ?? null;
+    if (!conversationId && lead) {
+      const { data: created } = await sb.from("conversations").insert({
+        org_id: lead.org_id,
+        channel: "whatsapp",
+        lead_id: row.related_lead_id,
+        assigned_to: lead.assigned_to,
+        status: lead.assigned_to ? "open" : "triage",
+      }).select("id").single();
+      conversationId = created?.id ?? null;
+    }
+  }
+
+  const to = row.to_contact?.replace(/\D/g, "");
+  if (!to || !conversationId) {
+    await sb.from("outbound_messages").update({ status: "failed", attempts: row.attempts + 1, error_message: "WhatsApp recipient or conversation is missing." }).eq("id", row.id);
+    return "failed";
+  }
+
+  const apiRes = await fetch(`https://graph.facebook.com/v20.0/${Deno.env.get("WHATSAPP_PHONE_NUMBER_ID")}/messages`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${Deno.env.get("WHATSAPP_ACCESS_TOKEN")}`,
+      "content-type": "application/json",
+    },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to,
+      type: "template",
+      template: {
+        name: template.name,
+        language: { code: template.language },
+        ...(templateParameters(template.body, fullName).length > 0
+          ? { components: [{ type: "body", parameters: templateParameters(template.body, fullName) }] }
+          : {}),
+      },
+    }),
+  });
+  const apiJson = await apiRes.json() as { messages?: Array<{ id: string }>; error?: { message?: string } };
+  if (!apiRes.ok || !apiJson.messages?.[0]?.id) {
+    await sb.from("outbound_messages").update({
+      status: "failed",
+      attempts: row.attempts + 1,
+      error_message: apiJson.error?.message ?? `http_${apiRes.status}`,
+    }).eq("id", row.id);
+    return "failed";
+  }
+
+  const providerId = apiJson.messages[0].id;
+  await sb.from("communication_events").insert({
+    conversation_id: conversationId,
+    direction: "outbound",
+    channel: "whatsapp",
+    actor_id: row.created_by,
+    event_type: "template",
+    body: `[template] ${template.name}`,
+    payload: { template: { name: template.name, language: template.language }, source: "outbound_messages", outbound_message_id: row.id },
+    provider_message_id: providerId,
+    delivery_status: "sent",
+  });
+  await sb.from("conversations").update({ last_outbound_at: new Date().toISOString(), updated_at: new Date().toISOString() }).eq("id", conversationId);
+  await sb.from("outbound_messages").update({ status: "sent", attempts: row.attempts + 1, sent_at: new Date().toISOString(), error_message: null }).eq("id", row.id);
+  return "sent";
+}
+
+async function drainOutbound(sb: SupabaseClient): Promise<{ sent: number; waiting: number; failed: number }> {
+  const { data: rows } = await sb.from("outbound_messages")
+    .select("id, template_code, to_contact, body, related_lead_id, created_by, attempts")
+    .eq("channel", "whatsapp")
+    .eq("status", "queued")
+    .lte("scheduled_for", new Date().toISOString())
+    .order("scheduled_for", { ascending: true })
+    .limit(10) as { data: OutboundRow[] | null };
+  const result = { sent: 0, waiting: 0, failed: 0 };
+  for (const row of rows ?? []) {
+    try {
+      result[await handleOutbound(sb, row)]++;
+    } catch (err) {
+      await sb.from("outbound_messages").update({ status: "failed", attempts: row.attempts + 1, error_message: String(err) }).eq("id", row.id);
+      result.failed++;
+    }
+  }
+  return result;
+}
+
 Deno.serve(async (req: Request) => {
   if (req.headers.get("x-worker-secret") !== Deno.env.get("WORKER_SECRET")) {
     return new Response("Forbidden", { status: 403 });
@@ -224,7 +372,8 @@ Deno.serve(async (req: Request) => {
       failed++;
     }
   }
-  return new Response(JSON.stringify({ processed: ok, failed }), {
+  const outbound = await drainOutbound(sb);
+  return new Response(JSON.stringify({ processed: ok, failed, outbound }), {
     status: 200, headers: { "content-type": "application/json" },
   });
 });

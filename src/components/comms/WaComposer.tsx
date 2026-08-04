@@ -26,6 +26,29 @@ interface Props {
   onFailed: () => void;
 }
 
+async function readableFunctionError(error: unknown, data: unknown): Promise<string> {
+  const invokeError = error as { message?: string; context?: Response } | null;
+  const response = invokeError?.context;
+  if (response instanceof Response) {
+    try {
+      const payload = await response.clone().json() as { error?: string; message?: string };
+      return payload.error ?? payload.message ?? invokeError?.message ?? "WhatsApp send failed";
+    } catch {
+      // The function may return plain text for auth or gateway errors.
+      try {
+        const text = await response.clone().text();
+        if (text) return text;
+      } catch {
+        // Fall through to the SDK message.
+      }
+    }
+  }
+  return (data as { error?: string; message?: string } | null)?.error
+    ?? (data as { error?: string; message?: string } | null)?.message
+    ?? invokeError?.message
+    ?? "WhatsApp send failed";
+}
+
 const WINDOW_MS = 24 * 60 * 60 * 1000;
 
 function fmtCountdown(msLeft: number): string {
@@ -59,7 +82,7 @@ export function WaComposer({ conversationId, lastInboundAt, onSent, onFailed }: 
         .eq("status", "approved")
         .order("name");
       if (error) throw error;
-      return (data ?? []) as WaTemplate[];
+      return ((data ?? []) as WaTemplate[]).filter((template) => template.name !== "hello_world");
     },
   });
 
@@ -83,9 +106,9 @@ export function WaComposer({ conversationId, lastInboundAt, onSent, onFailed }: 
     setText("");
     try {
       const { data, error } = await supabase.functions.invoke("wa-send", { body: payload });
-      const err = error?.message ?? (data as { error?: string } | null)?.error;
-      if (err) {
-        toast.error(`Send failed: ${err}`);
+      if (error || (data as { error?: string } | null)?.error) {
+        const message = await readableFunctionError(error, data);
+        toast.error(`Send failed: ${message}`);
         setText(echoText);
         onFailed();
       }
@@ -132,21 +155,29 @@ export function WaComposer({ conversationId, lastInboundAt, onSent, onFailed }: 
         </div>
       ) : (
         <div className="flex gap-2 items-center">
-          <Select value={templateName} onValueChange={setTemplateName}>
-            <SelectTrigger className="flex-1 h-9 text-sm">
-              <SelectValue placeholder="Choose an approved template…" />
-            </SelectTrigger>
-            <SelectContent>
-              {(templates ?? []).map((t) => (
-                <SelectItem key={t.id} value={t.name}>
-                  {t.name} ({t.language}) — {t.body.slice(0, 40)}…
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Button size="sm" onClick={() => void send()} disabled={sending || !selectedTemplate}>
-            <Send className="w-4 h-4" />
-          </Button>
+          {(templates ?? []).length > 0 ? (
+            <>
+              <Select value={templateName} onValueChange={setTemplateName}>
+                <SelectTrigger className="flex-1 h-9 text-sm">
+                  <SelectValue placeholder="Choose an approved template…" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(templates ?? []).map((t) => (
+                    <SelectItem key={t.id} value={t.name}>
+                      {t.name} ({t.language}) — {t.body.slice(0, 40)}…
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button size="sm" onClick={() => void send()} disabled={sending || !selectedTemplate}>
+                <Send className="w-4 h-4" />
+              </Button>
+            </>
+          ) : (
+            <p className="text-xs text-muted-foreground">
+              No production-approved WhatsApp templates are available. Add and approve one in Meta first.
+            </p>
+          )}
         </div>
       )}
       {!windowOpen && selectedTemplate && (
