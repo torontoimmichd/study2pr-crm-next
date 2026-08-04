@@ -6,7 +6,7 @@
  * integration, with setup instructions and quick-action buttons.
  *
  * Integrations covered:
- *  1. WhatsApp Business API (via wa.me links — no additional setup needed)
+ *  1. WhatsApp Business API (via the in-app Comms Hub)
  *  2. Gmail / Google Workspace (OAuth guide)
  *  3. Outlook / Microsoft 365 (OAuth guide)
  *  4. IRCC email inbox (IMAP polling)
@@ -188,12 +188,12 @@ export default function AdminIntegrations() {
     {
       id: "whatsapp",
       name: "WhatsApp Business",
-      description: "Send templated messages to leads via wa.me links. No API key required — opens WhatsApp Web or the app.",
+      description: "Send WhatsApp messages to leads from the in-app Comms Hub with delivery history on the lead.",
       icon: <MessageCircle className="h-5 w-5 text-green-600" />,
       status: "native",
-      statusLabel: "Built-in (wa.me)",
+      statusLabel: "Connected Comms Hub",
       category: "Messaging",
-      note: "WhatsApp outreach is built into Study2PR and requires no additional setup. When you click 'Open WhatsApp' on a lead, the system generates a pre-filled wa.me link and opens it in a new tab. The message is sent from your personal or business WhatsApp account.",
+      note: "Use the WhatsApp icon on a lead to open its in-app conversation. The connected WhatsApp API sends the message and records delivery status against that lead.",
       setupSteps: [
         {
           title: "Optional: Set up WhatsApp Business API",

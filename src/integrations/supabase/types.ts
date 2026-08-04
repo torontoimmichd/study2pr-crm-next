@@ -1,4 +1,4 @@
-export type Json =
+﻿export type Json =
   | string
   | number
   | boolean
@@ -820,6 +820,13 @@ export type Database = {
             foreignKeyName: "activity_timeline_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -1212,6 +1219,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "appointments_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "appointments_related_case_id_fkey"
@@ -2084,6 +2098,13 @@ export type Database = {
             foreignKeyName: "call_logs_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "call_logs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -2325,6 +2346,13 @@ export type Database = {
             foreignKeyName: "case_applicants_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_applicants_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -2537,6 +2565,13 @@ export type Database = {
             foreignKeyName: "case_documents_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -2627,6 +2662,180 @@ export type Database = {
           {
             foreignKeyName: "case_documents_verified_by_fkey"
             columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+        ]
+      }
+      case_milestones: {
+        Row: {
+          case_id: string
+          client_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          milestone_type: string
+          notes: string | null
+          occurred_on: string
+        }
+        Insert: {
+          case_id: string
+          client_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          milestone_type: string
+          notes?: string | null
+          occurred_on: string
+        }
+        Update: {
+          case_id?: string
+          client_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          milestone_type?: string
+          notes?: string | null
+          occurred_on?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_milestones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["for_client_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_clients_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_milestones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_milestones_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "v_counselor_performance"
             referencedColumns: ["counselor_id"]
@@ -2736,6 +2945,13 @@ export type Database = {
             foreignKeyName: "case_notes_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -2749,6 +2965,286 @@ export type Database = {
           {
             foreignKeyName: "case_notes_case_id_fkey"
             columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+        ]
+      }
+      case_outcome_reviews: {
+        Row: {
+          case_id: string
+          chosen_path: string | null
+          created_at: string
+          decided_at: string | null
+          decided_by: string | null
+          decision_notified_on: string | null
+          id: string
+          jr_filing_deadline: string | null
+          legal_accepted_at: string | null
+          legal_accepted_by: string | null
+          legal_accepted_note: string | null
+          matter_locale: string | null
+          opened_at: string
+          opened_by: string | null
+          path_rationale: string | null
+          refusal_reason_code: string | null
+          refusal_reason_notes: string | null
+          review_status: string
+          successor_case_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          case_id: string
+          chosen_path?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_notified_on?: string | null
+          id?: string
+          jr_filing_deadline?: string | null
+          legal_accepted_at?: string | null
+          legal_accepted_by?: string | null
+          legal_accepted_note?: string | null
+          matter_locale?: string | null
+          opened_at?: string
+          opened_by?: string | null
+          path_rationale?: string | null
+          refusal_reason_code?: string | null
+          refusal_reason_notes?: string | null
+          review_status?: string
+          successor_case_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          case_id?: string
+          chosen_path?: string | null
+          created_at?: string
+          decided_at?: string | null
+          decided_by?: string | null
+          decision_notified_on?: string | null
+          id?: string
+          jr_filing_deadline?: string | null
+          legal_accepted_at?: string | null
+          legal_accepted_by?: string | null
+          legal_accepted_note?: string | null
+          matter_locale?: string | null
+          opened_at?: string
+          opened_by?: string | null
+          path_rationale?: string | null
+          refusal_reason_code?: string | null
+          refusal_reason_notes?: string | null
+          review_status?: string
+          successor_case_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_decided_by_fkey"
+            columns: ["decided_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_legal_accepted_by_fkey"
+            columns: ["legal_accepted_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_legal_accepted_by_fkey"
+            columns: ["legal_accepted_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_opened_by_fkey"
+            columns: ["opened_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_opened_by_fkey"
+            columns: ["opened_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
             isOneToOne: false
             referencedRelation: "v_client_family_chain"
             referencedColumns: ["member_application_id"]
@@ -2848,6 +3344,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_requests_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "case_requests_case_id_fkey"
@@ -2989,6 +3492,13 @@ export type Database = {
             foreignKeyName: "case_stage_history_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_stage_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -3062,17 +3572,23 @@ export type Database = {
           application_number: string | null
           archived_at: string | null
           case_code: string | null
+          case_group_id: string | null
+          case_kind: string
           case_manager_id: string | null
           client_id: string
           created_at: string | null
           current_stage_code: string | null
           decision_at: string | null
+          family_unit_id: string | null
           id: string
           is_archived: boolean | null
           notes: string | null
+          origin_case_id: string | null
           outcome: string | null
+          parent_case_id: string | null
           payment_plan_enabled: boolean
           payment_stages: Json | null
+          pending_stage_note: string | null
           priority: string | null
           quoted_fee_inr: number | null
           quoted_govt_fee_cad: number | null
@@ -3092,17 +3608,23 @@ export type Database = {
           application_number?: string | null
           archived_at?: string | null
           case_code?: string | null
+          case_group_id?: string | null
+          case_kind?: string
           case_manager_id?: string | null
           client_id: string
           created_at?: string | null
           current_stage_code?: string | null
           decision_at?: string | null
+          family_unit_id?: string | null
           id?: string
           is_archived?: boolean | null
           notes?: string | null
+          origin_case_id?: string | null
           outcome?: string | null
+          parent_case_id?: string | null
           payment_plan_enabled?: boolean
           payment_stages?: Json | null
+          pending_stage_note?: string | null
           priority?: string | null
           quoted_fee_inr?: number | null
           quoted_govt_fee_cad?: number | null
@@ -3122,17 +3644,23 @@ export type Database = {
           application_number?: string | null
           archived_at?: string | null
           case_code?: string | null
+          case_group_id?: string | null
+          case_kind?: string
           case_manager_id?: string | null
           client_id?: string
           created_at?: string | null
           current_stage_code?: string | null
           decision_at?: string | null
+          family_unit_id?: string | null
           id?: string
           is_archived?: boolean | null
           notes?: string | null
+          origin_case_id?: string | null
           outcome?: string | null
+          parent_case_id?: string | null
           payment_plan_enabled?: boolean
           payment_stages?: Json | null
+          pending_stage_note?: string | null
           priority?: string | null
           quoted_fee_inr?: number | null
           quoted_govt_fee_cad?: number | null
@@ -3211,6 +3739,188 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "case_stages_ref"
             referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "cases_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
+            referencedRelation: "family_units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
+            referencedRelation: "v_top_family_units"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
           },
           {
             foreignKeyName: "cases_senior_advisor_id_fkey"
@@ -3686,6 +4396,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "commissions_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "commissions_case_id_fkey"
@@ -4460,6 +5177,13 @@ export type Database = {
             foreignKeyName: "entity_notes_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -4727,6 +5451,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "expiry_items_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "expiry_items_case_id_fkey"
@@ -5039,6 +5770,13 @@ export type Database = {
             foreignKeyName: "finance_entries_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "finance_entries_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -5287,6 +6025,13 @@ export type Database = {
             foreignKeyName: "invoices_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "invoices_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -5468,6 +6213,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "ircc_emails_matched_case_id_fkey"
+            columns: ["matched_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "ircc_emails_matched_case_id_fkey"
@@ -6264,6 +7016,13 @@ export type Database = {
             foreignKeyName: "messages_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "messages_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -6613,6 +7372,13 @@ export type Database = {
             foreignKeyName: "outbound_messages_related_case_id_fkey"
             columns: ["related_case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "outbound_messages_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -6952,6 +7718,13 @@ export type Database = {
             foreignKeyName: "prospective_applications_promoted_case_id_fkey"
             columns: ["promoted_case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_promoted_case_id_fkey"
+            columns: ["promoted_case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -7024,6 +7797,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_source_case_id_fkey"
+            columns: ["source_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "prospective_applications_source_case_id_fkey"
@@ -7290,6 +8070,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "questionnaire_responses_case_id_fkey"
@@ -7940,6 +8727,13 @@ export type Database = {
             foreignKeyName: "tasks_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "tasks_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -8109,6 +8903,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "trigger_events_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "trigger_events_case_id_fkey"
@@ -8520,6 +9321,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "activity_timeline_case_id_fkey"
@@ -9055,6 +9863,13 @@ export type Database = {
             foreignKeyName: "questionnaire_responses_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -9409,6 +10224,13 @@ export type Database = {
             foreignKeyName: "entity_notes_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -9547,6 +10369,364 @@ export type Database = {
           },
         ]
       }
+      v_case_outcomes: {
+        Row: {
+          case_code: string | null
+          case_id: string | null
+          case_kind: string | null
+          case_manager_id: string | null
+          chosen_path: string | null
+          client_id: string | null
+          current_stage_code: string | null
+          decision_at: string | null
+          decision_notified_on: string | null
+          jr_days_remaining: number | null
+          jr_filing_deadline: string | null
+          legal_accepted_at: string | null
+          matter_locale: string | null
+          origin_case_id: string | null
+          outcome: string | null
+          outcome_review_id: string | null
+          outcome_state: string | null
+          parent_case_id: string | null
+          refusal_reason_code: string | null
+          review_status: string | null
+          senior_advisor_id: string | null
+          stage_is_terminal: boolean | null
+          successor_case_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_case_manager_id_fkey"
+            columns: ["case_manager_id"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_case_manager_id_fkey"
+            columns: ["case_manager_id"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["for_client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_clients_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_current_stage_code_fkey"
+            columns: ["current_stage_code"]
+            isOneToOne: false
+            referencedRelation: "case_stages_ref"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_senior_advisor_id_fkey"
+            columns: ["senior_advisor_id"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_senior_advisor_id_fkey"
+            columns: ["senior_advisor_id"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+        ]
+      }
       v_case_timeline: {
         Row: {
           actor_id: string | null
@@ -9633,6 +10813,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "activity_timeline_case_id_fkey"
@@ -9876,6 +11063,25 @@ export type Database = {
         }
         Relationships: []
       }
+      v_family_overview: {
+        Row: {
+          case_code: string | null
+          case_group_id: string | null
+          created_at: string | null
+          family_role: string | null
+          family_unit_id: string | null
+          origin_country: string | null
+          person_name: string | null
+          quoted_fee_inr: number | null
+          record_id: string | null
+          record_kind: string | null
+          status: string | null
+          total_paid_inr: number | null
+          unit_name: string | null
+          visa_type_id: string | null
+        }
+        Relationships: []
+      }
       v_followup_integrity: {
         Row: {
           assigned_to: string | null
@@ -10044,6 +11250,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_case_notes"
             referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "entity_notes_case_id_fkey"
@@ -10323,6 +11536,13 @@ export type Database = {
             foreignKeyName: "activity_timeline_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -10585,6 +11805,13 @@ export type Database = {
             foreignKeyName: "activity_timeline_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_case_timeline"
             referencedColumns: ["for_case_id"]
           },
@@ -10770,6 +11997,7 @@ export type Database = {
       }
       fn_can_case: { Args: never; Returns: boolean }
       fn_can_delete_leads: { Args: never; Returns: boolean }
+      fn_comms_worker_sweep: { Args: never; Returns: number }
       fn_current_role: { Args: never; Returns: string }
       fn_delete_lead: {
         Args: { p_lead_id: string; p_reason: string }
@@ -10843,6 +12071,10 @@ export type Database = {
       mask_phone: { Args: { p: string }; Returns: string }
       normalize_email: { Args: { p: string }; Returns: string }
       normalize_phone: { Args: { p: string }; Returns: string }
+      open_lead_whatsapp_conversation: {
+        Args: { p_lead_id: string }
+        Returns: string
+      }
       populate_case_documents_from_rules: {
         Args: { p_case_id: string }
         Returns: number

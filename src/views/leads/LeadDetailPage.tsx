@@ -19,7 +19,6 @@ import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { writeAudit } from "@/lib/audit";
 import { writeTimeline } from "@/lib/timeline";
-import { createStageTasks } from "@/lib/taskEngine";
 import { EntityTimeline } from "@/components/EntityTimeline";
 import { NotesPanel } from "@/components/NotesPanel";
 import { LogCallDialog } from "@/components/LogCallDialog";
@@ -388,7 +387,6 @@ export default function LeadDetailPage() {
             lead_id: leadId!,
           });
           void qc.invalidateQueries({ queryKey: ["timeline", "lead", leadId] });
-          void createStageTasks(leadId!, to, lead.assigned_to ?? profile?.id ?? null, user?.id ?? null);
           void loadAll(leadId!);
           toast.success(`Stage updated to ${to.replace(/_/g, " ")}`);
         }}

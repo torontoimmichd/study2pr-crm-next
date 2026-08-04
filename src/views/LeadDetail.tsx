@@ -18,8 +18,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { writeAudit } from "@/lib/audit";
 import { writeTimeline } from "@/lib/timeline";
-import { createStageTasks } from "@/lib/taskEngine";
-import { useAuth } from "@/lib/auth-context";
 import { LogCallDialog } from "@/components/LogCallDialog";
 import { StageTransitionWizard, type LeadStageData } from "@/components/StageTransitionWizard";
 import { ConvertLeadWizard } from "@/components/ConvertLeadWizard";
@@ -29,7 +27,6 @@ export default function LeadDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const { user, profile } = useAuth();
   const [convertWizardOpen, setConvertWizardOpen] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [callOpen, setCallOpen] = useState(false);
@@ -191,14 +188,13 @@ export default function LeadDetail() {
             <h3 className="font-display text-sm uppercase tracking-wider text-muted-foreground">Quick actions</h3>
             <div className="grid grid-cols-3 gap-2">
               {lead.phone && (
-                <a
-                  href={`https://wa.me/${lead.phone.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="flex flex-col items-center gap-1 p-2.5 rounded-md bg-muted hover:bg-muted/70 text-xs"
+                <button
+                  type="button"
+                  onClick={() => setOutreachOpen(true)}
+                  className="flex flex-col items-center gap-1 p-2.5 rounded-md bg-muted hover:bg-muted/70 text-xs w-full"
                 >
                   <MessageCircle className="h-4 w-4 text-success" /> WhatsApp
-                </a>
+                </button>
               )}
               {lead.email && (
                 <a href={`mailto:${lead.email}`} className="flex flex-col items-center gap-1 p-2.5 rounded-md bg-muted hover:bg-muted/70 text-xs">
@@ -292,8 +288,6 @@ export default function LeadDetail() {
               lead_id: id!,
             });
             void qc.invalidateQueries({ queryKey: ["timeline", "lead", id] });
-            // Auto-create stage-specific tasks (fire-and-forget)
-            void createStageTasks(id!, to, lead.assigned_to ?? profile?.id ?? null, user?.id ?? null);
           }
         }}
       />

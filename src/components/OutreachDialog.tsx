@@ -6,14 +6,14 @@
  *
  * - Loads templates from `messages` where is_template = true (whatsapp / email)
  * - Replaces {{name}}, {{advisor_name}} placeholders
- * - WhatsApp: opens wa.me link in new tab
+ * - WhatsApp: opens the connected in-app Comms Hub composer
  * - Email: opens mailto: link
  * - Logs outreach to activity_timeline after send
  */
 
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { MessageCircle, Mail, ExternalLink, Send } from "lucide-react";
+import { MessageCircle, Mail, Send, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -24,6 +24,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { writeTimeline } from "@/lib/timeline";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
+import { WaComposer } from "@/components/comms/WaComposer";
 
 interface Props {
   open: boolean;
@@ -50,27 +51,49 @@ function applyPlaceholders(text: string, vars: Record<string, string>): string {
   return text.replace(/\{\{(\w+)\}\}/g, (_, key) => vars[key] ?? `{{${key}}}`);
 }
 
-// Strip non-digit characters from phone for WhatsApp
-function toWaPhone(phone: string): string {
-  const digits = phone.replace(/\D/g, "");
-  // If starts with 0, replace with 91 (India default)
-  if (digits.startsWith("0") && digits.length === 11) return "91" + digits.slice(1);
-  // If no country code (10 digits for India)
-  if (digits.length === 10) return "91" + digits;
-  return digits;
-}
-
 export function OutreachDialog({ open, onOpenChange, leadId, leadName, leadPhone, leadEmail, defaultChannel }: Props) {
   const { profile } = useAuth();
   const [channel, setChannel] = useState<Channel>(defaultChannel ?? "whatsapp");
   const [templateId, setTemplateId] = useState("");
   const [message, setMessage] = useState("");
   const [subject, setSubject] = useState("");
+  const [conversationId, setConversationId] = useState<string | null>(null);
+  const [lastInboundAt, setLastInboundAt] = useState<string | null>(null);
+  const [openingConversation, setOpeningConversation] = useState(false);
 
   // Sync channel when defaultChannel or open changes
   useEffect(() => {
-    if (open) setChannel(defaultChannel ?? "whatsapp");
+    if (open) {
+      setChannel(defaultChannel ?? "whatsapp");
+      setConversationId(null);
+      setLastInboundAt(null);
+    }
   }, [open, defaultChannel]);
+
+  useEffect(() => {
+    if (!open || channel !== "whatsapp" || !leadId || !leadPhone) return;
+    let cancelled = false;
+    setOpeningConversation(true);
+    void (async () => {
+      const { data: id, error } = await supabase.rpc("open_lead_whatsapp_conversation", { p_lead_id: leadId });
+      if (cancelled) return;
+      if (error || !id) {
+        toast.error(error?.message ?? "Could not open the WhatsApp composer");
+        setOpeningConversation(false);
+        return;
+      }
+      const { data: conversation, error: conversationError } = await supabase
+        .from("conversations")
+        .select("id, last_inbound_at")
+        .eq("id", id)
+        .maybeSingle();
+      if (conversationError) toast.error(conversationError.message);
+      setConversationId(id);
+      setLastInboundAt(conversation?.last_inbound_at ?? null);
+      setOpeningConversation(false);
+    })();
+    return () => { cancelled = true; };
+  }, [open, channel, leadId, leadPhone]);
 
   const vars: Record<string, string> = {
     name:         leadName,
@@ -125,29 +148,21 @@ export function OutreachDialog({ open, onOpenChange, leadId, leadName, leadPhone
   const handleSend = async () => {
     if (!message.trim()) { toast.error("Message cannot be empty"); return; }
 
-    if (channel === "whatsapp") {
-      if (!leadPhone) { toast.error("No phone number on file for this lead"); return; }
-      const waPhone = toWaPhone(leadPhone);
-      const waUrl = `https://wa.me/${waPhone}?text=${encodeURIComponent(message)}`;
-      window.open(waUrl, "_blank", "noopener,noreferrer");
-    } else {
-      if (!leadEmail) { toast.error("No email address on file for this lead"); return; }
-      const mailUrl = `mailto:${leadEmail}?subject=${encodeURIComponent(subject || "Study2PR Immigration")}&body=${encodeURIComponent(message)}`;
-      window.open(mailUrl, "_blank", "noopener,noreferrer");
-    }
+    if (channel === "whatsapp") return;
+    if (!leadEmail) { toast.error("No email address on file for this lead"); return; }
+    const mailUrl = `mailto:${leadEmail}?subject=${encodeURIComponent(subject || "Study2PR Immigration")}&body=${encodeURIComponent(message)}`;
+    window.open(mailUrl, "_blank", "noopener,noreferrer");
 
     // Log to timeline
     void writeTimeline({
-      event_type: channel === "whatsapp" ? "whatsapp_sent" : "email_sent",
-      title: channel === "whatsapp"
-        ? `WhatsApp sent to ${leadName}`
-        : `Email sent to ${leadName}${subject ? ` — "${subject}"` : ""}`,
+      event_type: "email_sent",
+      title: `Email sent to ${leadName}${subject ? ` — "${subject}"` : ""}`,
       body: message.length > 200 ? message.slice(0, 200) + "…" : message,
       lead_id: leadId,
       is_system: false,
     });
 
-    toast.success(channel === "whatsapp" ? "WhatsApp opened — send the message in WhatsApp" : "Email client opened");
+    toast.success("Email client opened");
     onOpenChange(false);
   };
 
@@ -191,8 +206,29 @@ export function OutreachDialog({ open, onOpenChange, leadId, leadName, leadPhone
             </p>
           )}
 
-          {/* Template picker */}
-          {filtered.length > 0 && (
+          {channel === "whatsapp" && leadPhone && (
+            <div className="space-y-3">
+              <p className="text-xs text-muted-foreground">
+                Messages are sent through the connected WhatsApp API and remain on this lead&apos;s communication history.
+              </p>
+              {openingConversation && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" /> Opening secure conversation…
+                </div>
+              )}
+              {conversationId && (
+                <WaComposer
+                  conversationId={conversationId}
+                  lastInboundAt={lastInboundAt}
+                  onSent={() => undefined}
+                  onFailed={() => undefined}
+                />
+              )}
+            </div>
+          )}
+
+          {/* Email template picker */}
+          {channel === "email" && filtered.length > 0 && (
             <div>
               <Label>Load from template <span className="text-muted-foreground font-normal">(optional)</span></Label>
               <Select value={templateId} onValueChange={pickTemplate}>
@@ -220,40 +256,34 @@ export function OutreachDialog({ open, onOpenChange, leadId, leadName, leadPhone
             </div>
           )}
 
-          {/* Message body */}
-          <div>
+          {/* Email message body */}
+          {channel === "email" && <div>
             <Label>Message</Label>
             <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               rows={6}
-              placeholder={channel === "whatsapp"
-                ? "Hi {{name}}, this is {{advisor_name}} from Study2PR…"
-                : "Dear {{name}},\n\nThank you for your interest in Study2PR…"}
+              placeholder="Dear {{name}},\n\nThank you for your interest in Study2PR…"
               className="resize-none"
             />
             <p className="text-[11px] text-muted-foreground mt-1">
               Use <code className="bg-muted px-0.5 rounded">{"{{name}}"}</code> and <code className="bg-muted px-0.5 rounded">{"{{advisor_name}}"}</code> as placeholders
             </p>
-          </div>
+          </div>}
 
           {/* Send button */}
-          <div className="flex justify-between items-center pt-1">
+          {channel === "email" && <div className="flex justify-between items-center pt-1">
             <div className="text-xs text-muted-foreground">
-              {channel === "whatsapp"
-                ? `To: ${leadPhone ?? "no phone"}`
-                : `To: ${leadEmail ?? "no email"}`}
+              {`To: ${leadEmail ?? "no email"}`}
             </div>
             <Button
               onClick={() => void handleSend()}
-              disabled={!message.trim() || (channel === "whatsapp" && !leadPhone) || (channel === "email" && !leadEmail)}
-              className={cn(channel === "whatsapp" ? "bg-green-600 hover:bg-green-700" : "")}
+              disabled={!message.trim() || !leadEmail}
             >
-              {channel === "whatsapp"
-                ? <><ExternalLink className="h-4 w-4 mr-1.5" />Open WhatsApp</>
-                : <><Send className="h-4 w-4 mr-1.5" />Open email client</>}
+              <><Send className="h-4 w-4 mr-1.5" />Open email client</>
             </Button>
           </div>
+          }
         </div>
       </DialogContent>
     </Dialog>
