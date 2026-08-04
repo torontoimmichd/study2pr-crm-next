@@ -2,7 +2,7 @@
 
 // src/components/lead-detail/FamilyUnitCard.tsx
 // Uses AddFamilyMemberSheet + optimistic updates.
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -37,6 +37,12 @@ export function FamilyUnitCard({ members: initialMembers, currentLead, familyUni
   const navigate = useNavigate();
   const [members, setMembers] = useState<FamilyMember[]>(initialMembers);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  // Lead detail loads family members asynchronously after this card mounts.
+  // Keep the card in sync with the refreshed query result.
+  useEffect(() => {
+    setMembers(initialMembers);
+  }, [initialMembers]);
 
   const totalLTV = members.reduce((s, m) => s + (m.expected_revenue_cad || 0), 0);
   const visibleMembers = members.filter((member) => {
