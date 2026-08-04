@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { writeAudit } from "@/lib/audit";
 import { writeTimeline } from "@/lib/timeline";
-import { createLeadTasks } from "@/lib/taskEngine";
 import { useAuth } from "@/lib/auth-context";
 import { Trash2, UserPlus, Users } from "lucide-react";
 import { VisaCombobox, InheritedHint } from "@/components/VisaCombobox";
@@ -375,7 +374,6 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
       lead_id: data.id,
       is_system: false,
     });
-    void createLeadTasks(data.id, profile?.id ?? null, user?.id ?? null);
     // Creation note → categorised notes panel as a 'general' note (not just the leads.notes blob)
     if (payload.notes) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
