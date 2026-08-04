@@ -79,9 +79,21 @@ export default function LeadDetailPage() {
       const raw = leadData as unknown as Record<string, unknown>;
       const familyUnitId = (raw?.family_unit_id as string | null) ?? null;
 
-      const [familyRes, casesRes, prospRes, timelineRes, tasksRes, visaLabelRes, srcLabelRes] = await Promise.all([
+      const [familyRes, familyLeadsRes, familyClientsRes, casesRes, prospRes, timelineRes, tasksRes, visaLabelRes, srcLabelRes] = await Promise.all([
         familyUnitId
           ? supabase.rpc("get_family_members", { p_family_unit_id: familyUnitId })
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          : Promise.resolve({ data: [], error: null } as any),
+        // Read the source tables as a fallback for older databases where the
+        // family RPC has not yet been replaced by the repaired version.
+        familyUnitId
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ? (supabase as any).from("leads").select("id, full_name, family_role, lifecycle_state, converted_client_id").eq("family_unit_id", familyUnitId)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          : Promise.resolve({ data: [], error: null } as any),
+        familyUnitId
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ? (supabase as any).from("clients").select("id, full_name, family_role").eq("family_unit_id", familyUnitId)
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           : Promise.resolve({ data: [], error: null } as any),
         familyUnitId
@@ -133,7 +145,37 @@ export default function LeadDetailPage() {
       setLead(ld);
       setEditingNotes(ld.notes ?? "");
 
-      setFamilyMembers((familyRes.data || []) as FamilyMember[]);
+      const familyMembersByKey = new Map<string, FamilyMember>();
+      ((familyRes.data || []) as FamilyMember[]).forEach((member) => {
+        familyMembersByKey.set(`${member.lead_id ?? ""}:${member.client_id ?? ""}`, member);
+      });
+      (familyLeadsRes.data || [])
+        .filter((member: { lifecycle_state?: string | null; converted_client_id?: string | null }) =>
+          member.lifecycle_state !== "converted" || !member.converted_client_id)
+        .forEach((member: { id: string; full_name: string; family_role?: string | null }) => {
+        familyMembersByKey.set(`${member.id}:`, {
+          id: member.id,
+          lead_id: member.id,
+          client_id: null,
+          full_name: member.full_name,
+          family_role: member.family_role || "member",
+          primary_application: null,
+          expected_revenue_cad: null,
+        });
+        });
+      });
+      (familyClientsRes.data || []).forEach((member: { id: string; full_name: string; family_role?: string | null }) => {
+        familyMembersByKey.set(`:${member.id}`, {
+          id: member.id,
+          lead_id: null,
+          client_id: member.id,
+          full_name: member.full_name,
+          family_role: member.family_role || "member",
+          primary_application: null,
+          expected_revenue_cad: null,
+        });
+      });
+      setFamilyMembers(Array.from(familyMembersByKey.values()));
       setApplications((casesRes.data || []) as ApplicationRow[]);
       setProspective((prospRes.data || []) as ProspectiveAppRow[]);
       setTimeline((timelineRes.data || []) as TimelineEvent[]);

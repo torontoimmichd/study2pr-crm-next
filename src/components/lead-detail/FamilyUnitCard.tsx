@@ -45,11 +45,14 @@ export function FamilyUnitCard({ members: initialMembers, currentLead, familyUni
   }, [initialMembers]);
 
   const totalLTV = members.reduce((s, m) => s + (m.expected_revenue_cad || 0), 0);
-  const visibleMembers = members.filter((member) => {
-    const isCurrentPrimary = currentLead.family_role === "primary"
-      && (member.lead_id === currentLead.id || member.client_id === currentLead.id);
-    return !isCurrentPrimary;
-  });
+  const convertedClientId = (currentLead as Lead & { converted_client_id?: string | null }).converted_client_id;
+  const isCurrentMember = (member: FamilyMember) =>
+    member.lead_id === currentLead.id
+    || member.client_id === currentLead.id
+    || (!!convertedClientId && member.client_id === convertedClientId);
+  // If the family lookup only returns the current person, keep that person
+  // visible instead of showing a blank card with a misleading count.
+  const visibleMembers = members.length > 1 ? members.filter((member) => !isCurrentMember(member)) : members;
 
   const handleAdded = (newMember: FamilyMember) => {
     const updated = [newMember, ...members];
@@ -75,7 +78,7 @@ export function FamilyUnitCard({ members: initialMembers, currentLead, familyUni
 
         <div className="divide-y">
           {visibleMembers.map(m => {
-            const isCurrent = m.lead_id === currentLead.id || m.client_id === currentLead.id;
+            const isCurrent = isCurrentMember(m);
             return (
               <button
                 key={m.id}
