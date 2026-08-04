@@ -238,15 +238,18 @@ async function handleOutbound(sb: SupabaseClient, row: OutboundRow): Promise<"se
     return "failed";
   }
 
-  // The Meta template name is deliberately the same as the engine code. This
-  // makes approval and audit traceable and prevents arbitrary template sends.
+  // One approved Meta template is reused for the scheduled check-ins. This
+  // keeps the business inside the three-template limit and avoids near-duplicates.
+  const metaTemplateName = row.template_code.startsWith("LEAD_FU_")
+    ? "LEAD_FU_CHECKIN"
+    : row.template_code;
   const { data: template } = await sb.from("wa_templates")
     .select("name, language, status, body")
-    .eq("name", row.template_code)
+    .eq("name", metaTemplateName)
     .maybeSingle() as { data: WaTemplateRow | null };
   if (!template || template.status !== "approved") {
     await sb.from("outbound_messages").update({
-      error_message: `Waiting for approved Meta template: ${row.template_code}`,
+      error_message: `Waiting for approved Meta template: ${metaTemplateName}`,
     }).eq("id", row.id);
     return "waiting";
   }
