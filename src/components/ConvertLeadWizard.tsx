@@ -89,10 +89,25 @@ interface Props {
 
 interface Applicant {
   name: string;
+  email: string;
+  phone: string;
   relationship: string;
   notes: string;
   visaTypeId: string;
+  visaSubTypeId: string;
   fee: string;
+}
+
+interface FamilyLead {
+  id: string;
+  full_name: string;
+  email: string | null;
+  phone: string | null;
+  notes: string | null;
+  family_role: string | null;
+  interested_visa_type_id: string | null;
+  interested_visa_sub_type_id: string | null;
+  created_at: string | null;
 }
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -147,14 +162,14 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
 
   // Applicants
   const [applicants, setApplicants] = useState<Applicant[]>([{
-    name: lead.full_name, relationship: "Primary Applicant",
-    notes: "", visaTypeId: lead.interested_visa_type_id ?? "", fee: "",
+    name: lead.full_name, email: lead.email ?? "", phone: lead.phone ?? "", relationship: "Primary Applicant",
+    notes: "", visaTypeId: lead.interested_visa_type_id ?? "", visaSubTypeId: lead.interested_visa_sub_type_id ?? "", fee: "",
   }]);
   const [activeTab, setActiveTab] = useState("0");
 
   const setNumApplicants = (n: number) => {
     const arr = [...applicants];
-    while (arr.length < n) arr.push({ name: "", relationship: "Spouse", notes: "", visaTypeId, fee: String(baseFee || "") });
+    while (arr.length < n) arr.push({ name: "", email: "", phone: "", relationship: "Spouse", notes: "", visaTypeId, visaSubTypeId: "", fee: String(baseFee || "") });
     setApplicants(arr.slice(0, n));
   };
 
@@ -210,6 +225,58 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
     },
   });
 
+  // Family members are sibling leads in the same family unit. Load them before
+  // conversion so the applicant tabs are populated from the lead records.
+  const { data: familyLeads } = useQuery({
+    queryKey: ["convert-family-leads", lead.family_unit_id],
+    enabled: open && !!lead.family_unit_id,
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("leads")
+        .select("id, full_name, email, phone, notes, family_role, interested_visa_type_id, interested_visa_sub_type_id, created_at")
+        .eq("family_unit_id", lead.family_unit_id!)
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as FamilyLead[];
+    },
+  });
+
+  useEffect(() => {
+    if (!familyLeads || familyLeads.length < 2 || !visaTypes) return;
+    const ordered = [...familyLeads].sort((a, b) => {
+      const aPrimary = a.id === lead.id || a.family_role === "primary";
+      const bPrimary = b.id === lead.id || b.family_role === "primary";
+      if (aPrimary !== bPrimary) return aPrimary ? -1 : 1;
+      return (a.created_at ?? "").localeCompare(b.created_at ?? "");
+    });
+    const roleLabel = (role: string | null) => {
+      if (!role) return "Other";
+      if (role === "common_law") return "Common-law partner";
+      return role.charAt(0).toUpperCase() + role.slice(1);
+    };
+    setApplicants(ordered.map((member) => {
+      const visa = visaTypes.find((item) => item.id === member.interested_visa_type_id);
+      return {
+        name: member.full_name,
+        email: member.email ?? "",
+        phone: member.phone ?? "",
+        relationship: member.id === lead.id ? "Primary Applicant" : roleLabel(member.family_role),
+        notes: member.notes ?? "",
+        visaTypeId: member.interested_visa_type_id ?? lead.interested_visa_type_id ?? "",
+        visaSubTypeId: member.interested_visa_sub_type_id ?? "",
+        fee: visa?.base_fee_inr ? String(visa.base_fee_inr) : "",
+      };
+    }));
+    const primary = ordered[0];
+    const primaryVisa = visaTypes.find((item) => item.id === (primary.interested_visa_type_id ?? lead.interested_visa_type_id));
+    setVisaTypeId(primary.interested_visa_type_id ?? lead.interested_visa_type_id ?? "");
+    setVisaSubTypeId(primary.interested_visa_sub_type_id ?? "");
+    setBaseFee(primaryVisa?.base_fee_inr ?? 0);
+    setQuotedFee(primaryVisa?.base_fee_inr ? String(primaryVisa.base_fee_inr) : "");
+    setApplicationType("family");
+    setActiveTab("0");
+  }, [familyLeads, visaTypes, lead.id, lead.interested_visa_type_id]);
+
   const filteredVisaTypes = useMemo(() => {
     if (!visaTypes) return [];
     if (!destinationCountry || destinationCountry === "__any__") return visaTypes;
@@ -227,6 +294,15 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
     queryFn: async () => {
       const { data } = await supabase.from("visa_sub_types").select("id, label").eq("visa_type_id", visaTypeId).eq("is_active", true).order("label");
       return (data ?? []) as { id: string; label: string }[];
+    },
+  });
+
+  const { data: allVisaSubTypes } = useQuery({
+    queryKey: ["visa-sub-all-active"],
+    enabled: open,
+    queryFn: async () => {
+      const { data } = await supabase.from("visa_sub_types").select("id, label, visa_type_id").eq("is_active", true).order("label");
+      return (data ?? []) as { id: string; label: string; visa_type_id: string | null }[];
     },
   });
 
@@ -252,7 +328,17 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
     const fee = vt?.base_fee_inr ?? 0;
     setVisaTypeId(id); setVisaSubTypeId(""); setBaseFee(fee);
     if (fee > 0) setQuotedFee(String(fee));
-    setApplicants(prev => prev.map((a, i) => i === 0 ? { ...a, visaTypeId: id, fee: fee > 0 ? String(fee) : a.fee } : a));
+    setApplicants(prev => prev.map((a, i) => i === 0 ? { ...a, visaTypeId: id, visaSubTypeId: "", fee: fee > 0 ? String(fee) : a.fee } : a));
+  };
+
+  const handleApplicantVisaChange = (idx: number, id: string) => {
+    const visa = visaTypes?.find((item) => item.id === id);
+    setApplicants(prev => prev.map((applicant, i) => i === idx ? {
+      ...applicant,
+      visaTypeId: id,
+      visaSubTypeId: "",
+      fee: visa?.base_fee_inr ? String(visa.base_fee_inr) : "",
+    } : applicant));
   };
 
   // Auto-fill base fee + Quoted fee from the visa type carried over from the
@@ -380,6 +466,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
         `Discount: ${discountCat} (${discountPct || 0}%)`,
         govtFeeBy !== "client" ? `Govt fee: ${govtFeeBy}` : null,
         applicants.length > 1 ? `Members: ${applicants.map(a => `${a.name} (${a.relationship})`).join(", ")}` : null,
+        applicants.length > 1 ? `Member fees: ${applicants.map(a => `${a.name}: ₹${Number(a.fee || 0).toLocaleString("en-IN")}${a.notes ? ` - ${a.notes}` : ""}`).join(" | ")}` : null,
         lead.notes ? `Lead notes: ${lead.notes}` : null,
       ].filter(Boolean).join(" | ");
 
@@ -578,10 +665,18 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                     <TabsList className="h-7">{applicants.map((_, i) => <TabsTrigger key={i} value={String(i)} className="text-[11px] px-2.5 h-6">{i === 0 ? "Primary" : `#${i+1}`}</TabsTrigger>)}</TabsList>
                     {applicants.map((a, i) => (
                       <TabsContent key={i} value={String(i)} className="pt-2">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
                           <div className="space-y-1">
                             <L>Full Name *</L>
                             <Input value={a.name} onChange={e => updateApplicant(i, "name", e.target.value)} placeholder={i === 0 ? lead.full_name : "Full name"} className="h-8 text-sm" />
+                          </div>
+                          <div className="space-y-1">
+                            <L>Email</L>
+                            <Input type="email" value={a.email} onChange={e => updateApplicant(i, "email", e.target.value)} className="h-8 text-sm" />
+                          </div>
+                          <div className="space-y-1">
+                            <L>Phone</L>
+                            <Input value={a.phone} onChange={e => updateApplicant(i, "phone", e.target.value)} className="h-8 text-sm" />
                           </div>
                           <div className="space-y-1">
                             <L>Relationship</L>
@@ -592,16 +687,23 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                           </div>
                           <div className="space-y-1">
                             <L>Visa Type *</L>
-                            <Select value={a.visaTypeId} onValueChange={v => updateApplicant(i, "visaTypeId", v)}>
+                            <Select value={a.visaTypeId} onValueChange={v => handleApplicantVisaChange(i, v)}>
                               <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Select…" /></SelectTrigger>
                               <SelectContent>{(visaTypes ?? []).map(v => <SelectItem key={v.id} value={v.id}>{v.label}{v.base_fee_inr ? ` (₹${v.base_fee_inr.toLocaleString("en-IN")})` : ""}</SelectItem>)}</SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-1">
+                            <L>Sub-type</L>
+                            <Select value={a.visaSubTypeId} onValueChange={v => updateApplicant(i, "visaSubTypeId", v)} disabled={!a.visaTypeId}>
+                              <SelectTrigger className="h-8 text-sm"><SelectValue placeholder="Stream" /></SelectTrigger>
+                              <SelectContent>{(allVisaSubTypes ?? []).filter(s => s.visa_type_id === a.visaTypeId).map(s => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}</SelectContent>
                             </Select>
                           </div>
                           <div className="space-y-1">
                             <L>Service Fee (₹)</L>
                             <Input type="number" value={a.fee} onChange={e => updateApplicant(i, "fee", e.target.value)} placeholder="0" className="h-8 text-sm" />
                           </div>
-                          <div className="col-span-2 md:col-span-4 space-y-1">
+                          <div className="col-span-2 md:col-span-6 space-y-1">
                             <L>Notes</L>
                             <Textarea value={a.notes} onChange={e => updateApplicant(i, "notes", e.target.value)} placeholder="Notes for this applicant…" rows={1} className="resize-none text-sm min-h-[32px]" />
                           </div>
