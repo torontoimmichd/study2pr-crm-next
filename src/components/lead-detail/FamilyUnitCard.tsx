@@ -50,9 +50,7 @@ export function FamilyUnitCard({ members: initialMembers, currentLead, familyUni
     member.lead_id === currentLead.id
     || member.client_id === currentLead.id
     || (!!convertedClientId && member.client_id === convertedClientId);
-  // If the family lookup only returns the current person, keep that person
-  // visible instead of showing a blank card with a misleading count.
-  const visibleMembers = members.length > 1 ? members.filter((member) => !isCurrentMember(member)) : members;
+  const visibleMembers = members.filter((member) => !isCurrentMember(member));
 
   const handleAdded = (newMember: FamilyMember) => {
     const updated = [newMember, ...members];
@@ -106,9 +104,13 @@ export function FamilyUnitCard({ members: initialMembers, currentLead, familyUni
           })}
         </div>
 
-        {members.length > 0 && (
+        {familyUnitId && visibleMembers.length === 0 && (
+          <p className="text-xs text-muted-foreground py-2">No other family members linked yet.</p>
+        )}
+
+        {visibleMembers.length > 0 && (
           <p className="text-[10px] text-muted-foreground text-center mt-2">
-            {members.length} member{members.length > 1 ? "s" : ""} · CAD {totalLTV.toLocaleString()} potential
+            {visibleMembers.length} member{visibleMembers.length > 1 ? "s" : ""} · CAD {totalLTV.toLocaleString()} potential
           </p>
         )}
       </Card>
