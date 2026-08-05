@@ -134,6 +134,8 @@ function defaultSubmissionDate() {
   return d.toISOString().split("T")[0];
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Props) {
@@ -361,6 +363,10 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
     if (!visaTypeId)        { toast.error("Please select a visa type"); return; }
     if (!caseManager)       { toast.error("Please select a Case Manager"); return; }
     if (!filingOfficer)     { toast.error("Please select a Filing Officer"); return; }
+    if (!UUID_RE.test(caseManager) || !UUID_RE.test(filingOfficer)) {
+      toast.error("Please reselect the Case Manager and Filing Officer");
+      return;
+    }
 
     // Quoted fee can be increased above the base fee but never reduced below it.
     if (applicationType === "single" && baseFee > 0 && Number(quotedFee || 0) < baseFee) {
@@ -577,7 +583,11 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
       const convertedAt = new Date().toISOString();
 
       for (const entry of conversionClients) {
-        await supabase.from("leads").update({ lifecycle_state: "converted", converted_client_id: entry.client.id, converted_at: convertedAt }).eq("id", entry.leadId);
+        const { error: leadUpdateError } = await supabase
+          .from("leads")
+          .update({ lifecycle_state: "converted", converted_client_id: entry.client.id, converted_at: convertedAt })
+          .eq("id", entry.leadId);
+        if (leadUpdateError) throw new Error(`Client created, but lead conversion could not be completed: ${leadUpdateError.message}`);
         const createdCase = caseByClient.get(entry.client.id);
         if (!createdCase) continue;
         void writeAudit({ action: "CONVERT", entity_type: "leads", entity_id: entry.leadId, changes: { converted_client_id: entry.client.id, case_id: createdCase.id } });
@@ -599,7 +609,8 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
       setCreatedClientId(client.id); setCreatedCaseId(primaryCase.id); setCreatedCaseRef(caseRef);
       setDone(true); onConverted?.(client.id, primaryCase.id);
     } catch (err) {
-      console.error(err); toast.error("Unexpected error. Please try again.");
+      console.error(err);
+      toast.error(err instanceof Error ? err.message : "Conversion failed. Please try again.");
     } finally { setBusy(false); }
   };
 
