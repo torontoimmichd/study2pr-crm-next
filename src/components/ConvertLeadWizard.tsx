@@ -148,6 +148,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
   const [createdClientId, setCreatedClientId] = useState("");
   const [createdCaseId,   setCreatedCaseId]   = useState("");
   const [createdCaseRef,  setCreatedCaseRef]  = useState("");
+  const familyUnitId = UUID_RE.test(lead.family_unit_id ?? "") ? lead.family_unit_id : null;
 
   // Client info
   const [clientName,    setClientName]    = useState(lead.full_name);
@@ -230,13 +231,13 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
   // Family members are sibling leads in the same family unit. Load them before
   // conversion so the applicant tabs are populated from the lead records.
   const { data: familyLeads } = useQuery({
-    queryKey: ["convert-family-leads", lead.family_unit_id],
-    enabled: open && !!lead.family_unit_id,
+    queryKey: ["convert-family-leads", familyUnitId],
+    enabled: open && !!familyUnitId,
     queryFn: async () => {
       const { data, error } = await supabase
         .from("leads")
         .select("id, full_name, email, phone, notes, family_role, interested_visa_type_id, interested_visa_sub_type_id, created_at")
-        .eq("family_unit_id", lead.family_unit_id!)
+        .eq("family_unit_id", familyUnitId!)
         .order("created_at", { ascending: true });
       if (error) throw error;
       return (data ?? []) as FamilyLead[];
@@ -383,7 +384,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
       if (cleanStages.some(s => s.amount <= 0)) { toast.error("Every payment stage needs an amount"); return; }
     }
 
-    if (lead.family_unit_id && familyLeads === undefined) {
+    if (familyUnitId && familyLeads === undefined) {
       toast.error("Family details are still loading. Please wait a moment and try again.");
       return;
     }
@@ -461,8 +462,8 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
           email: clientEmail.trim() || null,
           phone: clientPhone.trim() || null,
           country_of_citizenship: clientCountry || null,
-          family_unit_id: existingClient.family_unit_id ?? lead.family_unit_id ?? null,
-          family_role: lead.family_unit_id && !existingClient.family_unit_id ? (lead.family_role ?? "primary") : undefined,
+          family_unit_id: existingClient.family_unit_id ?? familyUnitId,
+          family_role: familyUnitId && !existingClient.family_unit_id ? (lead.family_role ?? "primary") : undefined,
           is_active: true,
         };
         const { data: updated, error: updateErr } = await supabase
@@ -480,8 +481,8 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
             email: clientEmail.trim() || null,
             phone: clientPhone.trim() || null,
             country_of_citizenship: clientCountry || null,
-            family_unit_id: lead.family_unit_id ?? null,
-            family_role: lead.family_unit_id ? (lead.family_role ?? "primary") : null,
+            family_unit_id: familyUnitId,
+            family_role: familyUnitId ? (lead.family_role ?? "primary") : null,
             source_lead_id: lead.id,
             is_active: true,
           })
@@ -522,7 +523,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                 full_name: member.name.trim(),
                 email: member.email.trim() || memberLead.email || null,
                 phone: member.phone.trim() || memberLead.phone || null,
-                family_unit_id: lead.family_unit_id,
+                family_unit_id: familyUnitId,
                 family_role: memberLead.family_role || "member",
                 source_lead_id: memberLead.id,
                 is_active: true,
@@ -564,7 +565,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
         current_stage_code: defaultStage ?? "intake",
         case_manager_id: caseManager,
         senior_advisor_id: filingOfficer,
-        family_unit_id: lead.family_unit_id ?? memberClient.family_unit_id ?? null,
+        family_unit_id: familyUnitId ?? memberClient.family_unit_id ?? null,
         target_submission_date: submissionDate || null,
         quoted_fee_inr: isFamilyConversion ? Math.round(Number(applicant.fee || 0) * discountMultiplier) : totalDue || null,
         notes: [extraNotes, applicant.notes.trim() ? `${applicant.name} notes: ${applicant.notes.trim()}` : null].filter(Boolean).join(" | ") || null,
