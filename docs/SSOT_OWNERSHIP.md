@@ -60,14 +60,14 @@ client write never covered.
 
 ---
 
-## 3. TASK CREATION — ⚠️ SPLIT (documented boundary)
+## 3. TASK CREATION — DATABASE-OWNED LEAD CREATION
 
-The database does **not** own all task creation. This is deliberate for now.
+Lead creation has one task owner: the database ladder and single-task rules (`sql/53` and `sql/54`).
 
 ### DB-owned (fires on table events / cron — covers every path)
 | Function | Trigger | Creates |
 |---|---|---|
-| `fn_engine_on_lead_created` | `leads` INSERT | **"First call — new lead"** (`sla_rule_code='NEW_LEAD_FIRST_CALL'`) |
+| `sql/54_lead_created_single_task.sql` | `leads` INSERT | **`lead_first_call`** (high, due in 2 working hours) |
 | `fn_engine_on_case_created` | `cases` INSERT | 2 onboarding tasks |
 | `fn_engine_on_stage_change` | `cases` UPDATE | biometrics, upsell, 2× refusal |
 | `fn_assessment_on_submit` | `assessments` INSERT | 1 |
@@ -77,7 +77,6 @@ The database does **not** own all task creation. This is deliberate for now.
 ### Client-owned (`src/lib/taskEngine.ts`) — **no DB equivalent, do not delete**
 | Function | Called from | Status |
 |---|---|---|
-| `createLeadTasks` | `NewLeadDialog` | Day 1/3/7/14 follow-ups only (first-call **removed** 2026-07-30) |
 | `createStageTasks` | `LeadDetail`, `LeadDetailPage` | **client-only** — lead stage tasks |
 | `createCaseTasks` | `ConvertLeadWizard`, `NewCaseDialog` | overlaps `fn_engine_on_case_created` — 🔴 review in 2A |
 | `createPaymentFollowUpTasks` | `GenerateInvoiceDialog` | **client-only** |
@@ -90,10 +89,8 @@ The database does **not** own all task creation. This is deliberate for now.
 fires on the same table event.** The first-call duplicate hid for months because the two
 engines used *different titles*, so title-based dedup could not see the clash.
 
-> **Known pre-existing gap (not introduced by Phase 1):** leads created via
-> `IntakeForm.tsx` never receive the Day 1/3/7/14 follow-ups, because only `NewLeadDialog`
-> calls `createLeadTasks`. The DB first-call task fires on all paths. Decide in 2A whether
-> the day-N cadence should move to the DB engine so every intake path behaves identically.
+> Lead creation no longer calls a client-side task helper. The database trigger fires on
+> every lead-insert path, while the ladder creates later tasks just in time as they become due.
 
 ---
 

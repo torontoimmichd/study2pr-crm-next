@@ -1072,16 +1072,8 @@ CREATE OR REPLACE FUNCTION "public"."fn_engine_on_lead_created"() RETURNS "trigg
     LANGUAGE "plpgsql" SECURITY DEFINER
     SET "search_path" TO 'public'
     AS $$
-declare v_assignee uuid;
 begin
-  v_assignee := coalesce(new.assigned_to, public.fn_engine_owner());
-
-  insert into public.tasks (lead_id, title, description, status_code, priority,
-                            assigned_to, created_by, due_at, sla_rule_code, source)
-  values (new.id, 'First call — new lead',
-          'Call the new lead within 2 hours (blueprint §16.1 row 1). Auto-created by engine.',
-          'open', 'normal', v_assignee, public.fn_engine_owner(),
-          now() + interval '2 hours', 'NEW_LEAD_FIRST_CALL', 'engine');
+  -- Lead task creation is owned by the database (sql/53 + sql/54). Do not re-add here.
 
   perform public.fn_engine_queue_message('LEAD_ACK_D0', null, new.id, null, '{}'::jsonb, now());
   perform public.fn_engine_queue_message('LEAD_FU_D1',  null, new.id, null, '{}'::jsonb, now() + interval '1 day');
@@ -10414,7 +10406,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
-
 
 
 

@@ -6,10 +6,8 @@
 -- for one workflow: imports/API inserts missed the browser tasks, and wording
 -- changes made duplicates impossible to deduplicate reliably.
 --
--- This migration makes `fn_engine_on_lead_created` the only writer:
---   staff calls: day 3, 7, 14 at 10:00 Asia/Kolkata
---   WhatsApp template queue: day 2, 4, 6, 10
---   first contact: existing two-hour SLA remains unchanged
+-- This migration queues WhatsApp follow-ups only. Lead tasks are owned by
+-- the later database ladder and single-task migrations.
 --
 -- The message codes are intentionally not seeded here. The comms worker sends
 -- only active, approved templates; creating copy in a schema migration could
@@ -28,44 +26,8 @@ language plpgsql
 security definer
 set search_path = public
 as $fn$
-declare
-  v_assignee uuid;
 begin
-  v_assignee := coalesce(new.assigned_to, public.fn_engine_owner());
-
-  insert into public.tasks (
-    lead_id, title, description, status_code, priority, assigned_to, created_by,
-    due_at, sla_rule_code, source, kind, task_key
-  )
-  values
-    (
-      new.id,
-      'First call - new lead',
-      'Call the new lead within 2 hours. Auto-created by the database workflow.',
-      'open', 'normal', v_assignee, public.fn_engine_owner(),
-      now() + interval '2 hours', 'NEW_LEAD_FIRST_CALL', 'engine', 'phone_call', 'lead_first_call'
-    ),
-    (
-      new.id,
-      'Day 3 follow-up call',
-      'Third-day call. Answer questions and offer to schedule a consultation.',
-      'open', 'normal', v_assignee, public.fn_engine_owner(),
-      ((current_date + 3) + time '10:00') at time zone 'Asia/Kolkata', null, 'engine', 'phone_call', 'lead_followup_call_d3'
-    ),
-    (
-      new.id,
-      'Day 7 follow-up call',
-      'Week-one call. Reconfirm interest and assess whether anything changed.',
-      'open', 'normal', v_assignee, public.fn_engine_owner(),
-      ((current_date + 7) + time '10:00') at time zone 'Asia/Kolkata', null, 'engine', 'phone_call', 'lead_followup_call_d7'
-    ),
-    (
-      new.id,
-      'Day 14 follow-up call',
-      'Two-week call. Assess progress, nurturing, waiting, or cold status.',
-      'open', 'low', v_assignee, public.fn_engine_owner(),
-      ((current_date + 14) + time '10:00') at time zone 'Asia/Kolkata', null, 'engine', 'phone_call', 'lead_followup_call_d14'
-    );
+  -- Lead task creation is owned by the database (sql/53 + sql/54). Do not re-add here.
 
   perform public.fn_engine_queue_message('LEAD_FU_D2',  null, new.id, null, '{}'::jsonb, now() + interval '2 days');
   perform public.fn_engine_queue_message('LEAD_FU_D4',  null, new.id, null, '{}'::jsonb, now() + interval '4 days');

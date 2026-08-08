@@ -141,35 +141,7 @@ create trigger trg_engine_lead_stage_change
 after update of lifecycle_state on public.leads
 for each row execute function public.fn_engine_on_lead_stage_change();
 
--- The first-call trigger owns the 2-hour call. This separate checkpoint owns
--- only the three-day stage progression SLA, so a new lead gets one call task
--- plus one visible manager checkpoint, never a second first-call task.
-create or replace function public.fn_engine_on_lead_initial_stage_sla()
-returns trigger
-language plpgsql
-security definer
-set search_path = public
-as $fn$
-begin
-  insert into public.tasks
-    (lead_id, title, description, status_code, priority, assigned_to, created_by,
-     due_at, sla_rule_code, source, kind, task_key)
-  values
-    (new.id, 'Move lead to Contacted',
-     'Make and record the first meaningful contact within three days, or document why contact has not happened.',
-     'open', 'high', coalesce(new.assigned_to, public.fn_engine_owner()), public.fn_engine_owner(),
-     now() + interval '3 days', 'LEAD_NEW_TO_CONTACTED_3D', 'engine', 'follow_up',
-     'lead_stage_sla_new_enquiry');
-  return new;
-end
-$fn$;
-
-revoke execute on function public.fn_engine_on_lead_initial_stage_sla() from public, anon, authenticated;
-
-drop trigger if exists trg_engine_lead_initial_stage_sla on public.leads;
-create trigger trg_engine_lead_initial_stage_sla
-after insert on public.leads
-for each row execute function public.fn_engine_on_lead_initial_stage_sla();
+-- Lead task creation is owned by the database (sql/53 + sql/54). Do not re-add here.
 
 -- A staff-only RPC opens the in-app WhatsApp composer. It does not launch wa.me
 -- and it does not expose a client-side INSERT policy on conversations.

@@ -1,7 +1,7 @@
 /**
  * taskEngine.ts
  * Client-side automatic task creation rules.
- * Called after lead creation, stage transitions, and case creation.
+ * Called after stage transitions and case creation.
  * All inserts are fire-and-forget — errors are swallowed silently.
  */
 
@@ -93,66 +93,7 @@ async function insertTasks(
 }
 
 // ─── Lead created ────────────────────────────────────────────────────────────
-/**
- * Called immediately after a new lead is inserted.
- * Creates:
- *   - First call task due in 2 hours (urgent)
- *   - Day 1, 3, 7, 14 follow-up tasks
- */
-export async function createLeadTasks(
-  leadId: string,
-  assignedTo?: string | null,
-  createdBy?: string | null,
-): Promise<void> {
-  const base: Omit<TaskRow, "title" | "description" | "due_at" | "priority"> = {
-    status_code: "open",
-    source: "engine",
-    lead_id: leadId,
-    assigned_to: assignedTo ?? null,
-    created_by: createdBy ?? null,
-  };
-
-  const tasks: TaskRow[] = [
-    // P1.3 — REMOVED (2026-07-30): duplicate first-call task.
-    // The DB engine trigger fn_engine_on_lead_created() already creates the
-    // authoritative first-call task ("First call — new lead") with
-    // sla_rule_code='NEW_LEAD_FIRST_CALL' and a 2-hour due time. That rule code
-    // is what engine_sla_sweep (every 15 min) escalates on, so the DB task is
-    // the one that must survive. This client-side copy used a different title,
-    // which is why insertTasks()' title-based dedup could never see the clash.
-    // Verified duplicate in live data on lead 9d579e6f (both tasks present).
-    {
-      ...base,
-      title: "Day 1 follow-up",
-      description: "Check if the lead has reviewed any information sent. Answer questions and gauge interest.",
-      due_at: daysFromNow(1),
-      priority: "high",
-    },
-    {
-      ...base,
-      title: "Day 3 follow-up",
-      description: "Third-day touchpoint. Offer to schedule a consultation if not done yet.",
-      due_at: daysFromNow(3),
-      priority: "normal",
-    },
-    {
-      ...base,
-      title: "Day 7 follow-up",
-      description: "Week-one check-in. Re-confirm interest and assess any change in situation.",
-      due_at: daysFromNow(7),
-      priority: "normal",
-    },
-    {
-      ...base,
-      title: "Day 14 follow-up",
-      description: "Two-week touchpoint. If no progress, assess cooling and consider moving to waiting or cold.",
-      due_at: daysFromNow(14),
-      priority: "low",
-    },
-  ];
-
-  await insertTasks(tasks, { field: "lead_id", id: leadId });
-}
+// Lead task creation is owned by the database (sql/53 + sql/54). Do not re-add here.
 
 // ─── Stage transition tasks ──────────────────────────────────────────────────
 /**

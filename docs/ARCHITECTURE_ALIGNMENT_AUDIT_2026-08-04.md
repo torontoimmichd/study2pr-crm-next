@@ -66,9 +66,10 @@ one screen but bypassed by another screen.
      existing only in production.
 
 5. Lead follow-up ownership
-   - New leads now use `fn_engine_on_lead_created` as the sole active writer.
-   - The immediate staff task is a first call due in two hours; scheduled staff
-     calls are Day 3, Day 7, and Day 14.
+   - Lead tasks are owned by the database ladder and single-task migrations
+     (`sql/53` and `sql/54`); browser and older trigger writers are removed.
+   - A new lead receives one high-priority `lead_first_call` task due in two
+     working hours. Later tasks are created just in time by the ladder.
    - The database queues hooks for Day 2, Day 4, Day 6, and Day 10 WhatsApp
      content rather than creating immediate manual tasks.
 
