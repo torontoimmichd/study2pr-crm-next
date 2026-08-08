@@ -125,6 +125,15 @@ export default function CaseDetail() {
     },
   });
 
+  const { data: irccFileHistory = [] } = useQuery({
+    queryKey: ["case-ircc-file-history", id],
+    enabled: !!id,
+    queryFn: async () => {
+      const { data } = await supabase.from("ircc_file_history").select("id, case_id, file_number, note, recorded_at, recorded_by").eq("case_id", id!).order("recorded_at", { ascending: false });
+      return data ?? [];
+    },
+  });
+
   const { data: history } = useQuery({
     queryKey: ["case-history", id],
     queryFn: async () => {
@@ -341,6 +350,25 @@ export default function CaseDetail() {
             </TabsContent>
 
             <TabsContent value="ircc" className="card-surface p-0">
+              {caseRow?.ircc_file_number && (
+                <div className="p-4 border-b border-border bg-muted/20">
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground">Current IRCC file number</div>
+                  <div className="font-mono text-sm font-semibold mt-1">{caseRow.ircc_file_number}</div>
+                </div>
+              )}
+              {irccFileHistory.length > 0 && (
+                <div className="p-4 border-b border-border">
+                  <div className="text-xs uppercase tracking-wide text-muted-foreground mb-2">Previous file numbers</div>
+                  <ul className="space-y-1.5">
+                    {irccFileHistory.map((item) => (
+                      <li key={item.id} className="flex items-center justify-between gap-3 text-sm">
+                        <span className="font-mono">{item.file_number}</span>
+                        <span className="text-xs text-muted-foreground">{fmtDateTimeIST(item.recorded_at)}{item.note ? ` · ${item.note}` : ""}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               {!ircc || ircc.length === 0 ? (
                 <p className="p-6 text-sm text-muted-foreground">No IRCC emails matched to this case yet.</p>
               ) : (

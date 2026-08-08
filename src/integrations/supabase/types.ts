@@ -702,6 +702,651 @@ export type Database = {
         }
         Relationships: []
       }
+      _bak_cases_20260807: {
+        Row: {
+          application_number: string | null
+          archived_at: string | null
+          case_code: string | null
+          case_group_id: string | null
+          case_kind: string | null
+          case_manager_id: string | null
+          client_id: string | null
+          created_at: string | null
+          current_stage_code: string | null
+          decision_at: string | null
+          family_unit_id: string | null
+          group_role: string | null
+          id: string | null
+          is_archived: boolean | null
+          notes: string | null
+          origin_case_id: string | null
+          outcome: string | null
+          parent_case_id: string | null
+          payment_plan_enabled: boolean | null
+          payment_stages: Json | null
+          pending_stage_note: string | null
+          priority: string | null
+          quoted_fee_inr: number | null
+          quoted_govt_fee_cad: number | null
+          risk_level: string | null
+          senior_advisor_id: string | null
+          stage_entered_at: string | null
+          submitted_at: string | null
+          target_submission_date: string | null
+          total_invoiced_inr: number | null
+          total_paid_inr: number | null
+          uci_number: string | null
+          updated_at: string | null
+          visa_sub_type_id: string | null
+          visa_type_id: string | null
+        }
+        Insert: {
+          application_number?: string | null
+          archived_at?: string | null
+          case_code?: string | null
+          case_group_id?: string | null
+          case_kind?: string | null
+          case_manager_id?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          current_stage_code?: string | null
+          decision_at?: string | null
+          family_unit_id?: string | null
+          group_role?: string | null
+          id?: string | null
+          is_archived?: boolean | null
+          notes?: string | null
+          origin_case_id?: string | null
+          outcome?: string | null
+          parent_case_id?: string | null
+          payment_plan_enabled?: boolean | null
+          payment_stages?: Json | null
+          pending_stage_note?: string | null
+          priority?: string | null
+          quoted_fee_inr?: number | null
+          quoted_govt_fee_cad?: number | null
+          risk_level?: string | null
+          senior_advisor_id?: string | null
+          stage_entered_at?: string | null
+          submitted_at?: string | null
+          target_submission_date?: string | null
+          total_invoiced_inr?: number | null
+          total_paid_inr?: number | null
+          uci_number?: string | null
+          updated_at?: string | null
+          visa_sub_type_id?: string | null
+          visa_type_id?: string | null
+        }
+        Update: {
+          application_number?: string | null
+          archived_at?: string | null
+          case_code?: string | null
+          case_group_id?: string | null
+          case_kind?: string | null
+          case_manager_id?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          current_stage_code?: string | null
+          decision_at?: string | null
+          family_unit_id?: string | null
+          group_role?: string | null
+          id?: string | null
+          is_archived?: boolean | null
+          notes?: string | null
+          origin_case_id?: string | null
+          outcome?: string | null
+          parent_case_id?: string | null
+          payment_plan_enabled?: boolean | null
+          payment_stages?: Json | null
+          pending_stage_note?: string | null
+          priority?: string | null
+          quoted_fee_inr?: number | null
+          quoted_govt_fee_cad?: number | null
+          risk_level?: string | null
+          senior_advisor_id?: string | null
+          stage_entered_at?: string | null
+          submitted_at?: string | null
+          target_submission_date?: string | null
+          total_invoiced_inr?: number | null
+          total_paid_inr?: number | null
+          uci_number?: string | null
+          updated_at?: string | null
+          visa_sub_type_id?: string | null
+          visa_type_id?: string | null
+        }
+        Relationships: []
+      }
+      _bak_chain_rules_20260807: {
+        Row: {
+          counselor_script: string | null
+          created_at: string | null
+          delay_days: number | null
+          description: string | null
+          id: string | null
+          is_active: boolean | null
+          priority: string | null
+          rule_code: string | null
+          sla_days: number | null
+          target_application_type: string | null
+          trigger_application_type: string | null
+        }
+        Insert: {
+          counselor_script?: string | null
+          created_at?: string | null
+          delay_days?: number | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          priority?: string | null
+          rule_code?: string | null
+          sla_days?: number | null
+          target_application_type?: string | null
+          trigger_application_type?: string | null
+        }
+        Update: {
+          counselor_script?: string | null
+          created_at?: string | null
+          delay_days?: number | null
+          description?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          priority?: string | null
+          rule_code?: string | null
+          sla_days?: number | null
+          target_application_type?: string | null
+          trigger_application_type?: string | null
+        }
+        Relationships: []
+      }
+      _bak_doc_checklist_rules_20260807: {
+        Row: {
+          applicant_role: string | null
+          category: string | null
+          created_at: string | null
+          created_by: string | null
+          display_label: string | null
+          document_code: string | null
+          expiry_tracking: boolean | null
+          id: string | null
+          ircc_form_id: string | null
+          is_active: boolean | null
+          is_optional: boolean | null
+          notes: string | null
+          sort_order: number | null
+          updated_at: string | null
+          visa_type_code: string | null
+        }
+        Insert: {
+          applicant_role?: string | null
+          category?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          display_label?: string | null
+          document_code?: string | null
+          expiry_tracking?: boolean | null
+          id?: string | null
+          ircc_form_id?: string | null
+          is_active?: boolean | null
+          is_optional?: boolean | null
+          notes?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+          visa_type_code?: string | null
+        }
+        Update: {
+          applicant_role?: string | null
+          category?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          display_label?: string | null
+          document_code?: string | null
+          expiry_tracking?: boolean | null
+          id?: string | null
+          ircc_form_id?: string | null
+          is_active?: boolean | null
+          is_optional?: boolean | null
+          notes?: string | null
+          sort_order?: number | null
+          updated_at?: string | null
+          visa_type_code?: string | null
+        }
+        Relationships: []
+      }
+      _bak_dupe_cases_20260805: {
+        Row: {
+          application_number: string | null
+          archived_at: string | null
+          case_code: string | null
+          case_group_id: string | null
+          case_kind: string | null
+          case_manager_id: string | null
+          client_id: string | null
+          created_at: string | null
+          current_stage_code: string | null
+          decision_at: string | null
+          family_unit_id: string | null
+          group_role: string | null
+          id: string | null
+          is_archived: boolean | null
+          notes: string | null
+          origin_case_id: string | null
+          outcome: string | null
+          parent_case_id: string | null
+          payment_plan_enabled: boolean | null
+          payment_stages: Json | null
+          pending_stage_note: string | null
+          priority: string | null
+          quoted_fee_inr: number | null
+          quoted_govt_fee_cad: number | null
+          risk_level: string | null
+          senior_advisor_id: string | null
+          stage_entered_at: string | null
+          submitted_at: string | null
+          target_submission_date: string | null
+          total_invoiced_inr: number | null
+          total_paid_inr: number | null
+          uci_number: string | null
+          updated_at: string | null
+          visa_sub_type_id: string | null
+          visa_type_id: string | null
+        }
+        Insert: {
+          application_number?: string | null
+          archived_at?: string | null
+          case_code?: string | null
+          case_group_id?: string | null
+          case_kind?: string | null
+          case_manager_id?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          current_stage_code?: string | null
+          decision_at?: string | null
+          family_unit_id?: string | null
+          group_role?: string | null
+          id?: string | null
+          is_archived?: boolean | null
+          notes?: string | null
+          origin_case_id?: string | null
+          outcome?: string | null
+          parent_case_id?: string | null
+          payment_plan_enabled?: boolean | null
+          payment_stages?: Json | null
+          pending_stage_note?: string | null
+          priority?: string | null
+          quoted_fee_inr?: number | null
+          quoted_govt_fee_cad?: number | null
+          risk_level?: string | null
+          senior_advisor_id?: string | null
+          stage_entered_at?: string | null
+          submitted_at?: string | null
+          target_submission_date?: string | null
+          total_invoiced_inr?: number | null
+          total_paid_inr?: number | null
+          uci_number?: string | null
+          updated_at?: string | null
+          visa_sub_type_id?: string | null
+          visa_type_id?: string | null
+        }
+        Update: {
+          application_number?: string | null
+          archived_at?: string | null
+          case_code?: string | null
+          case_group_id?: string | null
+          case_kind?: string | null
+          case_manager_id?: string | null
+          client_id?: string | null
+          created_at?: string | null
+          current_stage_code?: string | null
+          decision_at?: string | null
+          family_unit_id?: string | null
+          group_role?: string | null
+          id?: string | null
+          is_archived?: boolean | null
+          notes?: string | null
+          origin_case_id?: string | null
+          outcome?: string | null
+          parent_case_id?: string | null
+          payment_plan_enabled?: boolean | null
+          payment_stages?: Json | null
+          pending_stage_note?: string | null
+          priority?: string | null
+          quoted_fee_inr?: number | null
+          quoted_govt_fee_cad?: number | null
+          risk_level?: string | null
+          senior_advisor_id?: string | null
+          stage_entered_at?: string | null
+          submitted_at?: string | null
+          target_submission_date?: string | null
+          total_invoiced_inr?: number | null
+          total_paid_inr?: number | null
+          uci_number?: string | null
+          updated_at?: string | null
+          visa_sub_type_id?: string | null
+          visa_type_id?: string | null
+        }
+        Relationships: []
+      }
+      _bak_family_role_20260805: {
+        Row: {
+          family_role: string | null
+          id: string | null
+          src: string | null
+        }
+        Insert: {
+          family_role?: string | null
+          id?: string | null
+          src?: string | null
+        }
+        Update: {
+          family_role?: string | null
+          id?: string | null
+          src?: string | null
+        }
+        Relationships: []
+      }
+      _bak_leads_20260807: {
+        Row: {
+          agent_partner_id: string | null
+          assessment_completed_at: string | null
+          assessment_data: Json | null
+          assessment_score: number | null
+          assessment_submitted_at: string | null
+          assessment_threshold_met: boolean | null
+          assigned_to: string | null
+          converted_at: string | null
+          converted_client_id: string | null
+          country_of_interest: string | null
+          country_of_residence: string | null
+          created_at: string | null
+          created_by: string | null
+          crs_score: number | null
+          email: string | null
+          enquiry_client_id: string | null
+          family_role: string | null
+          family_unit_id: string | null
+          first_name: string | null
+          first_responded_at: string | null
+          first_response_due_at: string | null
+          full_name: string | null
+          has_ircc_invitation: boolean | null
+          id: string | null
+          interested_category_id: string | null
+          interested_country: string | null
+          interested_visa_sub_type_id: string | null
+          interested_visa_type_id: string | null
+          ircc_invitation_type: string | null
+          last_name: string | null
+          lifecycle_state: string | null
+          lost_reason: string | null
+          nationality: string | null
+          notes: string | null
+          phone: string | null
+          referral_partner_id: string | null
+          referrer_name: string | null
+          source_code: string | null
+          source_detail: string | null
+          source_person_name: string | null
+          stage_metadata: Json | null
+          status: string | null
+          updated_at: string | null
+          waiting_contact_frequency: string | null
+          waiting_end_date: string | null
+          waiting_linked_milestone: string | null
+          waiting_reason: string | null
+          waiting_review_notes: string | null
+          waiting_start_date: string | null
+        }
+        Insert: {
+          agent_partner_id?: string | null
+          assessment_completed_at?: string | null
+          assessment_data?: Json | null
+          assessment_score?: number | null
+          assessment_submitted_at?: string | null
+          assessment_threshold_met?: boolean | null
+          assigned_to?: string | null
+          converted_at?: string | null
+          converted_client_id?: string | null
+          country_of_interest?: string | null
+          country_of_residence?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          crs_score?: number | null
+          email?: string | null
+          enquiry_client_id?: string | null
+          family_role?: string | null
+          family_unit_id?: string | null
+          first_name?: string | null
+          first_responded_at?: string | null
+          first_response_due_at?: string | null
+          full_name?: string | null
+          has_ircc_invitation?: boolean | null
+          id?: string | null
+          interested_category_id?: string | null
+          interested_country?: string | null
+          interested_visa_sub_type_id?: string | null
+          interested_visa_type_id?: string | null
+          ircc_invitation_type?: string | null
+          last_name?: string | null
+          lifecycle_state?: string | null
+          lost_reason?: string | null
+          nationality?: string | null
+          notes?: string | null
+          phone?: string | null
+          referral_partner_id?: string | null
+          referrer_name?: string | null
+          source_code?: string | null
+          source_detail?: string | null
+          source_person_name?: string | null
+          stage_metadata?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          waiting_contact_frequency?: string | null
+          waiting_end_date?: string | null
+          waiting_linked_milestone?: string | null
+          waiting_reason?: string | null
+          waiting_review_notes?: string | null
+          waiting_start_date?: string | null
+        }
+        Update: {
+          agent_partner_id?: string | null
+          assessment_completed_at?: string | null
+          assessment_data?: Json | null
+          assessment_score?: number | null
+          assessment_submitted_at?: string | null
+          assessment_threshold_met?: boolean | null
+          assigned_to?: string | null
+          converted_at?: string | null
+          converted_client_id?: string | null
+          country_of_interest?: string | null
+          country_of_residence?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          crs_score?: number | null
+          email?: string | null
+          enquiry_client_id?: string | null
+          family_role?: string | null
+          family_unit_id?: string | null
+          first_name?: string | null
+          first_responded_at?: string | null
+          first_response_due_at?: string | null
+          full_name?: string | null
+          has_ircc_invitation?: boolean | null
+          id?: string | null
+          interested_category_id?: string | null
+          interested_country?: string | null
+          interested_visa_sub_type_id?: string | null
+          interested_visa_type_id?: string | null
+          ircc_invitation_type?: string | null
+          last_name?: string | null
+          lifecycle_state?: string | null
+          lost_reason?: string | null
+          nationality?: string | null
+          notes?: string | null
+          phone?: string | null
+          referral_partner_id?: string | null
+          referrer_name?: string | null
+          source_code?: string | null
+          source_detail?: string | null
+          source_person_name?: string | null
+          stage_metadata?: Json | null
+          status?: string | null
+          updated_at?: string | null
+          waiting_contact_frequency?: string | null
+          waiting_end_date?: string | null
+          waiting_linked_milestone?: string | null
+          waiting_reason?: string | null
+          waiting_review_notes?: string | null
+          waiting_start_date?: string | null
+        }
+        Relationships: []
+      }
+      _bak_program_eligibility_rules_20260807: {
+        Row: {
+          condition: Json | null
+          id: string | null
+          is_active: boolean | null
+          label: string | null
+          rule_code: string | null
+          rule_type: string | null
+          sort_order: number | null
+          version: string | null
+          visa_code: string | null
+          weight: number | null
+        }
+        Insert: {
+          condition?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          rule_code?: string | null
+          rule_type?: string | null
+          sort_order?: number | null
+          version?: string | null
+          visa_code?: string | null
+          weight?: number | null
+        }
+        Update: {
+          condition?: Json | null
+          id?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          rule_code?: string | null
+          rule_type?: string | null
+          sort_order?: number | null
+          version?: string | null
+          visa_code?: string | null
+          weight?: number | null
+        }
+        Relationships: []
+      }
+      _bak_upsell_triggers_20260807: {
+        Row: {
+          code: string | null
+          delay_days: number | null
+          description: string | null
+          is_active: boolean | null
+          label: string | null
+          offer_visa_code: string | null
+          sort_order: number | null
+          trigger_condition: Json | null
+        }
+        Insert: {
+          code?: string | null
+          delay_days?: number | null
+          description?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          offer_visa_code?: string | null
+          sort_order?: number | null
+          trigger_condition?: Json | null
+        }
+        Update: {
+          code?: string | null
+          delay_days?: number | null
+          description?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          offer_visa_code?: string | null
+          sort_order?: number | null
+          trigger_condition?: Json | null
+        }
+        Relationships: []
+      }
+      _bak_visa_sub_types_20260807: {
+        Row: {
+          code: string | null
+          id: string | null
+          is_active: boolean | null
+          label: string | null
+          processing_time_days: number | null
+          visa_type_id: string | null
+        }
+        Insert: {
+          code?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          processing_time_days?: number | null
+          visa_type_id?: string | null
+        }
+        Update: {
+          code?: string | null
+          id?: string | null
+          is_active?: boolean | null
+          label?: string | null
+          processing_time_days?: number | null
+          visa_type_id?: string | null
+        }
+        Relationships: []
+      }
+      _bak_visa_types_20260807: {
+        Row: {
+          base_fee_cad: number | null
+          base_fee_inr: number | null
+          category: string | null
+          category_id: string | null
+          code: string | null
+          destination_country: string | null
+          govt_fee_cad: number | null
+          id: string | null
+          is_active: boolean | null
+          is_commission_based: boolean | null
+          label: string | null
+          notes: string | null
+          requires_canada_residency: boolean | null
+        }
+        Insert: {
+          base_fee_cad?: number | null
+          base_fee_inr?: number | null
+          category?: string | null
+          category_id?: string | null
+          code?: string | null
+          destination_country?: string | null
+          govt_fee_cad?: number | null
+          id?: string | null
+          is_active?: boolean | null
+          is_commission_based?: boolean | null
+          label?: string | null
+          notes?: string | null
+          requires_canada_residency?: boolean | null
+        }
+        Update: {
+          base_fee_cad?: number | null
+          base_fee_inr?: number | null
+          category?: string | null
+          category_id?: string | null
+          code?: string | null
+          destination_country?: string | null
+          govt_fee_cad?: number | null
+          id?: string | null
+          is_active?: boolean | null
+          is_commission_based?: boolean | null
+          label?: string | null
+          notes?: string | null
+          requires_canada_residency?: boolean | null
+        }
+        Relationships: []
+      }
       activity_timeline: {
         Row: {
           actor_id: string | null
@@ -845,6 +1490,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "activity_timeline_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -878,6 +1537,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "activity_timeline_client_id_fkey"
@@ -1078,6 +1744,33 @@ export type Database = {
           },
         ]
       }
+      applicant_groups: {
+        Row: {
+          created_at: string
+          group_name: string
+          group_type: string
+          id: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          group_name: string
+          group_type?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          group_name?: string
+          group_type?: string
+          id?: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       applicant_relationships: {
         Row: {
           created_at: string
@@ -1249,6 +1942,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "appointments_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "appointments_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "appointments_related_lead_id_fkey"
             columns: ["related_lead_id"]
             isOneToOne: false
@@ -1299,6 +2006,78 @@ export type Database = {
           },
         ]
       }
+      assessment_changes: {
+        Row: {
+          assessment_id: string
+          change_source: string
+          changed_at: string
+          changed_by: string | null
+          field_path: string
+          id: string
+          new_value: string | null
+          note: string | null
+          old_value: string | null
+        }
+        Insert: {
+          assessment_id: string
+          change_source?: string
+          changed_at?: string
+          changed_by?: string | null
+          field_path: string
+          id?: string
+          new_value?: string | null
+          note?: string | null
+          old_value?: string | null
+        }
+        Update: {
+          assessment_id?: string
+          change_source?: string
+          changed_at?: string
+          changed_by?: string | null
+          field_path?: string
+          id?: string
+          new_value?: string | null
+          note?: string | null
+          old_value?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_changes_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_changes_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "v_assessment_summary"
+            referencedColumns: ["assessment_id"]
+          },
+          {
+            foreignKeyName: "assessment_changes_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["assessment_id"]
+          },
+          {
+            foreignKeyName: "assessment_changes_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_changes_changed_by_fkey"
+            columns: ["changed_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+        ]
+      }
       assessment_forms: {
         Row: {
           code: string
@@ -1337,8 +2116,25 @@ export type Database = {
       }
       assessments: {
         Row: {
+          ack_count: number
+          ack_sent_at: string | null
           client_id: string | null
+          client_reply_at: string | null
+          client_reply_channel: string | null
+          client_reply_text: string | null
+          confirmation_state: string
+          confirmed_at: string | null
+          confirmed_by: string | null
           created_at: string
+          discussed_at: string | null
+          discussed_by: string | null
+          discussion_notes: string | null
+          edit_count: number
+          expert_notes: string | null
+          expert_reviewed_at: string | null
+          expert_reviewed_by: string | null
+          expert_state: string
+          expert_verdict: string | null
           facts: Json | null
           form_code: string | null
           id: string
@@ -1351,8 +2147,25 @@ export type Database = {
           submitted_at: string | null
         }
         Insert: {
+          ack_count?: number
+          ack_sent_at?: string | null
           client_id?: string | null
+          client_reply_at?: string | null
+          client_reply_channel?: string | null
+          client_reply_text?: string | null
+          confirmation_state?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
+          discussed_at?: string | null
+          discussed_by?: string | null
+          discussion_notes?: string | null
+          edit_count?: number
+          expert_notes?: string | null
+          expert_reviewed_at?: string | null
+          expert_reviewed_by?: string | null
+          expert_state?: string
+          expert_verdict?: string | null
           facts?: Json | null
           form_code?: string | null
           id?: string
@@ -1365,8 +2178,25 @@ export type Database = {
           submitted_at?: string | null
         }
         Update: {
+          ack_count?: number
+          ack_sent_at?: string | null
           client_id?: string | null
+          client_reply_at?: string | null
+          client_reply_channel?: string | null
+          client_reply_text?: string | null
+          confirmation_state?: string
+          confirmed_at?: string | null
+          confirmed_by?: string | null
           created_at?: string
+          discussed_at?: string | null
+          discussed_by?: string | null
+          discussion_notes?: string | null
+          edit_count?: number
+          expert_notes?: string | null
+          expert_reviewed_at?: string | null
+          expert_reviewed_by?: string | null
+          expert_state?: string
+          expert_verdict?: string | null
           facts?: Json | null
           form_code?: string | null
           id?: string
@@ -1418,8 +2248,57 @@ export type Database = {
             foreignKeyName: "assessments_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "assessments_confirmed_by_fkey"
+            columns: ["confirmed_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_confirmed_by_fkey"
+            columns: ["confirmed_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "assessments_discussed_by_fkey"
+            columns: ["discussed_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_discussed_by_fkey"
+            columns: ["discussed_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "assessments_expert_reviewed_by_fkey"
+            columns: ["expert_reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_expert_reviewed_by_fkey"
+            columns: ["expert_reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
           },
           {
             foreignKeyName: "assessments_lead_id_fkey"
@@ -2123,6 +3002,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "call_logs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "call_logs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "call_logs_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -2156,6 +3049,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "call_logs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "call_logs_client_id_fkey"
@@ -2237,6 +3137,7 @@ export type Database = {
           passport_expiry: string | null
           passport_number: string | null
           phone: string | null
+          uci: string | null
           updated_at: string
         }
         Insert: {
@@ -2260,6 +3161,7 @@ export type Database = {
           passport_expiry?: string | null
           passport_number?: string | null
           phone?: string | null
+          uci?: string | null
           updated_at?: string
         }
         Update: {
@@ -2283,6 +3185,7 @@ export type Database = {
           passport_expiry?: string | null
           passport_number?: string | null
           phone?: string | null
+          uci?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -2371,6 +3274,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "case_applicants_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_applicants_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "case_applicants_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -2409,6 +3326,13 @@ export type Database = {
             foreignKeyName: "case_applicants_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "case_applicants_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
@@ -2442,6 +3366,9 @@ export type Database = {
           mime_type: string | null
           notes: string | null
           page_count: number | null
+          rejected_at: string | null
+          rejected_by: string | null
+          rejection_note: string | null
           replaces_document_id: string | null
           status: string | null
           storage_bucket: string
@@ -2467,6 +3394,9 @@ export type Database = {
           mime_type?: string | null
           notes?: string | null
           page_count?: number | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_note?: string | null
           replaces_document_id?: string | null
           status?: string | null
           storage_bucket?: string
@@ -2492,6 +3422,9 @@ export type Database = {
           mime_type?: string | null
           notes?: string | null
           page_count?: number | null
+          rejected_at?: string | null
+          rejected_by?: string | null
+          rejection_note?: string | null
           replaces_document_id?: string | null
           status?: string | null
           storage_bucket?: string
@@ -2590,11 +3523,46 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "case_documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_documents_rejected_by_fkey"
+            columns: ["rejected_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_documents_rejected_by_fkey"
+            columns: ["rejected_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
             foreignKeyName: "case_documents_replaces_document_id_fkey"
             columns: ["replaces_document_id"]
             isOneToOne: false
             referencedRelation: "case_documents"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_documents_replaces_document_id_fkey"
+            columns: ["replaces_document_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["document_id"]
           },
           {
             foreignKeyName: "case_documents_uploaded_by_client_id_fkey"
@@ -2630,6 +3598,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_documents_uploaded_by_client_id_fkey"
+            columns: ["uploaded_by_client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "case_documents_uploaded_by_client_id_fkey"
@@ -2785,6 +3760,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "case_milestones_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -2818,6 +3807,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_milestones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "case_milestones_client_id_fkey"
@@ -2968,6 +3964,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_client_family_chain"
             referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
           },
         ]
       }
@@ -3124,6 +4134,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "case_outcome_reviews_decided_by_fkey"
             columns: ["decided_by"]
             isOneToOne: false
@@ -3248,6 +4272,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_client_family_chain"
             referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
           },
         ]
       }
@@ -3372,6 +4410,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_client_family_chain"
             referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_requests_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_requests_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "case_requests_fulfilled_by_fkey"
@@ -3517,6 +4569,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "case_stage_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_stage_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "case_stage_history_changed_by_fkey"
             columns: ["changed_by"]
             isOneToOne: false
@@ -3580,7 +4646,13 @@ export type Database = {
           current_stage_code: string | null
           decision_at: string | null
           family_unit_id: string | null
+          group_role: string | null
           id: string
+          ircc_file_number: string | null
+          ircc_portal_ref: string | null
+          ircc_status: string | null
+          ircc_status_updated_at: string | null
+          ircc_submitted_at: string | null
           is_archived: boolean | null
           notes: string | null
           origin_case_id: string | null
@@ -3616,7 +4688,13 @@ export type Database = {
           current_stage_code?: string | null
           decision_at?: string | null
           family_unit_id?: string | null
+          group_role?: string | null
           id?: string
+          ircc_file_number?: string | null
+          ircc_portal_ref?: string | null
+          ircc_status?: string | null
+          ircc_status_updated_at?: string | null
+          ircc_submitted_at?: string | null
           is_archived?: boolean | null
           notes?: string | null
           origin_case_id?: string | null
@@ -3652,7 +4730,13 @@ export type Database = {
           current_stage_code?: string | null
           decision_at?: string | null
           family_unit_id?: string | null
+          group_role?: string | null
           id?: string
+          ircc_file_number?: string | null
+          ircc_portal_ref?: string | null
+          ircc_status?: string | null
+          ircc_status_updated_at?: string | null
+          ircc_submitted_at?: string | null
           is_archived?: boolean | null
           notes?: string | null
           origin_case_id?: string | null
@@ -3677,6 +4761,13 @@ export type Database = {
           visa_type_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "cases_case_group_id_fkey"
+            columns: ["case_group_id"]
+            isOneToOne: false
+            referencedRelation: "applicant_groups"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "cases_case_manager_id_fkey"
             columns: ["case_manager_id"]
@@ -3730,6 +4821,13 @@ export type Database = {
             foreignKeyName: "cases_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
@@ -3746,6 +4844,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "family_units"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
+            referencedRelation: "v_family_financials"
+            referencedColumns: ["family_unit_id"]
           },
           {
             foreignKeyName: "cases_family_unit_id_fkey"
@@ -3839,6 +4944,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "cases_parent_case_id_fkey"
             columns: ["parent_case_id"]
             isOneToOne: false
@@ -3923,6 +5042,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "cases_senior_advisor_id_fkey"
             columns: ["senior_advisor_id"]
             isOneToOne: false
@@ -3994,6 +5127,286 @@ export type Database = {
         }
         Relationships: []
       }
+      client_commitments: {
+        Row: {
+          case_id: string | null
+          client_id: string | null
+          commitment_type: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lead_id: string | null
+          quoted_fee_inr: number | null
+          recorded_at: string | null
+          recorded_by: string | null
+          replied_at: string | null
+          reply_channel: string | null
+          reply_text: string | null
+          sent_at: string | null
+          sent_to: string | null
+          state: string
+          terms_snapshot: string
+          terms_version: string
+          withdrawn_at: string | null
+          withdrawn_reason: string | null
+        }
+        Insert: {
+          case_id?: string | null
+          client_id?: string | null
+          commitment_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id?: string | null
+          quoted_fee_inr?: number | null
+          recorded_at?: string | null
+          recorded_by?: string | null
+          replied_at?: string | null
+          reply_channel?: string | null
+          reply_text?: string | null
+          sent_at?: string | null
+          sent_to?: string | null
+          state?: string
+          terms_snapshot: string
+          terms_version?: string
+          withdrawn_at?: string | null
+          withdrawn_reason?: string | null
+        }
+        Update: {
+          case_id?: string | null
+          client_id?: string | null
+          commitment_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lead_id?: string | null
+          quoted_fee_inr?: number | null
+          recorded_at?: string | null
+          recorded_by?: string | null
+          replied_at?: string | null
+          reply_channel?: string | null
+          reply_text?: string | null
+          sent_at?: string | null
+          sent_to?: string | null
+          state?: string
+          terms_snapshot?: string
+          terms_version?: string
+          withdrawn_at?: string | null
+          withdrawn_reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["for_client_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_clients_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "v_followup_integrity"
+            referencedColumns: ["lead_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_notes"
+            referencedColumns: ["for_lead_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["lead_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_timeline"
+            referencedColumns: ["for_lead_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "client_commitments_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+        ]
+      }
       clients: {
         Row: {
           birthday_month_day: string | null
@@ -4014,6 +5427,7 @@ export type Database = {
           portal_user_id: string | null
           preferred_language: string | null
           source_lead_id: string | null
+          uci: string | null
           updated_at: string | null
           whatsapp: string | null
         }
@@ -4036,6 +5450,7 @@ export type Database = {
           portal_user_id?: string | null
           preferred_language?: string | null
           source_lead_id?: string | null
+          uci?: string | null
           updated_at?: string | null
           whatsapp?: string | null
         }
@@ -4058,6 +5473,7 @@ export type Database = {
           portal_user_id?: string | null
           preferred_language?: string | null
           source_lead_id?: string | null
+          uci?: string | null
           updated_at?: string | null
           whatsapp?: string | null
         }
@@ -4068,6 +5484,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "family_units"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clients_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
+            referencedRelation: "v_family_financials"
+            referencedColumns: ["family_unit_id"]
           },
           {
             foreignKeyName: "clients_family_unit_id_fkey"
@@ -4426,6 +5849,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "commissions_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "commissions_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "commissions_invoice_id_fkey"
             columns: ["invoice_id"]
             isOneToOne: false
@@ -4634,6 +6071,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "contact_identities_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "contact_identities_client_id_fkey"
@@ -4873,6 +6317,13 @@ export type Database = {
             foreignKeyName: "conversations_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "conversations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
@@ -4929,30 +6380,73 @@ export type Database = {
       }
       countries: {
         Row: {
+          aliases: string[]
           code: string
           created_at: string
           is_active: boolean
+          is_destination: boolean
+          is_schengen_member: boolean
+          iso3: string | null
+          kind: string
           label: string
+          parent_area_code: string | null
+          requires_member_selection: boolean
           sort_order: number
           updated_at: string
         }
         Insert: {
+          aliases?: string[]
           code: string
           created_at?: string
           is_active?: boolean
+          is_destination?: boolean
+          is_schengen_member?: boolean
+          iso3?: string | null
+          kind?: string
           label: string
+          parent_area_code?: string | null
+          requires_member_selection?: boolean
           sort_order?: number
           updated_at?: string
         }
         Update: {
+          aliases?: string[]
           code?: string
           created_at?: string
           is_active?: boolean
+          is_destination?: boolean
+          is_schengen_member?: boolean
+          iso3?: string | null
+          kind?: string
           label?: string
+          parent_area_code?: string | null
+          requires_member_selection?: boolean
           sort_order?: number
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "countries_parent_area_fk"
+            columns: ["parent_area_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "countries_parent_area_fk"
+            columns: ["parent_area_code"]
+            isOneToOne: false
+            referencedRelation: "v_destination_picker"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "countries_parent_area_fk"
+            columns: ["parent_area_code"]
+            isOneToOne: false
+            referencedRelation: "v_schengen_members"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       document_checklist_rules: {
         Row: {
@@ -5202,6 +6696,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "entity_notes_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -5235,6 +6743,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "entity_notes_client_id_fkey"
@@ -5321,6 +6836,30 @@ export type Database = {
             referencedColumns: ["counselor_id"]
           },
         ]
+      }
+      escalation_tiers: {
+        Row: {
+          notes: string | null
+          roles: string[]
+          tier: number
+          tier_name: string
+          updated_at: string
+        }
+        Insert: {
+          notes?: string | null
+          roles: string[]
+          tier: number
+          tier_name: string
+          updated_at?: string
+        }
+        Update: {
+          notes?: string | null
+          roles?: string[]
+          tier?: number
+          tier_name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       expiry_alert_rules: {
         Row: {
@@ -5481,6 +7020,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "expiry_items_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "expiry_items_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "expiry_items_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -5514,6 +7067,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "expiry_items_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "expiry_items_client_id_fkey"
@@ -5620,6 +7180,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "family_members_principal_client_id_fkey"
+            columns: ["principal_client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "family_members_principal_client_id_fkey"
@@ -5795,6 +7362,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "finance_entries_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "finance_entries_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "finance_entries_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -5833,6 +7414,13 @@ export type Database = {
             foreignKeyName: "finance_entries_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "finance_entries_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
@@ -5849,6 +7437,1151 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_counselor_performance"
             referencedColumns: ["counselor_id"]
+          },
+        ]
+      }
+      imm_assessment_runs: {
+        Row: {
+          assessment_id: string | null
+          case_id: string | null
+          client_id: string | null
+          completeness_pct: number | null
+          created_at: string
+          destination_code: string | null
+          engine_version: string
+          facts: Json
+          id: string
+          lead_id: string | null
+          missing_facts: string[]
+          run_by: string | null
+          status: string
+        }
+        Insert: {
+          assessment_id?: string | null
+          case_id?: string | null
+          client_id?: string | null
+          completeness_pct?: number | null
+          created_at?: string
+          destination_code?: string | null
+          engine_version?: string
+          facts?: Json
+          id?: string
+          lead_id?: string | null
+          missing_facts?: string[]
+          run_by?: string | null
+          status?: string
+        }
+        Update: {
+          assessment_id?: string | null
+          case_id?: string | null
+          client_id?: string | null
+          completeness_pct?: number | null
+          created_at?: string
+          destination_code?: string | null
+          engine_version?: string
+          facts?: Json
+          id?: string
+          lead_id?: string | null
+          missing_facts?: string[]
+          run_by?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_assessment_runs_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "v_assessment_summary"
+            referencedColumns: ["assessment_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["assessment_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["for_client_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_clients_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_destination_picker"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_schengen_members"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "v_followup_integrity"
+            referencedColumns: ["lead_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_notes"
+            referencedColumns: ["for_lead_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["lead_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_timeline"
+            referencedColumns: ["for_lead_id"]
+          },
+        ]
+      }
+      imm_criteria: {
+        Row: {
+          applies_to: string
+          condition: Json
+          criterion_code: string
+          criterion_type: string
+          effective_from: string | null
+          effective_to: string | null
+          failure_message: string | null
+          id: string
+          is_active: boolean
+          label: string
+          program_code: string
+          remedy_note: string | null
+          sort_order: number
+          source_url: string | null
+        }
+        Insert: {
+          applies_to?: string
+          condition: Json
+          criterion_code: string
+          criterion_type?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          failure_message?: string | null
+          id?: string
+          is_active?: boolean
+          label: string
+          program_code: string
+          remedy_note?: string | null
+          sort_order?: number
+          source_url?: string | null
+        }
+        Update: {
+          applies_to?: string
+          condition?: Json
+          criterion_code?: string
+          criterion_type?: string
+          effective_from?: string | null
+          effective_to?: string | null
+          failure_message?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string
+          program_code?: string
+          remedy_note?: string | null
+          sort_order?: number
+          source_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_criteria_program_code_fkey"
+            columns: ["program_code"]
+            isOneToOne: false
+            referencedRelation: "imm_programs"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      imm_documents: {
+        Row: {
+          applies_to: string
+          category: string | null
+          document_code: string
+          expiry_tracking: boolean
+          guidance: string | null
+          id: string
+          ircc_form_id: string | null
+          is_active: boolean
+          is_mandatory: boolean
+          label: string
+          program_code: string
+          proves_criterion: string | null
+          show_if: Json | null
+          sort_order: number
+        }
+        Insert: {
+          applies_to?: string
+          category?: string | null
+          document_code: string
+          expiry_tracking?: boolean
+          guidance?: string | null
+          id?: string
+          ircc_form_id?: string | null
+          is_active?: boolean
+          is_mandatory?: boolean
+          label: string
+          program_code: string
+          proves_criterion?: string | null
+          show_if?: Json | null
+          sort_order?: number
+        }
+        Update: {
+          applies_to?: string
+          category?: string | null
+          document_code?: string
+          expiry_tracking?: boolean
+          guidance?: string | null
+          id?: string
+          ircc_form_id?: string | null
+          is_active?: boolean
+          is_mandatory?: boolean
+          label?: string
+          program_code?: string
+          proves_criterion?: string | null
+          show_if?: Json | null
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_documents_program_code_fkey"
+            columns: ["program_code"]
+            isOneToOne: false
+            referencedRelation: "imm_programs"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      imm_draws: {
+        Row: {
+          category_tag: string | null
+          created_at: string
+          cutoff_score: number | null
+          draw_date: string
+          draw_number: string | null
+          id: string
+          invitations_issued: number | null
+          program_code: string
+          source_url: string | null
+          tie_break_at: string | null
+        }
+        Insert: {
+          category_tag?: string | null
+          created_at?: string
+          cutoff_score?: number | null
+          draw_date: string
+          draw_number?: string | null
+          id?: string
+          invitations_issued?: number | null
+          program_code: string
+          source_url?: string | null
+          tie_break_at?: string | null
+        }
+        Update: {
+          category_tag?: string | null
+          created_at?: string
+          cutoff_score?: number | null
+          draw_date?: string
+          draw_number?: string | null
+          id?: string
+          invitations_issued?: number | null
+          program_code?: string
+          source_url?: string | null
+          tie_break_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_draws_program_code_fkey"
+            columns: ["program_code"]
+            isOneToOne: false
+            referencedRelation: "imm_programs"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      imm_facts: {
+        Row: {
+          applies_to: string
+          code: string
+          created_at: string
+          data_type: string
+          derivation: Json | null
+          description: string | null
+          enum_options: Json | null
+          fact_group: string
+          help_text: string | null
+          is_active: boolean
+          is_derived: boolean
+          label: string
+          sort_order: number
+          unit: string | null
+          validation: Json | null
+        }
+        Insert: {
+          applies_to?: string
+          code: string
+          created_at?: string
+          data_type: string
+          derivation?: Json | null
+          description?: string | null
+          enum_options?: Json | null
+          fact_group?: string
+          help_text?: string | null
+          is_active?: boolean
+          is_derived?: boolean
+          label: string
+          sort_order?: number
+          unit?: string | null
+          validation?: Json | null
+        }
+        Update: {
+          applies_to?: string
+          code?: string
+          created_at?: string
+          data_type?: string
+          derivation?: Json | null
+          description?: string | null
+          enum_options?: Json | null
+          fact_group?: string
+          help_text?: string | null
+          is_active?: boolean
+          is_derived?: boolean
+          label?: string
+          sort_order?: number
+          unit?: string | null
+          validation?: Json | null
+        }
+        Relationships: []
+      }
+      imm_jurisdictions: {
+        Row: {
+          code: string
+          country_code: string
+          is_active: boolean
+          kind: string
+          label: string
+          parent_code: string | null
+          sort_order: number
+        }
+        Insert: {
+          code: string
+          country_code: string
+          is_active?: boolean
+          kind: string
+          label: string
+          parent_code?: string | null
+          sort_order?: number
+        }
+        Update: {
+          code?: string
+          country_code?: string
+          is_active?: boolean
+          kind?: string
+          label?: string
+          parent_code?: string | null
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_jurisdictions_country_code_fkey"
+            columns: ["country_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_jurisdictions_country_code_fkey"
+            columns: ["country_code"]
+            isOneToOne: false
+            referencedRelation: "v_destination_picker"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_jurisdictions_country_code_fkey"
+            columns: ["country_code"]
+            isOneToOne: false
+            referencedRelation: "v_schengen_members"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_jurisdictions_parent_code_fkey"
+            columns: ["parent_code"]
+            isOneToOne: false
+            referencedRelation: "imm_jurisdictions"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      imm_lever_effects: {
+        Row: {
+          effect: Json
+          fact_code: string
+          id: string
+          lever_code: string
+          notes: string | null
+        }
+        Insert: {
+          effect: Json
+          fact_code: string
+          id?: string
+          lever_code: string
+          notes?: string | null
+        }
+        Update: {
+          effect?: Json
+          fact_code?: string
+          id?: string
+          lever_code?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_lever_effects_fact_code_fkey"
+            columns: ["fact_code"]
+            isOneToOne: false
+            referencedRelation: "imm_facts"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_lever_effects_lever_code_fkey"
+            columns: ["lever_code"]
+            isOneToOne: false
+            referencedRelation: "imm_levers"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      imm_levers: {
+        Row: {
+          code: string
+          counselor_script: string | null
+          description: string | null
+          effort: string
+          is_active: boolean
+          label: string
+          lever_group: string
+          typical_cost_cad: number | null
+          typical_months: number | null
+        }
+        Insert: {
+          code: string
+          counselor_script?: string | null
+          description?: string | null
+          effort?: string
+          is_active?: boolean
+          label: string
+          lever_group?: string
+          typical_cost_cad?: number | null
+          typical_months?: number | null
+        }
+        Update: {
+          code?: string
+          counselor_script?: string | null
+          description?: string | null
+          effort?: string
+          is_active?: boolean
+          label?: string
+          lever_group?: string
+          typical_cost_cad?: number | null
+          typical_months?: number | null
+        }
+        Relationships: []
+      }
+      imm_overrides: {
+        Row: {
+          created_at: string
+          id: string
+          new_value: Json
+          original_value: Json | null
+          overridden_by: string
+          program_code: string | null
+          reason: string
+          run_id: string
+          scope: string
+          target_code: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          new_value: Json
+          original_value?: Json | null
+          overridden_by: string
+          program_code?: string | null
+          reason: string
+          run_id: string
+          scope: string
+          target_code?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          new_value?: Json
+          original_value?: Json | null
+          overridden_by?: string
+          program_code?: string | null
+          reason?: string
+          run_id?: string
+          scope?: string
+          target_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_overrides_program_code_fkey"
+            columns: ["program_code"]
+            isOneToOne: false
+            referencedRelation: "imm_programs"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_overrides_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "imm_assessment_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      imm_program_results: {
+        Row: {
+          band: string | null
+          created_at: string
+          cutoff_draw_id: string | null
+          cutoff_reference: number | null
+          engine_note: string | null
+          failed_criteria: string[]
+          id: string
+          is_recommended: boolean
+          max_score: number | null
+          missing_facts: string[]
+          program_code: string
+          rank: number | null
+          run_id: string
+          score: number | null
+          score_breakdown: Json | null
+          score_gap: number | null
+          unknown_criteria: string[]
+          verdict: string
+        }
+        Insert: {
+          band?: string | null
+          created_at?: string
+          cutoff_draw_id?: string | null
+          cutoff_reference?: number | null
+          engine_note?: string | null
+          failed_criteria?: string[]
+          id?: string
+          is_recommended?: boolean
+          max_score?: number | null
+          missing_facts?: string[]
+          program_code: string
+          rank?: number | null
+          run_id: string
+          score?: number | null
+          score_breakdown?: Json | null
+          score_gap?: number | null
+          unknown_criteria?: string[]
+          verdict: string
+        }
+        Update: {
+          band?: string | null
+          created_at?: string
+          cutoff_draw_id?: string | null
+          cutoff_reference?: number | null
+          engine_note?: string | null
+          failed_criteria?: string[]
+          id?: string
+          is_recommended?: boolean
+          max_score?: number | null
+          missing_facts?: string[]
+          program_code?: string
+          rank?: number | null
+          run_id?: string
+          score?: number | null
+          score_breakdown?: Json | null
+          score_gap?: number | null
+          unknown_criteria?: string[]
+          verdict?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_program_results_cutoff_draw_id_fkey"
+            columns: ["cutoff_draw_id"]
+            isOneToOne: false
+            referencedRelation: "imm_draws"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "imm_program_results_program_code_fkey"
+            columns: ["program_code"]
+            isOneToOne: false
+            referencedRelation: "imm_programs"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_program_results_run_id_fkey"
+            columns: ["run_id"]
+            isOneToOne: false
+            referencedRelation: "imm_assessment_runs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      imm_program_visa_types: {
+        Row: {
+          is_primary: boolean
+          program_code: string
+          stage_role: string
+          visa_type_code: string
+        }
+        Insert: {
+          is_primary?: boolean
+          program_code: string
+          stage_role?: string
+          visa_type_code: string
+        }
+        Update: {
+          is_primary?: boolean
+          program_code?: string
+          stage_role?: string
+          visa_type_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_program_visa_types_program_code_fkey"
+            columns: ["program_code"]
+            isOneToOne: false
+            referencedRelation: "imm_programs"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_program_visa_types_visa_type_code_fkey"
+            columns: ["visa_type_code"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["programme"]
+          },
+          {
+            foreignKeyName: "imm_program_visa_types_visa_type_code_fkey"
+            columns: ["visa_type_code"]
+            isOneToOne: false
+            referencedRelation: "v_visa_picker"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_program_visa_types_visa_type_code_fkey"
+            columns: ["visa_type_code"]
+            isOneToOne: false
+            referencedRelation: "visa_types"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      imm_programs: {
+        Row: {
+          annual_quota: number | null
+          category_code: string
+          code: string
+          created_at: string
+          destination_code: string
+          govt_fee_cad: number | null
+          intake_model: string
+          is_active: boolean
+          is_scored: boolean
+          jurisdiction_code: string | null
+          last_verified_on: string | null
+          leads_to_pr: boolean
+          max_processing_days: number | null
+          max_score: number | null
+          min_processing_days: number | null
+          name: string
+          notes: string | null
+          pass_mark: number | null
+          quota_period: string | null
+          requires_job_offer: boolean
+          requires_nomination: boolean
+          short_name: string | null
+          source_url: string | null
+          status: string
+          summary: string | null
+          updated_at: string
+        }
+        Insert: {
+          annual_quota?: number | null
+          category_code: string
+          code: string
+          created_at?: string
+          destination_code: string
+          govt_fee_cad?: number | null
+          intake_model: string
+          is_active?: boolean
+          is_scored?: boolean
+          jurisdiction_code?: string | null
+          last_verified_on?: string | null
+          leads_to_pr?: boolean
+          max_processing_days?: number | null
+          max_score?: number | null
+          min_processing_days?: number | null
+          name: string
+          notes?: string | null
+          pass_mark?: number | null
+          quota_period?: string | null
+          requires_job_offer?: boolean
+          requires_nomination?: boolean
+          short_name?: string | null
+          source_url?: string | null
+          status?: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Update: {
+          annual_quota?: number | null
+          category_code?: string
+          code?: string
+          created_at?: string
+          destination_code?: string
+          govt_fee_cad?: number | null
+          intake_model?: string
+          is_active?: boolean
+          is_scored?: boolean
+          jurisdiction_code?: string | null
+          last_verified_on?: string | null
+          leads_to_pr?: boolean
+          max_processing_days?: number | null
+          max_score?: number | null
+          min_processing_days?: number | null
+          name?: string
+          notes?: string | null
+          pass_mark?: number | null
+          quota_period?: string | null
+          requires_job_offer?: boolean
+          requires_nomination?: boolean
+          short_name?: string | null
+          source_url?: string | null
+          status?: string
+          summary?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_programs_category_code_fkey"
+            columns: ["category_code"]
+            isOneToOne: false
+            referencedRelation: "visa_categories"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_programs_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_programs_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_destination_picker"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_programs_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_schengen_members"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_programs_jurisdiction_code_fkey"
+            columns: ["jurisdiction_code"]
+            isOneToOne: false
+            referencedRelation: "imm_jurisdictions"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      imm_result_levers: {
+        Row: {
+          detail: Json | null
+          flips_verdict: boolean
+          id: string
+          lever_code: string
+          projected_score: number | null
+          projected_verdict: string | null
+          rank: number | null
+          result_id: string
+          score_delta: number | null
+        }
+        Insert: {
+          detail?: Json | null
+          flips_verdict?: boolean
+          id?: string
+          lever_code: string
+          projected_score?: number | null
+          projected_verdict?: string | null
+          rank?: number | null
+          result_id: string
+          score_delta?: number | null
+        }
+        Update: {
+          detail?: Json | null
+          flips_verdict?: boolean
+          id?: string
+          lever_code?: string
+          projected_score?: number | null
+          projected_verdict?: string | null
+          rank?: number | null
+          result_id?: string
+          score_delta?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_result_levers_lever_code_fkey"
+            columns: ["lever_code"]
+            isOneToOne: false
+            referencedRelation: "imm_levers"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "imm_result_levers_result_id_fkey"
+            columns: ["result_id"]
+            isOneToOne: false
+            referencedRelation: "imm_program_results"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      imm_score_factors: {
+        Row: {
+          applies_to: string
+          factor_code: string
+          factor_group: string
+          id: string
+          label: string
+          max_points: number | null
+          notes: string | null
+          program_code: string
+          sort_order: number
+        }
+        Insert: {
+          applies_to?: string
+          factor_code: string
+          factor_group?: string
+          id?: string
+          label: string
+          max_points?: number | null
+          notes?: string | null
+          program_code: string
+          sort_order?: number
+        }
+        Update: {
+          applies_to?: string
+          factor_code?: string
+          factor_group?: string
+          id?: string
+          label?: string
+          max_points?: number | null
+          notes?: string | null
+          program_code?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_score_factors_program_code_fkey"
+            columns: ["program_code"]
+            isOneToOne: false
+            referencedRelation: "imm_programs"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      imm_score_rules: {
+        Row: {
+          band_label: string | null
+          condition: Json
+          factor_code: string
+          id: string
+          is_active: boolean
+          points: number
+          program_code: string
+          sort_order: number
+          variant: string
+        }
+        Insert: {
+          band_label?: string | null
+          condition: Json
+          factor_code: string
+          id?: string
+          is_active?: boolean
+          points: number
+          program_code: string
+          sort_order?: number
+          variant?: string
+        }
+        Update: {
+          band_label?: string | null
+          condition?: Json
+          factor_code?: string
+          id?: string
+          is_active?: boolean
+          points?: number
+          program_code?: string
+          sort_order?: number
+          variant?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_score_rules_program_code_factor_code_fkey"
+            columns: ["program_code", "factor_code"]
+            isOneToOne: false
+            referencedRelation: "imm_score_factors"
+            referencedColumns: ["program_code", "factor_code"]
+          },
+        ]
+      }
+      imm_stages: {
+        Row: {
+          actor: string
+          biometrics_required: boolean
+          description: string | null
+          forms: string[]
+          government_fee_cad: number | null
+          id: string
+          is_active: boolean
+          medicals_required: boolean
+          portal: string | null
+          prerequisites: Json | null
+          program_code: string
+          seq: number
+          source_url: string | null
+          stage_code: string
+          title: string
+          typical_days_max: number | null
+          typical_days_min: number | null
+        }
+        Insert: {
+          actor?: string
+          biometrics_required?: boolean
+          description?: string | null
+          forms?: string[]
+          government_fee_cad?: number | null
+          id?: string
+          is_active?: boolean
+          medicals_required?: boolean
+          portal?: string | null
+          prerequisites?: Json | null
+          program_code: string
+          seq: number
+          source_url?: string | null
+          stage_code: string
+          title: string
+          typical_days_max?: number | null
+          typical_days_min?: number | null
+        }
+        Update: {
+          actor?: string
+          biometrics_required?: boolean
+          description?: string | null
+          forms?: string[]
+          government_fee_cad?: number | null
+          id?: string
+          is_active?: boolean
+          medicals_required?: boolean
+          portal?: string | null
+          prerequisites?: Json | null
+          program_code?: string
+          seq?: number
+          source_url?: string | null
+          stage_code?: string
+          title?: string
+          typical_days_max?: number | null
+          typical_days_min?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "imm_stages_program_code_fkey"
+            columns: ["program_code"]
+            isOneToOne: false
+            referencedRelation: "imm_programs"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -6050,6 +8783,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "invoices_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "invoices_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "invoices_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -6083,6 +8830,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "invoices_client_id_fkey"
@@ -6243,6 +8997,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "ircc_emails_matched_case_id_fkey"
+            columns: ["matched_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_emails_matched_case_id_fkey"
+            columns: ["matched_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "ircc_emails_processed_by_fkey"
             columns: ["processed_by"]
             isOneToOne: false
@@ -6252,6 +9020,146 @@ export type Database = {
           {
             foreignKeyName: "ircc_emails_processed_by_fkey"
             columns: ["processed_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+        ]
+      }
+      ircc_file_history: {
+        Row: {
+          case_id: string
+          file_number: string
+          id: string
+          note: string | null
+          recorded_at: string
+          recorded_by: string | null
+        }
+        Insert: {
+          case_id: string
+          file_number: string
+          id?: string
+          note?: string | null
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Update: {
+          case_id?: string
+          file_number?: string
+          id?: string
+          note?: string | null
+          recorded_at?: string
+          recorded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_recorded_by_fkey"
+            columns: ["recorded_by"]
             isOneToOne: false
             referencedRelation: "v_counselor_performance"
             referencedColumns: ["counselor_id"]
@@ -6352,6 +9260,69 @@ export type Database = {
           reason?: string
         }
         Relationships: []
+      }
+      lead_journey_state: {
+        Row: {
+          form_code: string | null
+          lead_id: string
+          milestone: string
+          milestone_at: string
+          paused_reason: string | null
+          updated_at: string
+        }
+        Insert: {
+          form_code?: string | null
+          lead_id: string
+          milestone?: string
+          milestone_at?: string
+          paused_reason?: string | null
+          updated_at?: string
+        }
+        Update: {
+          form_code?: string | null
+          lead_id?: string
+          milestone?: string
+          milestone_at?: string
+          paused_reason?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_journey_state_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lead_journey_state_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "v_followup_integrity"
+            referencedColumns: ["lead_id"]
+          },
+          {
+            foreignKeyName: "lead_journey_state_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "v_lead_notes"
+            referencedColumns: ["for_lead_id"]
+          },
+          {
+            foreignKeyName: "lead_journey_state_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["lead_id"]
+          },
+          {
+            foreignKeyName: "lead_journey_state_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: true
+            referencedRelation: "v_lead_timeline"
+            referencedColumns: ["for_lead_id"]
+          },
+        ]
       }
       lead_nurture_targets: {
         Row: {
@@ -6740,6 +9711,13 @@ export type Database = {
             foreignKeyName: "fk_leads_converted_client"
             columns: ["converted_client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "fk_leads_converted_client"
+            columns: ["converted_client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
@@ -6817,6 +9795,13 @@ export type Database = {
             foreignKeyName: "leads_enquiry_client_id_fkey"
             columns: ["enquiry_client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "leads_enquiry_client_id_fkey"
+            columns: ["enquiry_client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
@@ -6826,6 +9811,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "family_units"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leads_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
+            referencedRelation: "v_family_financials"
+            referencedColumns: ["family_unit_id"]
           },
           {
             foreignKeyName: "leads_family_unit_id_fkey"
@@ -7041,6 +10033,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "messages_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "messages_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "messages_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -7074,6 +10080,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "messages_client_id_fkey"
@@ -7245,6 +10258,8 @@ export type Database = {
           created_by: string | null
           error_message: string | null
           id: string
+          journey_milestone: string | null
+          provider_reference: string | null
           related_case_id: string | null
           related_client_id: string | null
           related_lead_id: string | null
@@ -7265,6 +10280,8 @@ export type Database = {
           created_by?: string | null
           error_message?: string | null
           id?: string
+          journey_milestone?: string | null
+          provider_reference?: string | null
           related_case_id?: string | null
           related_client_id?: string | null
           related_lead_id?: string | null
@@ -7285,6 +10302,8 @@ export type Database = {
           created_by?: string | null
           error_message?: string | null
           id?: string
+          journey_milestone?: string | null
+          provider_reference?: string | null
           related_case_id?: string | null
           related_client_id?: string | null
           related_lead_id?: string | null
@@ -7397,6 +10416,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "outbound_messages_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "outbound_messages_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "outbound_messages_related_client_id_fkey"
             columns: ["related_client_id"]
             isOneToOne: false
@@ -7430,6 +10463,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "outbound_messages_related_client_id_fkey"
+            columns: ["related_client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "outbound_messages_related_client_id_fkey"
@@ -7574,6 +10614,30 @@ export type Database = {
         }
         Relationships: []
       }
+      programme_families: {
+        Row: {
+          code: string
+          form_code: string | null
+          is_active: boolean
+          label: string
+          sort_order: number
+        }
+        Insert: {
+          code: string
+          form_code?: string | null
+          is_active?: boolean
+          label: string
+          sort_order?: number
+        }
+        Update: {
+          code?: string
+          form_code?: string | null
+          is_active?: boolean
+          label?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       prospective_applications: {
         Row: {
           assigned_counselor_id: string | null
@@ -7650,6 +10714,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "family_units"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
+            referencedRelation: "v_family_financials"
+            referencedColumns: ["family_unit_id"]
           },
           {
             foreignKeyName: "prospective_applications_family_unit_id_fkey"
@@ -7743,6 +10814,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "prospective_applications_promoted_case_id_fkey"
+            columns: ["promoted_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_promoted_case_id_fkey"
+            columns: ["promoted_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "prospective_applications_source_case_id_fkey"
             columns: ["source_case_id"]
             isOneToOne: false
@@ -7827,6 +10912,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "prospective_applications_source_case_id_fkey"
+            columns: ["source_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_source_case_id_fkey"
+            columns: ["source_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "prospective_applications_triggered_by_rule_fkey"
             columns: ["triggered_by_rule"]
             isOneToOne: false
@@ -7840,6 +10939,7 @@ export type Database = {
           auto_trigger: Json | null
           created_at: string
           default_value: Json | null
+          fact_code: string | null
           field_code: string
           field_type: string
           help_text: string | null
@@ -7858,6 +10958,7 @@ export type Database = {
           auto_trigger?: Json | null
           created_at?: string
           default_value?: Json | null
+          fact_code?: string | null
           field_code: string
           field_type: string
           help_text?: string | null
@@ -7876,6 +10977,7 @@ export type Database = {
           auto_trigger?: Json | null
           created_at?: string
           default_value?: Json | null
+          fact_code?: string | null
           field_code?: string
           field_type?: string
           help_text?: string | null
@@ -7891,6 +10993,13 @@ export type Database = {
           visibility_rule?: Json | null
         }
         Relationships: [
+          {
+            foreignKeyName: "questionnaire_questions_fact_code_fkey"
+            columns: ["fact_code"]
+            isOneToOne: false
+            referencedRelation: "imm_facts"
+            referencedColumns: ["code"]
+          },
           {
             foreignKeyName: "questionnaire_questions_section_id_fkey"
             columns: ["section_id"]
@@ -8100,6 +11209,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "questionnaire_responses_lead_id_fkey"
             columns: ["lead_id"]
             isOneToOne: false
@@ -8204,9 +11327,11 @@ export type Database = {
           created_at: string
           created_by: string | null
           description: string | null
+          destination_code: string | null
           id: string
           is_current: boolean
           label: string
+          programme_family_code: string | null
           updated_at: string
           version_label: string
           visa_type_code: string | null
@@ -8216,9 +11341,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          destination_code?: string | null
           id?: string
           is_current?: boolean
           label: string
+          programme_family_code?: string | null
           updated_at?: string
           version_label?: string
           visa_type_code?: string | null
@@ -8228,9 +11355,11 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           description?: string | null
+          destination_code?: string | null
           id?: string
           is_current?: boolean
           label?: string
+          programme_family_code?: string | null
           updated_at?: string
           version_label?: string
           visa_type_code?: string | null
@@ -8249,6 +11378,27 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_counselor_performance"
             referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_templates_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "questionnaire_templates_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_destination_picker"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "questionnaire_templates_destination_code_fkey"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_schengen_members"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -8329,6 +11479,112 @@ export type Database = {
           target_minutes?: number
         }
         Relationships: []
+      }
+      staff_functions: {
+        Row: {
+          code: string
+          description: string | null
+          is_active: boolean
+          label: string
+          sort_order: number
+        }
+        Insert: {
+          code: string
+          description?: string | null
+          is_active?: boolean
+          label: string
+          sort_order?: number
+        }
+        Update: {
+          code?: string
+          description?: string | null
+          is_active?: boolean
+          label?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      staff_positions: {
+        Row: {
+          country: string | null
+          created_at: string
+          created_by: string | null
+          function_code: string
+          id: string
+          is_active: boolean
+          is_primary: boolean
+          note: string | null
+          programme_family: string | null
+          staff_id: string
+        }
+        Insert: {
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          function_code: string
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          note?: string | null
+          programme_family?: string | null
+          staff_id: string
+        }
+        Update: {
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          function_code?: string
+          id?: string
+          is_active?: boolean
+          is_primary?: boolean
+          note?: string | null
+          programme_family?: string | null
+          staff_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_positions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_positions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "staff_positions_function_code_fkey"
+            columns: ["function_code"]
+            isOneToOne: false
+            referencedRelation: "staff_functions"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "staff_positions_programme_family_fkey"
+            columns: ["programme_family"]
+            isOneToOne: false
+            referencedRelation: "programme_families"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "staff_positions_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_positions_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+        ]
       }
       staff_profiles: {
         Row: {
@@ -8752,6 +12008,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "tasks_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "tasks_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "tasks_created_by_fkey"
             columns: ["created_by"]
             isOneToOne: false
@@ -8933,6 +12203,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "trigger_events_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "trigger_events_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "trigger_events_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -8966,6 +12250,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trigger_events_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "trigger_events_client_id_fkey"
@@ -9093,13 +12384,16 @@ export type Database = {
           base_fee_cad: number | null
           base_fee_inr: number | null
           category: string
+          category_code: string
           category_id: string | null
           code: string
+          destination_code: string | null
           destination_country: string | null
           govt_fee_cad: number | null
           id: string
           is_active: boolean | null
           is_commission_based: boolean | null
+          is_service: boolean
           label: string
           notes: string | null
           requires_canada_residency: boolean | null
@@ -9108,13 +12402,16 @@ export type Database = {
           base_fee_cad?: number | null
           base_fee_inr?: number | null
           category: string
+          category_code: string
           category_id?: string | null
           code: string
+          destination_code?: string | null
           destination_country?: string | null
           govt_fee_cad?: number | null
           id?: string
           is_active?: boolean | null
           is_commission_based?: boolean | null
+          is_service?: boolean
           label: string
           notes?: string | null
           requires_canada_residency?: boolean | null
@@ -9123,24 +12420,55 @@ export type Database = {
           base_fee_cad?: number | null
           base_fee_inr?: number | null
           category?: string
+          category_code?: string
           category_id?: string | null
           code?: string
+          destination_code?: string | null
           destination_country?: string | null
           govt_fee_cad?: number | null
           id?: string
           is_active?: boolean | null
           is_commission_based?: boolean | null
+          is_service?: boolean
           label?: string
           notes?: string | null
           requires_canada_residency?: boolean | null
         }
         Relationships: [
           {
+            foreignKeyName: "visa_types_category_code_fk"
+            columns: ["category_code"]
+            isOneToOne: false
+            referencedRelation: "visa_categories"
+            referencedColumns: ["code"]
+          },
+          {
             foreignKeyName: "visa_types_category_id_fkey"
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "visa_categories"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "visa_types_destination_fk"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "visa_types_destination_fk"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_destination_picker"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "visa_types_destination_fk"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_schengen_members"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -9153,6 +12481,7 @@ export type Database = {
           name: string
           org_id: string
           status: string
+          variable_map: Json
         }
         Insert: {
           body: string
@@ -9162,6 +12491,7 @@ export type Database = {
           name: string
           org_id?: string
           status?: string
+          variable_map?: Json
         }
         Update: {
           body?: string
@@ -9171,6 +12501,7 @@ export type Database = {
           name?: string
           org_id?: string
           status?: string
+          variable_map?: Json
         }
         Relationships: [
           {
@@ -9351,6 +12682,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "activity_timeline_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -9384,6 +12729,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "activity_timeline_client_id_fkey"
@@ -9532,13 +12884,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "cases_case_manager_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: false
-            referencedRelation: "staff_profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "cases_case_manager_id_fkey"
             columns: ["case_manager_id"]
             isOneToOne: false
             referencedRelation: "staff_profiles"
@@ -9547,13 +12892,20 @@ export type Database = {
           {
             foreignKeyName: "cases_case_manager_id_fkey"
             columns: ["owner_id"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_case_manager_id_fkey"
+            columns: ["case_manager_id"]
             isOneToOne: false
             referencedRelation: "v_counselor_performance"
             referencedColumns: ["counselor_id"]
           },
           {
             foreignKeyName: "cases_case_manager_id_fkey"
-            columns: ["case_manager_id"]
+            columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "v_counselor_performance"
             referencedColumns: ["counselor_id"]
@@ -9592,6 +12944,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "cases_client_id_fkey"
@@ -9705,6 +13064,13 @@ export type Database = {
             foreignKeyName: "cases_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
@@ -9762,6 +13128,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "family_units"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clients_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
+            referencedRelation: "v_family_financials"
+            referencedColumns: ["family_unit_id"]
           },
           {
             foreignKeyName: "clients_family_unit_id_fkey"
@@ -9886,6 +13259,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_client_family_chain"
             referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "questionnaire_responses_lead_id_fkey"
@@ -10022,6 +13409,13 @@ export type Database = {
             foreignKeyName: "assessments_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
@@ -10139,10 +13533,37 @@ export type Database = {
             foreignKeyName: "cases_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
             referencedRelation: "v_lead_overview"
             referencedColumns: ["client_id"]
           },
         ]
+      }
+      v_case_grouping: {
+        Row: {
+          case_code: string | null
+          case_id: string | null
+          created_at: string | null
+          group_id: string | null
+          group_kind: string | null
+          group_name: string | null
+          is_principal: boolean | null
+          member_role: string | null
+          person_name: string | null
+          principal_name: string | null
+          quoted_fee_inr: number | null
+          relationship_label: string | null
+          sort_rank: number | null
+          status: string | null
+          total_paid_inr: number | null
+        }
+        Relationships: []
       }
       v_case_notes: {
         Row: {
@@ -10249,6 +13670,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "entity_notes_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -10282,6 +13717,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "entity_notes_client_id_fkey"
@@ -10481,6 +13923,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "cases_case_manager_id_fkey"
             columns: ["case_manager_id"]
             isOneToOne: false
@@ -10528,6 +13984,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "cases_client_id_fkey"
@@ -10628,6 +14091,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "cases_parent_case_id_fkey"
             columns: ["parent_case_id"]
             isOneToOne: false
@@ -10710,6 +14187,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_client_family_chain"
             referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
           },
           {
             foreignKeyName: "cases_senior_advisor_id_fkey"
@@ -10843,6 +14334,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "activity_timeline_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -10876,6 +14381,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "activity_timeline_client_id_fkey"
@@ -10972,6 +14484,13 @@ export type Database = {
             foreignKeyName: "clients_family_unit_id_fkey"
             columns: ["family_unit_id"]
             isOneToOne: false
+            referencedRelation: "v_family_financials"
+            referencedColumns: ["family_unit_id"]
+          },
+          {
+            foreignKeyName: "clients_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
             referencedRelation: "v_top_family_units"
             referencedColumns: ["id"]
           },
@@ -11063,6 +14582,46 @@ export type Database = {
         }
         Relationships: []
       }
+      v_destination_picker: {
+        Row: {
+          code: string | null
+          kind: string | null
+          label: string | null
+          requires_member_selection: boolean | null
+          sort_order: number | null
+        }
+        Insert: {
+          code?: string | null
+          kind?: string | null
+          label?: string | null
+          requires_member_selection?: boolean | null
+          sort_order?: number | null
+        }
+        Update: {
+          code?: string | null
+          kind?: string | null
+          label?: string | null
+          requires_member_selection?: boolean | null
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
+      v_family_financials: {
+        Row: {
+          application_count: number | null
+          balance_due_inr: number | null
+          family_unit_id: string | null
+          first_application_at: string | null
+          invoiced_total_inr: number | null
+          last_activity_at: string | null
+          paid_pct: number | null
+          paid_total_inr: number | null
+          person_count: number | null
+          quoted_total_inr: number | null
+          unit_name: string | null
+        }
+        Relationships: []
+      }
       v_family_overview: {
         Row: {
           case_code: string | null
@@ -11070,11 +14629,15 @@ export type Database = {
           created_at: string | null
           family_role: string | null
           family_unit_id: string | null
+          is_principal: boolean | null
           origin_country: string | null
           person_name: string | null
+          principal_name: string | null
           quoted_fee_inr: number | null
           record_id: string | null
           record_kind: string | null
+          relationship_label: string | null
+          sort_rank: number | null
           status: string | null
           total_paid_inr: number | null
           unit_name: string | null
@@ -11153,6 +14716,31 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_counselor_performance"
             referencedColumns: ["counselor_id"]
+          },
+        ]
+      }
+      v_ircc_tracker: {
+        Row: {
+          case_code: string | null
+          case_id: string | null
+          client_id: string | null
+          current_stage_code: string | null
+          destination_country: string | null
+          full_name: string | null
+          ircc_file_number: string | null
+          ircc_status: string | null
+          ircc_status_updated_at: string | null
+          ircc_submitted_at: string | null
+          programme: string | null
+          uci: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cases_current_stage_code_fkey"
+            columns: ["current_stage_code"]
+            isOneToOne: false
+            referencedRelation: "case_stages_ref"
+            referencedColumns: ["code"]
           },
         ]
       }
@@ -11280,6 +14868,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "entity_notes_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -11313,6 +14915,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "entity_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "entity_notes_client_id_fkey"
@@ -11561,6 +15170,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "activity_timeline_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -11594,6 +15217,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "activity_timeline_client_id_fkey"
@@ -11639,6 +15269,74 @@ export type Database = {
           },
         ]
       }
+      v_portal_document_checklist: {
+        Row: {
+          applicant_role: string | null
+          case_id: string | null
+          category: string | null
+          client_id: string | null
+          display_label: string | null
+          document_code: string | null
+          document_id: string | null
+          expires_on: string | null
+          guidance: string | null
+          is_optional: boolean | null
+          rejection_note: string | null
+          sort_order: number | null
+          status: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["for_client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_clients_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+        ]
+      }
       v_recent_chain_firings: {
         Row: {
           assigned_counselor_id: string | null
@@ -11679,8 +15377,82 @@ export type Database = {
             foreignKeyName: "prospective_applications_family_unit_id_fkey"
             columns: ["family_unit_id"]
             isOneToOne: false
+            referencedRelation: "v_family_financials"
+            referencedColumns: ["family_unit_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_family_unit_id_fkey"
+            columns: ["family_unit_id"]
+            isOneToOne: false
             referencedRelation: "v_top_family_units"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_schengen_members: {
+        Row: {
+          code: string | null
+          iso3: string | null
+          label: string | null
+        }
+        Insert: {
+          code?: string | null
+          iso3?: string | null
+          label?: string | null
+        }
+        Update: {
+          code?: string | null
+          iso3?: string | null
+          label?: string | null
+        }
+        Relationships: []
+      }
+      v_staff_positions: {
+        Row: {
+          country: string | null
+          country_label: string | null
+          created_at: string | null
+          family_label: string | null
+          full_name: string | null
+          function_code: string | null
+          function_label: string | null
+          id: string | null
+          is_active: boolean | null
+          is_primary: boolean | null
+          note: string | null
+          programme_family: string | null
+          role: string | null
+          staff_active: boolean | null
+          staff_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_positions_function_code_fkey"
+            columns: ["function_code"]
+            isOneToOne: false
+            referencedRelation: "staff_functions"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "staff_positions_programme_family_fkey"
+            columns: ["programme_family"]
+            isOneToOne: false
+            referencedRelation: "programme_families"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "staff_positions_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staff_positions_staff_id_fkey"
+            columns: ["staff_id"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
           },
         ]
       }
@@ -11830,6 +15602,20 @@ export type Database = {
             referencedColumns: ["member_application_id"]
           },
           {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+          {
             foreignKeyName: "activity_timeline_client_id_fkey"
             columns: ["client_id"]
             isOneToOne: false
@@ -11863,6 +15649,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "v_clients_accounts"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["client_id"]
           },
           {
             foreignKeyName: "activity_timeline_client_id_fkey"
@@ -11919,6 +15712,52 @@ export type Database = {
           unit_name: string | null
         }
         Relationships: []
+      }
+      v_visa_picker: {
+        Row: {
+          base_fee_cad: number | null
+          base_fee_inr: number | null
+          category_code: string | null
+          category_label: string | null
+          code: string | null
+          destination_code: string | null
+          destination_label: string | null
+          govt_fee_cad: number | null
+          is_service: boolean | null
+          label: string | null
+          notes: string | null
+          requires_canada_residency: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visa_types_category_code_fk"
+            columns: ["category_code"]
+            isOneToOne: false
+            referencedRelation: "visa_categories"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "visa_types_destination_fk"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "visa_types_destination_fk"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_destination_picker"
+            referencedColumns: ["code"]
+          },
+          {
+            foreignKeyName: "visa_types_destination_fk"
+            columns: ["destination_code"]
+            isOneToOne: false
+            referencedRelation: "v_schengen_members"
+            referencedColumns: ["code"]
+          },
+        ]
       }
     }
     Functions: {
@@ -11985,12 +15824,18 @@ export type Database = {
         }
         Returns: string
       }
+      fn_assessment_ack_body: { Args: { p_id: string }; Returns: string }
       fn_assessment_facts: { Args: { p: Json }; Returns: Json }
       fn_assessment_score: { Args: { p_id: string }; Returns: Json }
       fn_audit_ensure_partitions: {
         Args: { p_months_ahead?: number }
         Returns: number
       }
+      fn_biz_add: {
+        Args: { p_from: string; p_minutes: number }
+        Returns: string
+      }
+      fn_biz_is_open: { Args: { p_at?: string }; Returns: boolean }
       fn_build_assessment_sections: {
         Args: { p_template_code: string }
         Returns: Json
@@ -12003,8 +15848,13 @@ export type Database = {
         Args: { p_lead_id: string; p_reason: string }
         Returns: string
       }
+      fn_engine_close_lead_tasks: {
+        Args: { p_lead_id: string; p_reason: string }
+        Returns: number
+      }
       fn_engine_expiry_sweep: { Args: never; Returns: number }
       fn_engine_festival_sweep: { Args: never; Returns: number }
+      fn_engine_lead_ladder_sweep: { Args: never; Returns: number }
       fn_engine_outbox_sweep: { Args: never; Returns: number }
       fn_engine_owner: { Args: never; Returns: string }
       fn_engine_queue_message: {
@@ -12022,7 +15872,33 @@ export type Database = {
       }
       fn_engine_sla_sweep: { Args: never; Returns: number }
       fn_engine_staff_for_role: { Args: { p_role: string }; Returns: string }
+      fn_engine_task_ensure: {
+        Args: {
+          p_description: string
+          p_lead_id: string
+          p_priority?: string
+          p_sla_minutes?: number
+          p_stagger_slot?: number
+          p_task_key: string
+          p_tier?: number
+          p_title: string
+        }
+        Returns: string
+      }
+      fn_escalation_staff: {
+        Args: { p_lead_id?: string; p_tier: number }
+        Returns: string
+      }
       fn_eval_condition: { Args: { cond: Json; facts: Json }; Returns: boolean }
+      fn_group_applications: {
+        Args: {
+          p_case_ids: string[]
+          p_group_id?: string
+          p_group_name: string
+          p_group_type?: string
+        }
+        Returns: string
+      }
       fn_is_accounts: { Args: never; Returns: boolean }
       fn_is_case_mgr: { Args: never; Returns: boolean }
       fn_is_filing_ft: { Args: never; Returns: boolean }
@@ -12031,10 +15907,92 @@ export type Database = {
       fn_is_intake: { Args: never; Returns: boolean }
       fn_is_owner_admin: { Args: never; Returns: boolean }
       fn_is_staff: { Args: never; Returns: boolean }
+      fn_lead_form_code: { Args: { p_lead_id: string }; Returns: string }
+      fn_lead_journey_advance: {
+        Args: { p_lead_id: string; p_milestone: string; p_reason?: string }
+        Returns: undefined
+      }
       fn_messaging_is_live: { Args: never; Returns: boolean }
+      fn_outbox_claim: {
+        Args: { p_limit?: number }
+        Returns: {
+          attempts: number
+          body: string | null
+          channel: string
+          created_at: string
+          created_by: string | null
+          error_message: string | null
+          id: string
+          journey_milestone: string | null
+          provider_reference: string | null
+          related_case_id: string | null
+          related_client_id: string | null
+          related_lead_id: string | null
+          scheduled_for: string
+          sent_at: string | null
+          status: string
+          subject: string | null
+          template_code: string | null
+          to_contact: string
+          trigger_event_id: string | null
+          variables: Json
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "outbound_messages"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      fn_outbox_finish: {
+        Args: {
+          p_error?: string
+          p_id: string
+          p_ok: boolean
+          p_provider_ref?: string
+        }
+        Returns: undefined
+      }
+      fn_outbox_send_sweep: { Args: never; Returns: number }
       fn_program_class: {
         Args: { p_code: string; p_label: string }
         Returns: string
+      }
+      fn_programme_family: {
+        Args: { p_code: string; p_label: string }
+        Returns: string
+      }
+      fn_staff_for_position: {
+        Args: { p_country?: string; p_family?: string; p_function: string }
+        Returns: {
+          full_name: string
+          is_primary: boolean
+          match_rank: number
+          position_note: string
+          role: string
+          staff_id: string
+        }[]
+      }
+      fn_sync_case_money: { Args: { p_case_id: string }; Returns: undefined }
+      fn_sync_invoice_paid: {
+        Args: { p_invoice_id: string }
+        Returns: undefined
+      }
+      fn_visa_family_country: {
+        Args: { p_visa_type_id: string }
+        Returns: {
+          country: string
+          programme_family: string
+        }[]
+      }
+      fn_wa_template_params: {
+        Args: {
+          p_client_id?: string
+          p_extra?: Json
+          p_lead_id?: string
+          p_template: string
+        }
+        Returns: string[]
       }
       get_family_members: {
         Args: { p_family_unit_id: string }

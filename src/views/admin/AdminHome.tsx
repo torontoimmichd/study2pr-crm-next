@@ -62,7 +62,7 @@ export default function AdminHome() {
       const [visa, steps, sla, upsell, pending] = await Promise.all([
         supabase.from("visa_types").select("id", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("step_templates").select("id", { count: "exact", head: true }).eq("is_active", true),
-        supabase.from("sla_rules").select("id", { count: "exact", head: true }).eq("is_active", true),
+        supabase.from("sla_rules").select("code", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("upsell_triggers").select("code, is_active"),
         supabase.from("step_template_edits").select("id", { count: "exact", head: true }).eq("status", "pending"),
       ]);

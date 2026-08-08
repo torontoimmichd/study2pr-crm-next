@@ -11,7 +11,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "@/lib/router-compat";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Crown, LogOut, CheckCircle2, AlertCircle, Clock, Upload,
   FileText, User, ChevronRight, RefreshCw, Download, XCircle,
@@ -50,6 +50,7 @@ const STAGE_PROGRESS: Record<string, number> = {
 
 export default function PortalDashboard() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [authEmail, setAuthEmail] = useState<string | null>(null);
 
   // Get authenticated user's email
@@ -118,6 +119,27 @@ export default function PortalDashboard() {
     },
   });
 
+  const { data: stageRefs = [] } = useQuery({
+    queryKey: ["portal-stage-refs"],
+    queryFn: async () => {
+      const { data } = await supabase.from("case_stages_ref").select("code, label, sort_order, is_terminal").order("sort_order");
+      return data ?? [];
+    },
+  });
+
+  const { data: checklist = [], isLoading: checklistLoading } = useQuery({
+    queryKey: ["portal-document-checklist", caseData?.id],
+    enabled: !!caseData?.id,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("v_portal_document_checklist")
+        .select("case_id, client_id, document_id, document_code, display_label, category, applicant_role, guidance, status, rejection_note, expires_on, is_optional, sort_order")
+        .eq("case_id", caseData!.id)
+        .order("sort_order", { ascending: true });
+      return data ?? [];
+    },
+  });
+
   // Fetch documents for their case
   const { data: docs } = useQuery({
     queryKey: ["portal-docs", caseData?.id],
@@ -159,6 +181,8 @@ export default function PortalDashboard() {
     const { error } = await supabase.storage.from("case-documents").upload(path, file, { upsert: true });
     if (error) { toast.error("Upload failed: " + error.message); return; }
     await supabase.from("case_documents").update({ storage_path: path, status: "pending", storage_bucket: "case-documents" }).eq("id", docId);
+    void queryClient.invalidateQueries({ queryKey: ["portal-document-checklist", caseData.id] });
+    void queryClient.invalidateQueries({ queryKey: ["portal-docs", caseData.id] });
     toast.success("Document uploaded — your advisor will review it shortly.");
   };
 
@@ -182,9 +206,14 @@ export default function PortalDashboard() {
 
   const isLoading = clientLoading || caseLoading;
   const stage = caseData?.current_stage_code ?? "intake";
-  const progress = STAGE_PROGRESS[stage] ?? 10;
-  const pendingDocs = docs?.filter((d) => d.is_pending) ?? [];
-  const uploadedDocs = docs?.filter((d) => !d.is_pending) ?? [];
+  const activeStages = stageRefs.filter((item) => !item.is_terminal);
+  const currentStageIndex = activeStages.findIndex((item) => item.code === stage);
+  const progress = stageRefs.find((item) => item.code === stage)?.is_terminal
+    ? 100
+    : currentStageIndex >= 0 && activeStages.length > 0
+    ? Math.round(((currentStageIndex + 1) / activeStages.length) * 100)
+    : STAGE_PROGRESS[stage] ?? 10;
+  const outstandingDocs = checklist.filter((item) => item.status !== "verified");
 
   if (isLoading) {
     return (
@@ -261,7 +290,7 @@ export default function PortalDashboard() {
                 <div className="text-right">
                   <div className="text-xs text-muted-foreground mb-1">Current stage</div>
                   <div className="font-medium text-foreground capitalize">
-                    {STAGE_LABELS[stage] ?? stage.replace(/_/g, " ")}
+                    {stageRefs.find((item) => item.code === stage)?.label ?? STAGE_LABELS[stage] ?? stage.replace(/_/g, " ")}
                   </div>
                   {caseData.target_submission_date && (
                     <div className="text-xs text-muted-foreground mt-0.5">
@@ -307,69 +336,77 @@ export default function PortalDashboard() {
               )}
             </div>
 
-            {client && <PortalPayments clientId={client.id} />}
+            {caseData && <PortalPayments caseId={caseData.id} />}
 
-            {/* Document checklist */}
+            {/* Outstanding document checklist */}
             <div className="card-surface overflow-hidden">
               <div className="p-4 border-b border-border flex items-center justify-between">
                 <div>
-                  <h3 className="font-display text-base text-navy">Document checklist</h3>
+                  <h3 className="font-display text-base text-navy">Outstanding documents</h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    {uploadedDocs.length} of {docs?.length ?? 0} uploaded
+                    {outstandingDocs.length === 0 ? "Nothing outstanding" : `${outstandingDocs.length} item${outstandingDocs.length === 1 ? "" : "s"} need attention`}
                   </p>
                 </div>
-                {docs && docs.length > 0 && (
+                {checklist.length > 0 && (
                   <div className="h-1.5 w-32 rounded-full bg-muted overflow-hidden">
                     <div
                       className="h-full bg-emerald-500 transition-all"
-                      style={{ width: `${docs.length ? (uploadedDocs.length / docs.length) * 100 : 0}%` }}
+                      style={{ width: `${checklist.length ? ((checklist.length - outstandingDocs.length) / checklist.length) * 100 : 0}%` }}
                     />
                   </div>
                 )}
               </div>
 
-              {!docs || docs.length === 0 ? (
-                <p className="p-6 text-sm text-muted-foreground text-center">Your document checklist will appear here once your advisor adds requirements.</p>
+              {checklistLoading ? (
+                <p className="p-6 text-sm text-muted-foreground text-center">Loading your document checklist...</p>
+              ) : checklist.length === 0 ? (
+                <p className="p-6 text-sm text-muted-foreground text-center">Nothing outstanding - we will email you when we need something.</p>
               ) : (
                 <ul className="divide-y divide-border">
-                  {docs.map((d) => {
+                  {checklist.map((d) => {
                     const isRejected = d.status === "rejected";
                     const isVerified = d.status === "verified";
-                    const hasFile = !!d.storage_path && !d.is_pending;
+                    const uploaded = docs?.find((doc) => doc.id === d.document_id);
+                    const hasFile = !!uploaded?.storage_path && !uploaded.storage_path.includes("_pending_");
                     return (
-                      <li key={d.id} className={`flex items-start gap-3 px-4 py-3 ${isRejected ? "bg-red-50/60" : ""}`}>
+                      <li key={`${d.document_id ?? d.document_code}-${d.applicant_role ?? "all"}`} className={`flex items-start gap-3 px-4 py-3 ${isRejected ? "bg-red-50/60" : ""}`}>
                         <div className="shrink-0 mt-0.5">
                           {isVerified ? (
                             <CheckCircle2 className="h-5 w-5 text-emerald-600" />
                           ) : isRejected ? (
                             <XCircle className="h-5 w-5 text-red-500" />
-                          ) : d.is_pending ? (
+                          ) : d.status === "not_uploaded" ? (
                             <AlertCircle className="h-5 w-5 text-amber-500" />
                           ) : (
                             <Clock className="h-5 w-5 text-blue-400" />
                           )}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium">{d.title}</div>
+                          <div className="text-sm font-medium">{d.display_label ?? d.document_code ?? "Required document"}</div>
+                          {(d.guidance || d.category || d.applicant_role) && (
+                            <div className="text-[11px] text-muted-foreground mt-0.5">
+                              {[d.category, d.applicant_role, d.guidance].filter(Boolean).join(" · ")}
+                            </div>
+                          )}
                           <div className={`text-xs mt-0.5 ${isRejected ? "text-red-600 font-medium" : "text-muted-foreground"}`}>
                             {isVerified
                               ? "✓ Verified by your advisor"
                               : isRejected
-                              ? (d as unknown as Record<string, unknown>).rejection_note
-                                ? `Re-upload needed: ${(d as unknown as Record<string, unknown>).rejection_note}`
+                              ? d.rejection_note
+                                ? `Re-upload needed: ${d.rejection_note}`
                                 : "Please re-upload — your advisor requested a new version"
-                              : d.is_pending
-                              ? d.expires_at
-                                ? `Please upload by ${fmtDateIST(d.expires_at)}`
+                              : d.status === "not_uploaded"
+                              ? d.expires_on
+                                ? `Please upload by ${fmtDateIST(d.expires_on)}`
                                 : "Awaiting your upload"
-                              : `Uploaded ${fmtRelative(d.created_at)} — under review`}
+                              : `Uploaded ${uploaded?.created_at ? fmtRelative(uploaded.created_at) : "recently"} — under review`}
                           </div>
                         </div>
                         <div className="flex items-center gap-1.5 shrink-0">
                           {/* Download — available once a file has been uploaded */}
-                          {hasFile && d.storage_path && (
+                          {hasFile && uploaded?.storage_path && (
                             <button
-                              onClick={() => void handleDownload(d.storage_path!, d.title)}
+                              onClick={() => void handleDownload(uploaded.storage_path!, d.display_label ?? d.document_code ?? "document")}
                               title="Download your uploaded file"
                               className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-border bg-background hover:bg-muted transition-colors text-xs font-medium text-muted-foreground"
                             >
@@ -377,7 +414,7 @@ export default function PortalDashboard() {
                             </button>
                           )}
                           {/* Upload / re-upload */}
-                          {(d.is_pending || isRejected) && (
+                          {(d.status === "not_uploaded" || isRejected) && d.document_id && (
                             <label className="cursor-pointer">
                               <input
                                 type="file"
@@ -385,7 +422,7 @@ export default function PortalDashboard() {
                                 accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
-                                  if (file) void handleUpload(d.id, file);
+                                  if (file) void handleUpload(d.document_id!, file);
                                 }}
                               />
                               <span className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md border transition-colors text-xs font-medium ${

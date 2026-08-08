@@ -93,19 +93,16 @@ export default function Payments() {
     .reduce((s, p) => s + p.amount, 0);
 
   const handleExport = () => {
-    downloadCsv(
-      filtered.map((p) => ({
-        date: fmtDateIST(p.paid_at),
-        client: p.client_name,
-        invoice: p.invoice_number,
-        amount: p.amount,
-        currency: p.currency,
-        status: p.status ?? "",
-        provider: p.provider ?? "",
-        reference: p.provider_reference ?? "",
-      })),
-      "payments.csv"
-    );
+    downloadCsv("payments.csv", ["Date", "Client", "Invoice #", "Amount", "Currency", "Status", "Provider", "Reference"], filtered.map((p) => [
+      fmtDateIST(p.paid_at),
+      p.client_name,
+      p.invoice_number,
+      p.amount,
+      p.currency,
+      p.status ?? "",
+      p.provider ?? "",
+      p.provider_reference ?? "",
+    ]));
   };
 
   return (
@@ -151,7 +148,7 @@ export default function Payments() {
         {isLoading ? (
           <TableSkeleton rows={8} cols={6} />
         ) : filtered.length === 0 ? (
-          <EmptyState icon={Wallet} title="No payments found" description="Payments are recorded against invoices." />
+          <EmptyState icon={<Wallet className="h-5 w-5" />} title="No payments found" description="Payments are recorded against invoices." />
         ) : (
           <div className="card-surface overflow-hidden">
             <table className="w-full text-sm">

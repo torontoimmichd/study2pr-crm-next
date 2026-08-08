@@ -140,7 +140,7 @@ export default function Documents() {
         {isLoading ? (
           <TableSkeleton rows={8} cols={6} />
         ) : filtered.length === 0 ? (
-          <EmptyState icon={FileText} title="No documents found" description="Documents are uploaded from case detail pages." />
+          <EmptyState icon={<FileText className="h-5 w-5" />} title="No documents found" description="Documents are uploaded from case detail pages." />
         ) : (
           <div className="card-surface overflow-hidden">
             <table className="w-full text-sm">

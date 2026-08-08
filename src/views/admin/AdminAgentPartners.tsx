@@ -160,8 +160,8 @@ export default function AdminAgentPartners() {
     <div>
       <AdminPageHeader
         title="Agent Partners"
-        description="Manage agent and partner organisations that refer leads. Select 'Agent / Partner' in the source field when creating a lead."
-        action={
+        subtitle="Manage agent and partner organisations that refer leads. Select 'Agent / Partner' in the source field when creating a lead."
+        actions={
           <Button onClick={openAdd} size="sm">
             <Plus className="h-4 w-4 mr-1.5" /> Add Partner
           </Button>
@@ -342,7 +342,7 @@ export default function AdminAgentPartners() {
         title="Delete agent partner?"
         description={`Remove "${deleting?.name}"? This cannot be undone. Leads linked to this partner will keep the reference.`}
         onConfirm={handleDelete}
-        onCancel={() => setDeleting(null)}
+        onOpenChange={(open) => { if (!open) setDeleting(null); }}
       />
     </div>
   );

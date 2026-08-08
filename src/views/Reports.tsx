@@ -325,10 +325,10 @@ function ReferralPartnersSection() {
       const { data: partners } = await db.from("referral_partners").select("id, name").eq("is_active", true);
       if (!partners || partners.length === 0) return [];
       const { data: leads } = await db.from("leads").select("referral_partner_id, lifecycle_state")
-        .in("referral_partner_id", partners.map((p: any) => p.id));
-      const partnerMap = new Map((partners ?? []).map((p: any) => [p.id, p.name]));
+        .in("referral_partner_id", partners.map((p) => p.id));
+      const partnerMap = new Map<string, string | null>((partners ?? []).map((p) => [p.id, p.name]));
       const counts: Record<string, { total: number; converted: number }> = {};
-      (leads ?? []).forEach((l: any) => {
+      (leads ?? []).forEach((l) => {
         if (!l.referral_partner_id) return;
         if (!counts[l.referral_partner_id]) counts[l.referral_partner_id] = { total: 0, converted: 0 };
         counts[l.referral_partner_id].total++;

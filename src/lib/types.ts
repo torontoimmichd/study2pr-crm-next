@@ -47,6 +47,7 @@ export interface Lead {
 
   family_unit_id?: string | null;
   family_role?: string | null;
+  converted_client_id?: string | null;
 
   open_activities_count?: number;
   open_cases_count?: number;

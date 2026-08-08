@@ -58,7 +58,7 @@ export default function Invoices() {
           ? supabase.from("clients").select("id, full_name").in("id", clientIds)
           : Promise.resolve({ data: [] }),
         caseIds.length
-          ? supabase.from("cases").select("id, case_ref").in("id", caseIds)
+          ? supabase.from("cases").select("id, case_code").in("id", caseIds)
           : Promise.resolve({ data: [] }),
       ]);
 
@@ -66,7 +66,7 @@ export default function Invoices() {
         ((clientsRes.data ?? []) as { id: string; full_name: string }[]).map((c) => [c.id, c.full_name])
       );
       const caseMap = new Map(
-        ((casesRes.data ?? []) as { id: string; case_ref: string }[]).map((c) => [c.id, c.case_ref])
+        ((casesRes.data ?? []) as { id: string; case_code: string }[]).map((c) => [c.id, c.case_code])
       );
 
       return (data ?? []).map((r) => ({
@@ -91,20 +91,17 @@ export default function Invoices() {
   });
 
   const handleExport = () => {
-    downloadCsv(
-      filtered.map((inv) => ({
-        invoice_number: inv.invoice_number,
-        client: inv.client_name,
-        case_ref: inv.case_ref ?? "",
-        status: inv.status ?? "",
-        total: inv.total,
-        paid: inv.paid_total ?? 0,
-        currency: inv.currency,
-        issued_at: fmtDateIST(inv.issued_at),
-        due_date: fmtDateIST(inv.due_date),
-      })),
-      "invoices.csv"
-    );
+    downloadCsv("invoices.csv", ["Invoice #", "Client", "Case", "Status", "Total", "Paid", "Currency", "Issued", "Due date"], filtered.map((inv) => [
+      inv.invoice_number,
+      inv.client_name,
+      inv.case_ref ?? "",
+      inv.status ?? "",
+      inv.total,
+      inv.paid_total ?? 0,
+      inv.currency,
+      fmtDateIST(inv.issued_at),
+      fmtDateIST(inv.due_date),
+    ]));
   };
 
   return (
@@ -153,7 +150,7 @@ export default function Invoices() {
         {isLoading ? (
           <TableSkeleton rows={8} cols={6} />
         ) : filtered.length === 0 ? (
-          <EmptyState icon={FileText} title="No invoices found" description="Invoices are created from case detail pages." />
+          <EmptyState icon={<FileText className="h-5 w-5" />} title="No invoices found" description="Invoices are created from case detail pages." />
         ) : (
           <div className="card-surface overflow-hidden">
             <table className="w-full text-sm">

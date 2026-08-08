@@ -148,16 +148,16 @@ export default function AdminBackups() {
     queryFn: async () => {
       const { data } = await supabase
         .from("cases")
-        .select(`
-          id, case_ref, current_stage_code, created_at, updated_at,
-          client:clients(full_name),
-          visa_sub_type:visa_sub_types(label)
-        `)
+        .select("id, case_code, current_stage_code, created_at, updated_at")
         .eq("is_archived", true)
         .order("updated_at", { ascending: false });
-      return (data ?? []) as {
+      return (data ?? []).map((item) => ({
+        ...item,
+        client: null,
+        visa_sub_type: null,
+      })) as {
         id: string;
-        case_ref: string;
+        case_code: string | null;
         current_stage_code: string;
         created_at: string;
         updated_at: string;
@@ -173,13 +173,13 @@ export default function AdminBackups() {
     queryFn: async () => {
       const { data } = await supabase
         .from("cases")
-        .select(`id, case_ref, current_stage_code, updated_at, client:clients(full_name)`)
+        .select("id, case_code, current_stage_code, updated_at")
         .eq("is_archived", false)
         .in("current_stage_code", ["closed", "approved", "refused", "withdrawn"])
         .order("updated_at", { ascending: false });
-      return (data ?? []) as {
+      return (data ?? []).map((item) => ({ ...item, client: null })) as {
         id: string;
-        case_ref: string;
+        case_code: string | null;
         current_stage_code: string;
         updated_at: string;
         client: { full_name: string } | null;
@@ -200,7 +200,7 @@ export default function AdminBackups() {
           .from("leads")
           .select(`
             id, full_name, email, phone, country_of_residence,
-            lifecycle_state, lead_source, created_at, converted_at,
+            lifecycle_state, source_code, created_at, converted_at,
             assigned_to, notes
           `)
           .order("created_at", { ascending: false });
@@ -234,7 +234,7 @@ export default function AdminBackups() {
         const { data } = await supabase
           .from("cases")
           .select(`
-            id, case_ref, current_stage_code, is_archived,
+            id, case_code, current_stage_code, is_archived,
             quoted_fee_inr, created_at, updated_at,
             case_manager_id, notes
           `)
@@ -252,8 +252,8 @@ export default function AdminBackups() {
         const { data } = await supabase
           .from("invoices")
           .select(`
-            id, invoice_number, amount_inr, status,
-            due_date, paid_at, created_at, case_id, client_id
+            id, invoice_number, total, status,
+            due_date, created_at, case_id, client_id
           `)
           .order("created_at", { ascending: false });
         return (data ?? []) as Record<string, unknown>[];
@@ -365,7 +365,7 @@ export default function AdminBackups() {
                   <div key={c.id} className="flex items-center justify-between py-2.5 gap-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-sm font-medium">{c.case_ref}</span>
+                        <span className="font-mono text-sm font-medium">{c.case_code ?? "—"}</span>
                         <span className={cn("text-[10px] font-medium px-1.5 py-0.5 rounded-full capitalize", stageColor(c.current_stage_code))}>
                           {c.current_stage_code.replace(/_/g, " ")}
                         </span>
@@ -377,7 +377,7 @@ export default function AdminBackups() {
                       variant="outline"
                       className="shrink-0"
                       disabled={archiving === c.id}
-                      onClick={() => void archiveCase(c.id, c.case_ref)}
+                      onClick={() => void archiveCase(c.id, c.case_code ?? c.id)}
                     >
                       {archiving === c.id ? (
                         <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -450,7 +450,7 @@ export default function AdminBackups() {
               <tbody className="divide-y">
                 {archivedCases.map((c) => (
                   <tr key={c.id} className="hover:bg-muted/30 transition-colors">
-                    <td className="px-4 py-3 font-mono font-medium">{c.case_ref}</td>
+                    <td className="px-4 py-3 font-mono font-medium">{c.case_code ?? "—"}</td>
                     <td className="px-4 py-3 text-muted-foreground">{c.client?.full_name ?? "—"}</td>
                     <td className="px-4 py-3 text-muted-foreground">{c.visa_sub_type?.label ?? "—"}</td>
                     <td className="px-4 py-3">
@@ -467,7 +467,7 @@ export default function AdminBackups() {
                         variant="ghost"
                         className="text-xs"
                         disabled={unarchiving === c.id}
-                        onClick={() => void unarchiveCase(c.id, c.case_ref)}
+                        onClick={() => void unarchiveCase(c.id, c.case_code ?? c.id)}
                       >
                         {unarchiving === c.id ? (
                           <Loader2 className="h-3.5 w-3.5 animate-spin" />

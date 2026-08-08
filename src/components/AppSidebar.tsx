@@ -89,6 +89,7 @@ const STAFF_GROUPS: NavGroup[] = [
       { to: "/comms", label: "WhatsApp Inbox", icon: MessageSquare },
       { to: "/calls", label: "Call Log", icon: Phone },
       { to: "/ircc", label: "IRCC Emails", icon: Mail, badgeKey: "ircc" },
+      { to: "/ircc-tracker", label: "IRCC Tracker", icon: ClipboardList, roles: ["owner", "admin", "senior_advisor", "case_manager"] },
     ],
   },
   {

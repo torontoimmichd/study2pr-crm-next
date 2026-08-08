@@ -31,7 +31,6 @@ interface FamilyRow {
   client_id: string | null;
   full_name: string;
   relationship: string | null;
-  phone: string | null;
   linked_code: string | null;
 }
 
@@ -90,7 +89,7 @@ export default function Clients() {
           supabase.from("cases").select("client_id").in("client_id", ids).eq("is_archived", false),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (supabase as any).from("family_members")
-            .select("id, principal_client_id, full_name, relationship, phone")
+            .select("id, principal_client_id, full_name, relationship")
             .in("principal_client_id", ids),
         ]);
         casesRes.data?.forEach((c) => caseCounts.set(c.client_id, (caseCounts.get(c.client_id) ?? 0) + 1));
@@ -253,7 +252,6 @@ export default function Clients() {
                         </tr>
 
                         {members.map((f) => {
-                          const samePhone = !!f.phone && !!c.phone && f.phone.replace(/\s/g, "") === c.phone.replace(/\s/g, "");
                           return (
                             <tr key={`fam-${f.id}`} className="border-t border-border/60 bg-muted/20 hover:bg-muted/40 transition-colors">
                               <td className="px-4 py-2.5">
@@ -275,8 +273,7 @@ export default function Clients() {
                                 </div>
                               </td>
                               <td className="px-4 py-2.5 text-xs text-muted-foreground">
-                                {f.phone ?? "—"}
-                                {samePhone && <span className="block text-[10px] italic text-muted-foreground/70">same as primary</span>}
+                                {c.phone ?? "—"}
                               </td>
                               <td className="px-4 py-2.5 text-xs text-muted-foreground/60">—</td>
                               <td className="px-4 py-2.5 text-xs text-muted-foreground/60">—</td>

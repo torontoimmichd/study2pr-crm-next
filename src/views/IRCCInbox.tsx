@@ -83,6 +83,8 @@ export default function IRCCInbox() {
   const { data: cases = [] } = useQuery({
     queryKey: ["cases-for-linking", caseSearch],
     queryFn: async () => {
+      // Supabase's nested relation parser exceeds TypeScript's instantiation depth.
+      // @ts-ignore
       let q = supabase
         .from("cases")
         .select("id, case_code, uci_number, application_number, client:clients(full_name)")

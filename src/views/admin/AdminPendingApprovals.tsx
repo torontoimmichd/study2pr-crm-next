@@ -24,6 +24,7 @@ import {
   Info,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { AdminPageHeader } from "@/components/AdminLayout";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -90,7 +91,7 @@ export default function AdminPendingApprovals() {
           ? supabase.from("staff_profiles").select("id, full_name").in("id", actorIds)
           : Promise.resolve({ data: [] }),
         stepIds.length
-          ? supabase.from("step_templates").select("id, label").in("id", stepIds)
+          ? supabase.from("step_templates").select("id, title").in("id", stepIds)
           : Promise.resolve({ data: [] }),
       ]);
 
@@ -98,7 +99,7 @@ export default function AdminPendingApprovals() {
         ((actorsRes.data ?? []) as { id: string; full_name: string }[]).map((a) => [a.id, a.full_name]),
       );
       const stepMap = new Map(
-        ((stepsRes.data ?? []) as { id: string; label: string }[]).map((s) => [s.id, s.label]),
+        ((stepsRes.data ?? []) as { id: string; title: string }[]).map((s) => [s.id, s.title]),
       );
 
       return rows.map((r) => ({
@@ -126,7 +127,7 @@ export default function AdminPendingApprovals() {
       if (edit.step_template_id && edit.proposed_change) {
         const { error: stepErr } = await supabase
           .from("step_templates")
-          .update(edit.proposed_change as Record<string, unknown>)
+          .update(edit.proposed_change as Database["public"]["Tables"]["step_templates"]["Update"])
           .eq("id", edit.step_template_id);
         if (stepErr) throw stepErr;
       }

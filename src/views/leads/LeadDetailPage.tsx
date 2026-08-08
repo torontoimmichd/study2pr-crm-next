@@ -78,6 +78,7 @@ export default function LeadDetailPage() {
 
       const raw = leadData as unknown as Record<string, unknown>;
       const familyUnitId = (raw?.family_unit_id as string | null) ?? null;
+      const convertedClientId = (raw?.converted_client_id as string | null) ?? null;
 
       const [familyRes, familyLeadsRes, familyClientsRes, casesRes, prospRes, timelineRes, tasksRes, visaLabelRes, srcLabelRes] = await Promise.all([
         familyUnitId
@@ -98,7 +99,9 @@ export default function LeadDetailPage() {
           : Promise.resolve({ data: [], error: null } as any),
         familyUnitId
           ? supabase.from("cases").select("*").eq("family_unit_id", familyUnitId).order("created_at", { ascending: false })
-          : supabase.from("cases").select("*").eq("lead_id", id),
+          : convertedClientId
+          ? supabase.from("cases").select("*").eq("client_id", convertedClientId)
+          : Promise.resolve({ data: [], error: null }),
         familyUnitId
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ? (supabase as any)
@@ -191,7 +194,11 @@ export default function LeadDetailPage() {
         });
       });
       setFamilyMembers(Array.from(familyMembersByKey.values()));
-      setApplications((casesRes.data || []) as ApplicationRow[]);
+      setApplications((casesRes.data || []).map((application) => ({
+        ...application,
+        stage: application.current_stage_code,
+        case_ref: application.case_code,
+      })) as ApplicationRow[]);
       setProspective((prospRes.data || []) as ProspectiveAppRow[]);
       setTimeline((timelineRes.data || []) as TimelineEvent[]);
       setNextAction(((tasksRes.data as ChainTask[] | null)?.[0] || null));

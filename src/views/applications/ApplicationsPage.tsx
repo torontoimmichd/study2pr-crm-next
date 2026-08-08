@@ -53,6 +53,7 @@ export default function ApplicationsPage() {
     setLoading(true);
     (async () => {
       // Cases
+      // @ts-expect-error Supabase's nested relationship parser exceeds TypeScript's instantiation depth here.
       let casesQ = supabase
         .from("cases")
         .select("*, client:client_id(full_name, family_role), family_unit:family_unit_id(unit_name), case_manager:case_manager_id(full_name), visa:visa_type_id(label)")

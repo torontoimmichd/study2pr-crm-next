@@ -44,11 +44,11 @@ export default function MyCommissions() {
 
       const caseIds = [...new Set((data ?? []).map((r) => r.case_id).filter(Boolean) as string[])];
       const { data: cases } = caseIds.length
-        ? await supabase.from("cases").select("id, case_ref").in("id", caseIds)
+        ? await supabase.from("cases").select("id, case_code").in("id", caseIds)
         : { data: [] };
 
       const caseMap = new Map(
-        ((cases ?? []) as { id: string; case_ref: string }[]).map((c) => [c.id, c.case_ref])
+        ((cases ?? []) as { id: string; case_code: string }[]).map((c) => [c.id, c.case_code])
       );
 
       return (data ?? []).map((r) => ({
@@ -93,7 +93,7 @@ export default function MyCommissions() {
         {isLoading ? (
           <TableSkeleton rows={6} cols={5} />
         ) : commissions.length === 0 ? (
-          <EmptyState icon={DollarSign} title="No commissions yet" description="Commissions appear here once cases convert and invoices are paid." />
+          <EmptyState icon={<DollarSign className="h-5 w-5" />} title="No commissions yet" description="Commissions appear here once cases convert and invoices are paid." />
         ) : (
           <div className="card-surface overflow-hidden">
             <table className="w-full text-sm">
