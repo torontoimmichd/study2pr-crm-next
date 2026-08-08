@@ -6,6 +6,7 @@
 // instantly — no code changes ever needed.
 
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { ClipboardList, ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { validateContact, type PreferredChannel } from "@/lib/contact";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const db = supabase as any;
@@ -36,6 +38,8 @@ function visible(q: Question, answers: Record<string, unknown>): boolean {
 }
 
 export default function AssessmentForm() {
+  const searchParams = useSearchParams();
+  const leadId = searchParams.get("lead");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [busy, setBusy] = useState(false);
@@ -79,9 +83,13 @@ export default function AssessmentForm() {
 
   const submit = async () => {
     if (!validate()) return;
+    const email = String(answers.email ?? "");
+    const phone = String(answers.phone ?? answers.phone_number ?? answers.whatsapp ?? answers.whatsapp_number ?? "");
+    const contactError = validateContact(email, phone);
+    if (contactError) { toast.error(contactError); return; }
     setBusy(true);
-    const payload = { form_code: form?.code, submitted_at: new Date().toISOString(), ...answers };
-    const { error: insErr } = await db.from("assessments").insert({ status: "submitted", form_code: form?.code ?? null, payload });
+    const payload = { form_code: form?.code, submitted_at: new Date().toISOString(), preferred_channel: answers.preferred_channel ?? (phone ? "whatsapp" : "email"), ...answers };
+    const { error: insErr } = await db.from("assessments").insert({ status: "submitted", lead_id: leadId || null, form_code: form?.code ?? null, payload });
     setBusy(false);
     if (insErr) { toast.error("Submission failed: " + insErr.message); return; }
     setDone(true);
@@ -167,6 +175,15 @@ export default function AssessmentForm() {
               )}
             </div>
           ))}
+          {isLast && (
+            <div className="space-y-1.5">
+              <Label>Preferred channel</Label>
+              <Select value={String(answers.preferred_channel ?? "whatsapp")} onValueChange={(v: PreferredChannel) => setA("preferred_channel", v)}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent><SelectItem value="whatsapp">WhatsApp</SelectItem><SelectItem value="email">Email</SelectItem></SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
         <div className="flex justify-between">

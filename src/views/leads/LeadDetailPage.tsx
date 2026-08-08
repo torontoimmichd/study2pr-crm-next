@@ -35,6 +35,7 @@ import { ApplicationsPanel } from "@/components/lead-detail/ApplicationsPanel";
 import { PathwayPlanCard } from "@/components/lead-detail/PathwayPlanCard";
 import { ActivityTimelineCard } from "@/components/lead-detail/ActivityTimelineCard";
 import { NextBestActionBar } from "@/components/lead-detail/NextBestActionBar";
+import { AssessmentReviewPanel } from "@/components/AssessmentReviewPanel";
 
 import type {
   Lead, FamilyMember, ApplicationRow, ProspectiveAppRow,
@@ -265,6 +266,11 @@ export default function LeadDetailPage() {
         onWhatsApp={handleWhatsApp}
         onEmail={handleEmail}
       />
+      {!lead.email?.trim() && !lead.phone?.trim() && (
+        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          No email and no phone — this client cannot be contacted or asked to confirm anything.
+        </div>
+      )}
 
       <KpiStrip lead={lead} application={applications[0] ?? null} prospective={prospective} nextAction={nextAction} />
 
@@ -368,20 +374,7 @@ export default function LeadDetailPage() {
 
             {/* Assessment */}
             <TabsContent value="assessment" className="mt-3">
-              <div className="card-surface p-5 rounded-xl">
-                {!(lead as unknown as Record<string, unknown>)?.assessment_data ? (
-                  <p className="text-sm text-muted-foreground">No self-assessment submitted.</p>
-                ) : (
-                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    {Object.entries((lead as unknown as Record<string, unknown>).assessment_data as Record<string, unknown>).map(([k, v]) => (
-                      <div key={k} className="border-b pb-2">
-                        <dt className="text-xs uppercase text-muted-foreground">{k.replace(/_/g, " ")}</dt>
-                        <dd className="font-medium mt-0.5">{typeof v === "object" ? JSON.stringify(v) : String(v ?? "—")}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                )}
-              </div>
+              <AssessmentReviewPanel leadId={leadId!} />
             </TabsContent>
           </Tabs>
         </main>

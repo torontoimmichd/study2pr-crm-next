@@ -16,6 +16,7 @@ import { writeTimeline } from "@/lib/timeline";
 import { useAuth } from "@/lib/auth-context";
 import { Trash2, UserPlus, Users } from "lucide-react";
 import { VisaCombobox, InheritedHint } from "@/components/VisaCombobox";
+import { defaultPreferredChannel, validateContact, type PreferredChannel } from "@/lib/contact";
 
 // ── Family member draft ────────────────────────────────────────────────────────
 type FamilyRole = "spouse" | "partner" | "child" | "parent" | "sibling";
@@ -93,6 +94,7 @@ const BLANK_FORM = {
   first_name: "",
   last_name: "",
   email: "",
+  preferred_channel: "whatsapp" as PreferredChannel,
   dial_code: "+91",
   phone_local: "",
   nationality: "",
@@ -134,6 +136,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
         first_name: parts[0] ?? "",
         last_name: parts.slice(1).join(" "),
         email: linkedClient.email ?? "",
+        preferred_channel: defaultPreferredChannel(linkedClient.email ?? "", rawPhone),
         dial_code: dialMatch ? dialMatch[1] : f.dial_code,
         phone_local: dialMatch ? dialMatch[2] : rawPhone,
         country_of_residence: linkedClient.country_of_residence ?? "",
@@ -325,10 +328,9 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
     if (!form.source_code) { toast.error("Pick a source"); return; }
     if (!form.notes.trim()) { toast.error("Notes are required — add initial context for this lead"); return; }
 
-    const combined = `${form.dial_code} ${form.phone_local.trim()}`;
-    const digitsOnly = combined.replace(/\D/g, "");
-    if (!form.phone_local.trim()) { toast.error("Phone number is required"); return; }
-    if (digitsOnly.length < 10) { toast.error("Phone number must have at least 10 digits"); return; }
+    const combined = form.phone_local.trim() ? `${form.dial_code} ${form.phone_local.trim()}` : "";
+    const contactError = validateContact(form.email, combined);
+    if (contactError) { toast.error(contactError); return; }
 
     if (isAgentPartner && !form.agent_partner_id) {
       toast.error("Please select the agent partner"); return;
@@ -357,6 +359,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
       referral_partner_id: form.referral_partner_id || null,
       notes: form.notes.trim() || null,
       lifecycle_state: "new_enquiry",
+      stage_metadata: { preferred_channel: form.preferred_channel },
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -502,7 +505,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="lead-phone">
-                Phone * <span className="text-muted-foreground font-normal text-[11px]">(min 10 digits)</span>
+                Phone / WhatsApp <span className="text-muted-foreground font-normal text-[11px]">(include country code)</span>
               </Label>
               <div className="flex gap-1.5">
                 <Select
@@ -524,10 +527,19 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
                   onChange={(e) => setForm((f) => ({ ...f, phone_local: e.target.value }))}
                   placeholder="98765 43210"
                   className="flex-1"
-                  required
                 />
               </div>
             </div>
+          </div>
+          <div className="space-y-1.5">
+            <Label>Preferred channel</Label>
+            <Select value={form.preferred_channel} onValueChange={(v: PreferredChannel) => setForm((f) => ({ ...f, preferred_channel: v }))}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                <SelectItem value="email">Email</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Existing-client match — this is a repeat enquiry */}

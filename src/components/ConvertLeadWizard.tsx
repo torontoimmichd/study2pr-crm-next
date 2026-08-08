@@ -61,6 +61,7 @@ import { writeTimeline } from "@/lib/timeline";
 import { createCaseTasks } from "@/lib/taskEngine";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
+import { defaultPreferredChannel, validateContact, type PreferredChannel } from "@/lib/contact";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -155,6 +156,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
   const [clientEmail,   setClientEmail]   = useState(lead.email ?? "");
   const [clientPhone,   setClientPhone]   = useState(lead.phone ?? "");
   const [clientCountry, setClientCountry] = useState(lead.country_of_residence ?? "");
+  const [preferredChannel, setPreferredChannel] = useState<PreferredChannel>(defaultPreferredChannel(lead.email ?? "", lead.phone ?? ""));
 
   // Visa details
   const [destinationCountry, setDestinationCountry] = useState(lead.country_of_interest ?? "");
@@ -182,6 +184,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
   // Assignment
   const [caseManager,    setCaseManager]    = useState(profile?.id ?? "");
   const [filingOfficer,  setFilingOfficer]  = useState("");
+  const [showAllStaff, setShowAllStaff] = useState(false);
   const [submissionDate, setSubmissionDate] = useState(defaultSubmissionDate());
 
   // Fees
@@ -320,6 +323,21 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
     },
   });
 
+  const { data: visaContext } = useQuery({
+    queryKey: ["visa-family-country", visaTypeId], enabled: !!visaTypeId,
+    queryFn: async () => (await supabase.rpc("fn_visa_family_country", { p_visa_type_id: visaTypeId })).data?.[0] ?? null,
+  });
+  const { data: positionedManagers = [] } = useQuery({
+    queryKey: ["positioned-staff", "case_manager", visaContext?.programme_family, visaContext?.country], enabled: !!visaTypeId,
+    queryFn: async () => (await supabase.rpc("fn_staff_for_position", { p_function: "case_manager", p_family: visaContext?.programme_family ?? undefined, p_country: visaContext?.country ?? undefined })).data ?? [],
+  });
+  const { data: positionedFiling = [] } = useQuery({
+    queryKey: ["positioned-staff", "filing_officer", visaContext?.programme_family, visaContext?.country], enabled: !!visaTypeId,
+    queryFn: async () => (await supabase.rpc("fn_staff_for_position", { p_function: "filing_officer", p_family: visaContext?.programme_family ?? undefined, p_country: visaContext?.country ?? undefined })).data ?? [],
+  });
+  const managerOptions = showAllStaff ? (staffList ?? []) : positionedManagers.map((item) => ({ id: item.staff_id, full_name: item.full_name, role: item.role }));
+  const filingOptions = showAllStaff ? (staffList ?? []) : positionedFiling.map((item) => ({ id: item.staff_id, full_name: item.full_name, role: item.role }));
+
   const { data: defaultStage } = useQuery({
     queryKey: ["default-case-stage"],
     queryFn: async () => {
@@ -361,6 +379,8 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
 
   const handleConvert = async () => {
     if (!clientName.trim()) { toast.error("Client name is required"); return; }
+    const contactError = validateContact(clientEmail, clientPhone);
+    if (contactError) { toast.error(contactError); return; }
     if (!visaTypeId)        { toast.error("Please select a visa type"); return; }
     if (!caseManager)       { toast.error("Please select a Case Manager"); return; }
     if (!filingOfficer)     { toast.error("Please select a Filing Officer"); return; }
@@ -586,7 +606,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
       for (const entry of conversionClients) {
         const { error: leadUpdateError } = await supabase
           .from("leads")
-          .update({ lifecycle_state: "converted", converted_client_id: entry.client.id, converted_at: convertedAt })
+          .update({ lifecycle_state: "converted", converted_client_id: entry.client.id, converted_at: convertedAt, stage_metadata: { preferred_channel: preferredChannel } })
           .eq("id", entry.leadId);
         if (leadUpdateError) throw new Error(`Client created, but lead conversion could not be completed: ${leadUpdateError.message}`);
         const createdCase = caseByClient.get(entry.client.id);
@@ -682,6 +702,13 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                   <div className="space-y-1">
                     <L>Citizenship</L>
                     <Input value={clientCountry} onChange={e => setClientCountry(e.target.value)} placeholder="e.g. India" className="h-8 text-sm" />
+                  </div>
+                  <div className="space-y-1">
+                    <L>Preferred channel</L>
+                    <Select value={preferredChannel} onValueChange={(v: PreferredChannel) => setPreferredChannel(v)}>
+                      <SelectTrigger className="h-8 text-sm"><SelectValue /></SelectTrigger>
+                      <SelectContent><SelectItem value="whatsapp">WhatsApp</SelectItem><SelectItem value="email">Email</SelectItem></SelectContent>
+                    </Select>
                   </div>
                 </div>
               </fieldset>
@@ -820,7 +847,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                     <L>Case Manager *</L>
                     <Select value={caseManager} onValueChange={setCaseManager}>
                       <SelectTrigger className="h-8 text-sm"><SelectValue placeholder={staffList === undefined ? "Loading…" : "Select…"} /></SelectTrigger>
-                      <SelectContent>{(staffList ?? []).filter(s => ["owner","admin","senior_advisor","case_manager","senior_counsellor","visa_expert","manager","counselor"].includes(s.role)).map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
+                      <SelectContent>{managerOptions.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}</SelectContent>
                     </Select>
                   </div>
                   <div className="space-y-1">
@@ -828,10 +855,11 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                     <Select value={filingOfficer} onValueChange={setFilingOfficer}>
                       <SelectTrigger className="h-8 text-sm"><SelectValue placeholder={staffList === undefined ? "Loading…" : "Select…"} /></SelectTrigger>
                       <SelectContent>
-                        {(staffList ?? []).filter(s => ["owner","admin","senior_advisor","senior_counsellor","manager","filing_officer"].includes(s.role)).map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}
+                        {filingOptions.map(s => <SelectItem key={s.id} value={s.id}>{s.full_name}</SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
+                  <label className="flex items-center gap-2 text-[11px] text-muted-foreground md:col-span-3"><input type="checkbox" checked={showAllStaff} onChange={(e) => setShowAllStaff(e.target.checked)} /> Show all active staff</label>
                   <div className="space-y-1">
                     <L>Submission Target</L>
                     <input type="date" value={submissionDate} onChange={e => setSubmissionDate(e.target.value)}

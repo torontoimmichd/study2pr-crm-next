@@ -25,6 +25,7 @@ import {
   Crown,
   AlertCircle,
   Handshake,
+  BriefcaseBusiness,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth, hasRole } from "@/lib/auth-context";
@@ -71,6 +72,7 @@ const ADMIN_GROUPS: AdminGroup[] = [
     label: "People",
     items: [
       { to: "/admin/staff", label: "Staff & Roles", icon: Users },
+      { to: "/admin/positions", label: "Staff Positions", icon: BriefcaseBusiness },
       { to: "/admin/permissions", label: "Permissions Matrix", icon: Lock },
     ],
   },

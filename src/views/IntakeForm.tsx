@@ -26,6 +26,7 @@ import {
 import { Crown, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { writeTimeline } from "@/lib/timeline";
+import { validateContact, type PreferredChannel } from "@/lib/contact";
 
 // ─── constants ────────────────────────────────────────────────────────────────
 
@@ -70,6 +71,7 @@ interface FormState {
   full_name: string;
   email: string;
   phone: string;
+  preferred_channel: PreferredChannel;
   // Step 2: Background
   country_of_citizenship: string;
   country_of_residence: string;
@@ -88,7 +90,7 @@ interface FormState {
 }
 
 const EMPTY: FormState = {
-  full_name: "", email: "", phone: "",
+  full_name: "", email: "", phone: "", preferred_channel: "whatsapp",
   country_of_citizenship: "", country_of_residence: "", date_of_birth: "", education_level: "",
   work_experience: "", english_proficiency: "", ielts_score: "", french_proficiency: "",
   destination_country: "", visa_goal: "", crs_score: "", notes: "",
@@ -105,7 +107,7 @@ export default function IntakeForm() {
   const set = (patch: Partial<FormState>) => setForm((f) => ({ ...f, ...patch }));
 
   const canProceed = (): boolean => {
-    if (step === 1) return !!form.full_name.trim() && !!form.phone.trim() && form.phone.replace(/\D/g, "").length >= 10;
+    if (step === 1) return !!form.full_name.trim() && !validateContact(form.email, form.phone);
     if (step === 2) return !!form.country_of_citizenship && !!form.country_of_residence;
     if (step === 3) return true; // optional fields
     if (step === 4) return !!form.destination_country && !!form.visa_goal;
@@ -114,6 +116,8 @@ export default function IntakeForm() {
 
   const submit = async (e: FormEvent) => {
     e.preventDefault();
+    const contactError = validateContact(form.email, form.phone);
+    if (contactError) { toast.error(contactError); setStep(1); return; }
     setSubmitting(true);
 
     const assessment_data = {
@@ -137,6 +141,7 @@ export default function IntakeForm() {
       lifecycle_state: "new_enquiry",
       crs_score: form.crs_score ? Number(form.crs_score) : null,
       assessment_data,
+      preferred_channel: form.preferred_channel,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -209,11 +214,17 @@ export default function IntakeForm() {
                 <Field label="Email address">
                   <Input type="email" value={form.email} onChange={(e) => set({ email: e.target.value })} placeholder="we'll send your assessment here" />
                 </Field>
-                <Field label="Phone number * (WhatsApp preferred)">
+                <Field label="Phone number (WhatsApp)">
                   <Input type="tel" value={form.phone} onChange={(e) => set({ phone: e.target.value })} placeholder="+91 98765 43210" required />
-                  {form.phone && form.phone.replace(/\D/g, "").length < 10 && (
-                    <p className="text-xs text-destructive mt-1">Please enter at least 10 digits</p>
-                  )}
+                </Field>
+                <Field label="Preferred channel">
+                  <Select value={form.preferred_channel} onValueChange={(v: PreferredChannel) => set({ preferred_channel: v })}>
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                      <SelectItem value="email">Email</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </Field>
               </div>
             )}

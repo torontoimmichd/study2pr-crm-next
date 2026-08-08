@@ -57,6 +57,7 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
   const qc = useQueryClient();
   const { user, profile } = useAuth();
   const [submitting, setSubmitting] = useState(false);
+  const [showAllStaff, setShowAllStaff] = useState(false);
 
   // Resolved client id: explicit prop wins, then defaultClientId, then resolved from lead
   const [resolvedClientId, setResolvedClientId] = useState<string>(clientId ?? defaultClientId ?? "");
@@ -207,6 +208,21 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
       return (data ?? []) as { id: string; full_name: string; role: string }[];
     },
   });
+
+  const { data: visaContext } = useQuery({
+    queryKey: ["new-case-visa-family-country", form.visa_type_id], enabled: !!form.visa_type_id,
+    queryFn: async () => (await supabase.rpc("fn_visa_family_country", { p_visa_type_id: form.visa_type_id })).data?.[0] ?? null,
+  });
+  const { data: positionedManagers = [] } = useQuery({
+    queryKey: ["new-case-positioned", "case_manager", visaContext?.programme_family, visaContext?.country], enabled: !!form.visa_type_id,
+    queryFn: async () => (await supabase.rpc("fn_staff_for_position", { p_function: "case_manager", p_family: visaContext?.programme_family ?? undefined, p_country: visaContext?.country ?? undefined })).data ?? [],
+  });
+  const { data: positionedFiling = [] } = useQuery({
+    queryKey: ["new-case-positioned", "filing_officer", visaContext?.programme_family, visaContext?.country], enabled: !!form.visa_type_id,
+    queryFn: async () => (await supabase.rpc("fn_staff_for_position", { p_function: "filing_officer", p_family: visaContext?.programme_family ?? undefined, p_country: visaContext?.country ?? undefined })).data ?? [],
+  });
+  const managerOptions = showAllStaff ? (staffList ?? []) : positionedManagers.map((item) => ({ id: item.staff_id, full_name: item.full_name, role: item.role }));
+  const filingOptions = showAllStaff ? (staffList ?? []) : positionedFiling.map((item) => ({ id: item.staff_id, full_name: item.full_name, role: item.role }));
 
   const destinationCountries = Array.from(new Set((visas ?? []).map((visa) => visa.destination_country).filter(Boolean))) as string[];
   const filteredVisas = (visas ?? []).filter((visa) => !form.destination_country || form.destination_country === "__any__" || visa.destination_country === form.destination_country || !visa.destination_country);
@@ -462,20 +478,21 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
                 <Label>Case Manager *</Label>
                 <Select value={form.case_manager_id} onValueChange={(value) => setForm({ ...form, case_manager_id: value })}>
                   <SelectTrigger><SelectValue placeholder={staffList === undefined ? "Loading..." : "Select manager"} /></SelectTrigger>
-                  <SelectContent>{(staffList ?? []).filter((staff) => ["owner", "admin", "senior_advisor", "case_manager", "senior_counsellor", "visa_expert", "manager", "counselor"].includes(staff.role)).map((staff) => <SelectItem key={staff.id} value={staff.id}>{staff.full_name}</SelectItem>)}</SelectContent>
+                  <SelectContent>{managerOptions.map((staff) => <SelectItem key={staff.id} value={staff.id}>{staff.full_name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
                 <Label>Filing Officer *</Label>
                 <Select value={form.filing_officer_id} onValueChange={(value) => setForm({ ...form, filing_officer_id: value })}>
                   <SelectTrigger><SelectValue placeholder={staffList === undefined ? "Loading..." : "Select officer"} /></SelectTrigger>
-                  <SelectContent>{(staffList ?? []).filter((staff) => ["owner", "admin", "senior_advisor", "senior_counsellor", "manager", "filing_officer"].includes(staff.role)).map((staff) => <SelectItem key={staff.id} value={staff.id}>{staff.full_name}</SelectItem>)}</SelectContent>
+                  <SelectContent>{filingOptions.map((staff) => <SelectItem key={staff.id} value={staff.id}>{staff.full_name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
                 <Label>Submission Target</Label>
                 <Input type="date" value={form.submission_date} onChange={(e) => setForm({ ...form, submission_date: e.target.value })} />
               </div>
+              <label className="col-span-2 flex items-center gap-2 text-xs text-muted-foreground"><input type="checkbox" checked={showAllStaff} onChange={(e) => setShowAllStaff(e.target.checked)} /> Show all active staff</label>
             </div>
           </fieldset>
 
