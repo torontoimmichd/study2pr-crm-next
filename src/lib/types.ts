@@ -18,6 +18,7 @@ export interface Lead {
 
   email: string | null;
   phone: string | null;
+  preferred_channel?: string | null;
 
   // Existing field
   country_of_residence?: string | null;

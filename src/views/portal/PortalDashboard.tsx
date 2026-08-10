@@ -178,9 +178,9 @@ export default function PortalDashboard() {
     if (!caseData) return;
     const ext = file.name.split(".").pop();
     const path = `cases/${caseData.id}/${docId}_client.${ext}`;
-    const { error } = await supabase.storage.from("case-documents").upload(path, file, { upsert: true });
+    const { error } = await supabase.storage.from("case-files").upload(path, file, { upsert: true });
     if (error) { toast.error("Upload failed: " + error.message); return; }
-    await supabase.from("case_documents").update({ storage_path: path, status: "pending", storage_bucket: "case-documents" }).eq("id", docId);
+    await supabase.from("case_documents").update({ storage_path: path, status: "pending", storage_bucket: "case-files" }).eq("id", docId);
     void queryClient.invalidateQueries({ queryKey: ["portal-document-checklist", caseData.id] });
     void queryClient.invalidateQueries({ queryKey: ["portal-docs", caseData.id] });
     toast.success("Document uploaded — your advisor will review it shortly.");
@@ -188,7 +188,7 @@ export default function PortalDashboard() {
 
   const handleDownload = async (storagePath: string, title: string) => {
     const { data, error } = await supabase.storage
-      .from("case-documents")
+      .from("case-files")
       .createSignedUrl(storagePath, 120); // 2-minute signed URL
     if (error || !data?.signedUrl) {
       toast.error("Could not generate download link. Please try again.");

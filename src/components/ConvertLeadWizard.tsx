@@ -70,6 +70,7 @@ interface Lead {
   full_name: string;
   email: string | null;
   phone: string | null;
+  preferred_channel?: string | null;
   country_of_residence: string | null;
   country_of_interest?: string | null;
   notes: string | null;
@@ -156,7 +157,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
   const [clientEmail,   setClientEmail]   = useState(lead.email ?? "");
   const [clientPhone,   setClientPhone]   = useState(lead.phone ?? "");
   const [clientCountry, setClientCountry] = useState(lead.country_of_residence ?? "");
-  const [preferredChannel, setPreferredChannel] = useState<PreferredChannel>(defaultPreferredChannel(lead.email ?? "", lead.phone ?? ""));
+  const [preferredChannel, setPreferredChannel] = useState<PreferredChannel>(lead.preferred_channel === "email" ? "email" : defaultPreferredChannel(lead.email ?? "", lead.phone ?? ""));
 
   // Visa details
   const [destinationCountry, setDestinationCountry] = useState(lead.country_of_interest ?? "");
@@ -606,7 +607,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
       for (const entry of conversionClients) {
         const { error: leadUpdateError } = await supabase
           .from("leads")
-          .update({ lifecycle_state: "converted", converted_client_id: entry.client.id, converted_at: convertedAt, stage_metadata: { preferred_channel: preferredChannel } })
+          .update({ lifecycle_state: "converted", converted_client_id: entry.client.id, converted_at: convertedAt, preferred_channel: preferredChannel })
           .eq("id", entry.leadId);
         if (leadUpdateError) throw new Error(`Client created, but lead conversion could not be completed: ${leadUpdateError.message}`);
         const createdCase = caseByClient.get(entry.client.id);

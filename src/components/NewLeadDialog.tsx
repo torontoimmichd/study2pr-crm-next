@@ -359,7 +359,7 @@ export function NewLeadDialog({ open, onOpenChange, onCreated, linkedClient }: P
       referral_partner_id: form.referral_partner_id || null,
       notes: form.notes.trim() || null,
       lifecycle_state: "new_enquiry",
-      stage_metadata: { preferred_channel: form.preferred_channel },
+      preferred_channel: form.preferred_channel,
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

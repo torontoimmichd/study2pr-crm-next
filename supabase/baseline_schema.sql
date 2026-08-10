@@ -2916,7 +2916,7 @@ CREATE TABLE IF NOT EXISTS "public"."case_documents" (
     "case_id" "uuid" NOT NULL,
     "document_type" "text" NOT NULL,
     "title" "text" NOT NULL,
-    "storage_bucket" "text" DEFAULT 'case-documents'::"text" NOT NULL,
+    "storage_bucket" "text" DEFAULT 'case-files'::"text" NOT NULL,
     "storage_path" "text" NOT NULL,
     "file_size_bytes" bigint,
     "mime_type" "text",
@@ -10406,7 +10406,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
-
 
 
 
