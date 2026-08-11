@@ -373,7 +373,34 @@ export default function LeadDetailPage() {
             </TabsContent>
 
             {/* Assessment */}
-            <TabsContent value="assessment" className="mt-3">
+            <TabsContent value="assessment" className="mt-3 space-y-3">
+              {/* Entry point. Before this, the tab could only REVIEW an
+                  assessment the client had already submitted — with none on
+                  file it just said "No self-assessment submitted", and there
+                  was no way to start one. */}
+              <div className="card-surface p-4 flex flex-wrap items-center gap-3">
+                <ClipboardList className="h-4 w-4 text-muted-foreground shrink-0" />
+                <div className="flex-1 min-w-[200px]">
+                  <p className="text-sm font-medium">Run an assessment</p>
+                  <p className="text-xs text-muted-foreground">
+                    Express Entry PR — 55 fields across Intake screen, Strategy &amp; profile
+                    and Post-ITA control. Answers save against this lead.
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => window.open(`/assessment?lead=${leadId}&form=EE_PR_ASSESSMENT`, "_blank")}
+                >
+                  <ClipboardList className="h-4 w-4 mr-1.5" />
+                  Express Entry PR
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => window.open(`/assessment?lead=${leadId}`, "_blank")}
+                >
+                  General eligibility
+                </Button>
+              </div>
               <AssessmentReviewPanel leadId={leadId!} />
             </TabsContent>
           </Tabs>

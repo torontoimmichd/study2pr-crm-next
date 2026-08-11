@@ -40,17 +40,24 @@ function visible(q: Question, answers: Record<string, unknown>): boolean {
 export default function AssessmentForm() {
   const searchParams = useSearchParams();
   const leadId = searchParams.get("lead");
+  // ?form=CODE selects a specific form. Without it the default form is used,
+  // which is the public eligibility form (GENERAL) — unchanged behaviour.
+  // Staff run internal forms, e.g. EE_PR_ASSESSMENT, by passing the code.
+  const formCode = searchParams.get("form");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, unknown>>({});
   const [busy, setBusy] = useState(false);
   const [done, setDone] = useState(false);
 
   const { data: form, isLoading, error } = useQuery({
-    queryKey: ["public-assessment-form"],
+    queryKey: ["public-assessment-form", formCode],
     queryFn: async () => {
-      const { data, error } = await db.from("assessment_forms")
+      let q = db.from("assessment_forms")
         .select("code, title, description, sections")
-        .eq("is_active", true)
+        .eq("is_active", true);
+      // An explicit code wins; otherwise fall back to the default form.
+      if (formCode) q = q.eq("code", formCode);
+      const { data, error } = await q
         .order("is_default", { ascending: false })
         .limit(1);
       if (error) throw error;
