@@ -62,6 +62,7 @@ import { createCaseTasks } from "@/lib/taskEngine";
 import { useAuth } from "@/lib/auth-context";
 import { cn } from "@/lib/utils";
 import { defaultPreferredChannel, validateContact, type PreferredChannel } from "@/lib/contact";
+import { dateOrNull, uuidOrNull } from "@/lib/normalizers";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -398,7 +399,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
 
     // If payment stages are enabled, they must be filled in.
     const cleanStages = stages
-      .map(s => ({ amount: Number(s.amount || 0), note: s.note.trim(), due_date: s.due_date || null }))
+      .map(s => ({ amount: Number(s.amount || 0), note: s.note.trim(), due_date: dateOrNull(s.due_date) }))
       .filter(s => s.amount > 0 || s.note || s.due_date);
     if (stagesEnabled) {
       if (cleanStages.length === 0) { toast.error("Add at least one payment stage or turn stages off"); return; }
@@ -483,7 +484,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
           email: clientEmail.trim() || null,
           phone: clientPhone.trim() || null,
           country_of_citizenship: clientCountry || null,
-          family_unit_id: existingClient.family_unit_id ?? familyUnitId,
+          family_unit_id: uuidOrNull(existingClient.family_unit_id ?? familyUnitId),
           family_role: familyUnitId && !existingClient.family_unit_id ? (lead.family_role ?? "primary") : undefined,
           is_active: true,
         };
@@ -502,7 +503,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
             email: clientEmail.trim() || null,
             phone: clientPhone.trim() || null,
             country_of_citizenship: clientCountry || null,
-            family_unit_id: familyUnitId,
+            family_unit_id: uuidOrNull(familyUnitId),
             family_role: familyUnitId ? (lead.family_role ?? "primary") : null,
             source_lead_id: lead.id,
             is_active: true,
@@ -544,7 +545,7 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
                 full_name: member.name.trim(),
                 email: member.email.trim() || memberLead.email || null,
                 phone: member.phone.trim() || memberLead.phone || null,
-                family_unit_id: familyUnitId,
+                family_unit_id: uuidOrNull(familyUnitId),
                 family_role: memberLead.family_role || "member",
                 source_lead_id: memberLead.id,
                 is_active: true,
@@ -580,14 +581,14 @@ export function ConvertLeadWizard({ lead, open, onOpenChange, onConverted }: Pro
 
       const discountMultiplier = 1 - Math.min(Number(discountPct || 0), maxDiscount) / 100;
       const casePayloads = conversionClients.map(({ client: memberClient, applicant }, index) => ({
-        client_id: memberClient.id,
-        visa_type_id: applicant.visaTypeId || visaTypeId,
-        visa_sub_type_id: applicant.visaSubTypeId || (index === 0 ? visaSubTypeId : null),
+        client_id: uuidOrNull(memberClient.id),
+        visa_type_id: uuidOrNull(applicant.visaTypeId || visaTypeId),
+        visa_sub_type_id: uuidOrNull(applicant.visaSubTypeId || (index === 0 ? visaSubTypeId : null)),
         current_stage_code: defaultStage ?? "intake",
-        case_manager_id: caseManager,
-        senior_advisor_id: filingOfficer,
-        family_unit_id: familyUnitId ?? memberClient.family_unit_id ?? null,
-        target_submission_date: submissionDate || null,
+        case_manager_id: uuidOrNull(caseManager),
+        senior_advisor_id: uuidOrNull(filingOfficer),
+        family_unit_id: uuidOrNull(familyUnitId ?? memberClient.family_unit_id),
+        target_submission_date: dateOrNull(submissionDate),
         quoted_fee_inr: isFamilyConversion ? Math.round(Number(applicant.fee || 0) * discountMultiplier) : totalDue || null,
         notes: [extraNotes, applicant.notes.trim() ? `${applicant.name} notes: ${applicant.notes.trim()}` : null].filter(Boolean).join(" | ") || null,
         is_archived: false,

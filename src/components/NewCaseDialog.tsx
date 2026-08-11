@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { writeAudit } from "@/lib/audit";
 import { createCaseTasks } from "@/lib/taskEngine";
 import { useAuth } from "@/lib/auth-context";
+import { dateOrNull, uuidOrNull } from "@/lib/normalizers";
 
 // Manager-level roles that may offer up to MAX_DISCOUNT_MANAGER
 const MANAGER_ROLES = ["owner", "admin", "senior_advisor", "senior_counsellor", "manager"] as const;
@@ -296,7 +297,7 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
     }
     setSubmitting(true);
     const paymentStages = form.payment_stages
-      .map((stage) => ({ amount: Number(stage.amount || 0), note: stage.note.trim(), due_date: stage.due_date || null }))
+      .map((stage) => ({ amount: Number(stage.amount || 0), note: stage.note.trim(), due_date: dateOrNull(stage.due_date) }))
       .filter((stage) => stage.amount > 0 || stage.note || stage.due_date);
     if (form.payment_plan_enabled && (paymentStages.length === 0 || paymentStages.some((stage) => stage.amount <= 0))) {
       toast.error("Every payment stage needs an amount");
@@ -311,16 +312,16 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
       leadPrefill?.notes && !form.notes.trim() ? `Lead notes: ${leadPrefill.notes}` : null,
     ].filter(Boolean).join(" | ");
     const payload = {
-      client_id: effectiveClientId,
-      visa_type_id: form.visa_type_id,
-      visa_sub_type_id: form.visa_sub_type_id || null,
+      client_id: uuidOrNull(effectiveClientId),
+      visa_type_id: uuidOrNull(form.visa_type_id),
+      visa_sub_type_id: uuidOrNull(form.visa_sub_type_id),
       quoted_fee_inr: totalDue || 0,
       priority: form.priority,
-      family_unit_id: leadPrefill?.family_unit_id ?? null,
+      family_unit_id: uuidOrNull(leadPrefill?.family_unit_id),
       notes: applicationNotes || null,
-      case_manager_id: form.case_manager_id,
-      senior_advisor_id: form.filing_officer_id,
-      target_submission_date: form.submission_date || null,
+      case_manager_id: uuidOrNull(form.case_manager_id),
+      senior_advisor_id: uuidOrNull(form.filing_officer_id),
+      target_submission_date: dateOrNull(form.submission_date),
       payment_plan_enabled: form.payment_plan_enabled,
       payment_stages: form.payment_plan_enabled ? paymentStages : null,
       current_stage_code: "intake",

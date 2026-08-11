@@ -1493,7 +1493,21 @@ export type Database = {
             foreignKeyName: "activity_timeline_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -1550,6 +1564,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -1945,7 +1966,21 @@ export type Database = {
             foreignKeyName: "appointments_related_case_id_fkey"
             columns: ["related_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "appointments_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "appointments_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -2256,6 +2291,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -3005,7 +3047,21 @@ export type Database = {
             foreignKeyName: "call_logs_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "call_logs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "call_logs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -3062,6 +3118,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "call_logs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -3277,7 +3340,21 @@ export type Database = {
             foreignKeyName: "case_applicants_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_applicants_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_applicants_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -3334,6 +3411,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "case_applicants_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -3526,7 +3610,21 @@ export type Database = {
             foreignKeyName: "case_documents_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_documents_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -3611,6 +3709,13 @@ export type Database = {
             columns: ["uploaded_by_client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "case_documents_uploaded_by_client_id_fkey"
+            columns: ["uploaded_by_client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -3763,7 +3868,21 @@ export type Database = {
             foreignKeyName: "case_milestones_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -3820,6 +3939,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "case_milestones_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -3969,7 +4095,21 @@ export type Database = {
             foreignKeyName: "case_notes_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -4137,7 +4277,21 @@ export type Database = {
             foreignKeyName: "case_outcome_reviews_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: true
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -4277,7 +4431,21 @@ export type Database = {
             foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
             columns: ["successor_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -4415,7 +4583,21 @@ export type Database = {
             foreignKeyName: "case_requests_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_requests_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_requests_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -4572,7 +4754,21 @@ export type Database = {
             foreignKeyName: "case_stage_history_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_stage_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_stage_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -4832,6 +5028,13 @@ export type Database = {
             referencedColumns: ["client_id"]
           },
           {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
+            referencedColumns: ["client_id"]
+          },
+          {
             foreignKeyName: "cases_current_stage_code_fkey"
             columns: ["current_stage_code"]
             isOneToOne: false
@@ -4947,7 +5150,21 @@ export type Database = {
             foreignKeyName: "cases_origin_case_id_fkey"
             columns: ["origin_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -5045,7 +5262,21 @@ export type Database = {
             foreignKeyName: "cases_parent_case_id_fkey"
             columns: ["parent_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -5283,7 +5514,21 @@ export type Database = {
             foreignKeyName: "client_commitments_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -5340,6 +5585,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "client_commitments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -5852,7 +6104,21 @@ export type Database = {
             foreignKeyName: "commissions_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "commissions_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "commissions_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -6084,6 +6350,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "contact_identities_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -6325,6 +6598,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "conversations_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -6753,7 +7033,21 @@ export type Database = {
             foreignKeyName: "entity_notes_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -6810,6 +7104,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -7077,7 +7378,21 @@ export type Database = {
             foreignKeyName: "expiry_items_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "expiry_items_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "expiry_items_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -7134,6 +7449,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "expiry_items_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -7247,6 +7569,13 @@ export type Database = {
             columns: ["principal_client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "family_members_principal_client_id_fkey"
+            columns: ["principal_client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
         ]
@@ -7419,7 +7748,21 @@ export type Database = {
             foreignKeyName: "finance_entries_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "finance_entries_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "finance_entries_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -7476,6 +7819,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "finance_entries_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -7650,7 +8000,21 @@ export type Database = {
             foreignKeyName: "imm_assessment_runs_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -7707,6 +8071,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "imm_assessment_runs_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -8290,7 +8661,21 @@ export type Database = {
             foreignKeyName: "imm_program_visa_types_visa_type_code_fkey"
             columns: ["visa_type_code"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["programme"]
+          },
+          {
+            foreignKeyName: "imm_program_visa_types_visa_type_code_fkey"
+            columns: ["visa_type_code"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["programme"]
+          },
+          {
+            foreignKeyName: "imm_program_visa_types_visa_type_code_fkey"
+            columns: ["visa_type_code"]
+            isOneToOne: false
+            referencedRelation: "v_open_outcome_reviews"
             referencedColumns: ["programme"]
           },
           {
@@ -8696,17 +9081,30 @@ export type Database = {
       invoices: {
         Row: {
           case_id: string | null
+          cgst_amount: number | null
+          cgst_rate: number | null
           client_id: string
           created_at: string | null
           currency: string
           due_date: string | null
+          export_of_service: boolean
+          gstin_recipient: string | null
+          gstin_supplier: string | null
           id: string
+          igst_amount: number | null
+          igst_rate: number | null
           invoice_number: string
+          is_tax_invoice: boolean
           issued_at: string | null
           line_items: Json
+          lut_number: string | null
           notes: string | null
           paid_total: number | null
           pdf_storage_path: string | null
+          place_of_supply: string | null
+          sac_code: string | null
+          sgst_amount: number | null
+          sgst_rate: number | null
           status: string | null
           subtotal: number
           tax: number | null
@@ -8715,17 +9113,30 @@ export type Database = {
         }
         Insert: {
           case_id?: string | null
+          cgst_amount?: number | null
+          cgst_rate?: number | null
           client_id: string
           created_at?: string | null
           currency?: string
           due_date?: string | null
+          export_of_service?: boolean
+          gstin_recipient?: string | null
+          gstin_supplier?: string | null
           id?: string
+          igst_amount?: number | null
+          igst_rate?: number | null
           invoice_number: string
+          is_tax_invoice?: boolean
           issued_at?: string | null
           line_items?: Json
+          lut_number?: string | null
           notes?: string | null
           paid_total?: number | null
           pdf_storage_path?: string | null
+          place_of_supply?: string | null
+          sac_code?: string | null
+          sgst_amount?: number | null
+          sgst_rate?: number | null
           status?: string | null
           subtotal: number
           tax?: number | null
@@ -8734,17 +9145,30 @@ export type Database = {
         }
         Update: {
           case_id?: string | null
+          cgst_amount?: number | null
+          cgst_rate?: number | null
           client_id?: string
           created_at?: string | null
           currency?: string
           due_date?: string | null
+          export_of_service?: boolean
+          gstin_recipient?: string | null
+          gstin_supplier?: string | null
           id?: string
+          igst_amount?: number | null
+          igst_rate?: number | null
           invoice_number?: string
+          is_tax_invoice?: boolean
           issued_at?: string | null
           line_items?: Json
+          lut_number?: string | null
           notes?: string | null
           paid_total?: number | null
           pdf_storage_path?: string | null
+          place_of_supply?: string | null
+          sac_code?: string | null
+          sgst_amount?: number | null
+          sgst_rate?: number | null
           status?: string | null
           subtotal?: number
           tax?: number | null
@@ -8840,7 +9264,21 @@ export type Database = {
             foreignKeyName: "invoices_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "invoices_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "invoices_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -8897,6 +9335,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "invoices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
         ]
@@ -9054,7 +9499,21 @@ export type Database = {
             foreignKeyName: "ircc_emails_matched_case_id_fkey"
             columns: ["matched_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_emails_matched_case_id_fkey"
+            columns: ["matched_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_emails_matched_case_id_fkey"
+            columns: ["matched_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -9194,7 +9653,21 @@ export type Database = {
             foreignKeyName: "ircc_file_history_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_file_history_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -9403,7 +9876,21 @@ export type Database = {
             foreignKeyName: "ircc_form_fills_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_form_fills_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "ircc_form_fills_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -10058,6 +10545,13 @@ export type Database = {
             referencedColumns: ["client_id"]
           },
           {
+            foreignKeyName: "fk_leads_converted_client"
+            columns: ["converted_client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
+            referencedColumns: ["client_id"]
+          },
+          {
             foreignKeyName: "leads_agent_partner_id_fkey"
             columns: ["agent_partner_id"]
             isOneToOne: false
@@ -10139,6 +10633,13 @@ export type Database = {
             columns: ["enquiry_client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "leads_enquiry_client_id_fkey"
+            columns: ["enquiry_client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -10372,7 +10873,21 @@ export type Database = {
             foreignKeyName: "messages_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "messages_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "messages_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -10429,6 +10944,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "messages_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -10755,7 +11277,21 @@ export type Database = {
             foreignKeyName: "outbound_messages_related_case_id_fkey"
             columns: ["related_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "outbound_messages_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "outbound_messages_related_case_id_fkey"
+            columns: ["related_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -10815,6 +11351,13 @@ export type Database = {
             referencedColumns: ["client_id"]
           },
           {
+            foreignKeyName: "outbound_messages_related_client_id_fkey"
+            columns: ["related_client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
+            referencedColumns: ["client_id"]
+          },
+          {
             foreignKeyName: "outbound_messages_related_lead_id_fkey"
             columns: ["related_lead_id"]
             isOneToOne: false
@@ -10863,43 +11406,64 @@ export type Database = {
           amount: number
           created_at: string | null
           currency: string
+          deposited_on: string | null
           id: string
           invoice_id: string
           notes: string | null
           paid_at: string | null
+          payer_name: string | null
           provider: string | null
           provider_payload: Json | null
           provider_reference: string | null
+          receipt_number: string | null
+          received_by: string | null
+          recorded_by: string | null
           refund_reference: string | null
           status: string | null
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
           amount: number
           created_at?: string | null
           currency: string
+          deposited_on?: string | null
           id?: string
           invoice_id: string
           notes?: string | null
           paid_at?: string | null
+          payer_name?: string | null
           provider?: string | null
           provider_payload?: Json | null
           provider_reference?: string | null
+          receipt_number?: string | null
+          received_by?: string | null
+          recorded_by?: string | null
           refund_reference?: string | null
           status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
           amount?: number
           created_at?: string | null
           currency?: string
+          deposited_on?: string | null
           id?: string
           invoice_id?: string
           notes?: string | null
           paid_at?: string | null
+          payer_name?: string | null
           provider?: string | null
           provider_payload?: Json | null
           provider_reference?: string | null
+          receipt_number?: string | null
+          received_by?: string | null
+          recorded_by?: string | null
           refund_reference?: string | null
           status?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: [
           {
@@ -10908,6 +11472,48 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "invoices"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_received_by_fkey"
+            columns: ["received_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_received_by_fkey"
+            columns: ["received_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "payments_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_recorded_by_fkey"
+            columns: ["recorded_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
+          },
+          {
+            foreignKeyName: "payments_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "staff_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_verified_by_fkey"
+            columns: ["verified_by"]
+            isOneToOne: false
+            referencedRelation: "v_counselor_performance"
+            referencedColumns: ["counselor_id"]
           },
         ]
       }
@@ -11153,7 +11759,21 @@ export type Database = {
             foreignKeyName: "prospective_applications_promoted_case_id_fkey"
             columns: ["promoted_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_promoted_case_id_fkey"
+            columns: ["promoted_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_promoted_case_id_fkey"
+            columns: ["promoted_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -11251,7 +11871,21 @@ export type Database = {
             foreignKeyName: "prospective_applications_source_case_id_fkey"
             columns: ["source_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_source_case_id_fkey"
+            columns: ["source_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "prospective_applications_source_case_id_fkey"
+            columns: ["source_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -11548,7 +12182,21 @@ export type Database = {
             foreignKeyName: "questionnaire_responses_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -11862,6 +12510,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "secure_links_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -12468,7 +13123,21 @@ export type Database = {
             foreignKeyName: "tasks_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "tasks_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "tasks_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -12663,7 +13332,21 @@ export type Database = {
             foreignKeyName: "trigger_events_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "trigger_events_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "trigger_events_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -12720,6 +13403,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "trigger_events_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -13142,7 +13832,21 @@ export type Database = {
             foreignKeyName: "activity_timeline_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -13199,6 +13903,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -13417,6 +14128,13 @@ export type Database = {
             referencedColumns: ["client_id"]
           },
           {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
+            referencedColumns: ["client_id"]
+          },
+          {
             foreignKeyName: "cases_current_stage_code_fkey"
             columns: ["current_stage_code"]
             isOneToOne: false
@@ -13529,6 +14247,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -13721,7 +14446,21 @@ export type Database = {
             foreignKeyName: "questionnaire_responses_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "questionnaire_responses_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -13877,6 +14616,13 @@ export type Database = {
             referencedColumns: ["client_id"]
           },
           {
+            foreignKeyName: "assessments_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
+            referencedColumns: ["client_id"]
+          },
+          {
             foreignKeyName: "assessments_lead_id_fkey"
             columns: ["lead_id"]
             isOneToOne: false
@@ -13998,6 +14744,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
         ]
@@ -14130,7 +14883,21 @@ export type Database = {
             foreignKeyName: "entity_notes_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -14187,6 +14954,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -14383,7 +15157,21 @@ export type Database = {
             foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
             columns: ["successor_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_successor_case_id_fkey"
+            columns: ["successor_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -14454,6 +15242,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -14551,7 +15346,21 @@ export type Database = {
             foreignKeyName: "cases_origin_case_id_fkey"
             columns: ["origin_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_origin_case_id_fkey"
+            columns: ["origin_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -14649,7 +15458,21 @@ export type Database = {
             foreignKeyName: "cases_parent_case_id_fkey"
             columns: ["parent_case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "cases_parent_case_id_fkey"
+            columns: ["parent_case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -14794,7 +15617,21 @@ export type Database = {
             foreignKeyName: "activity_timeline_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -14854,6 +15691,13 @@ export type Database = {
             referencedColumns: ["client_id"]
           },
           {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
+            referencedColumns: ["client_id"]
+          },
+          {
             foreignKeyName: "activity_timeline_lead_id_fkey"
             columns: ["lead_id"]
             isOneToOne: false
@@ -14908,6 +15752,22 @@ export type Database = {
             referencedColumns: ["code"]
           },
         ]
+      }
+      v_cash_not_deposited: {
+        Row: {
+          amount: number | null
+          case_code: string | null
+          client_name: string | null
+          days_held: number | null
+          deposited_on: string | null
+          id: string | null
+          invoice_number: string | null
+          paid_at: string | null
+          receipt_number: string | null
+          received_by: string | null
+          verified_at: string | null
+        }
+        Relationships: []
       }
       v_client_family_chain: {
         Row: {
@@ -14970,6 +15830,32 @@ export type Database = {
           id?: string | null
         }
         Relationships: []
+      }
+      v_completed_applications: {
+        Row: {
+          case_code: string | null
+          case_id: string | null
+          client_name: string | null
+          current_stage_code: string | null
+          decision_at: string | null
+          destination_country: string | null
+          is_archived: boolean | null
+          outcome: string | null
+          outstanding: number | null
+          paid: number | null
+          programme: string | null
+          quoted_fee_inr: number | null
+          review_status: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cases_current_stage_code_fkey"
+            columns: ["current_stage_code"]
+            isOneToOne: false
+            referencedRelation: "case_stages_ref"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       v_contact_reveal_anomalies: {
         Row: {
@@ -15340,7 +16226,21 @@ export type Database = {
             foreignKeyName: "entity_notes_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -15397,6 +16297,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "entity_notes_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -15642,7 +16549,21 @@ export type Database = {
             foreignKeyName: "activity_timeline_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -15702,6 +16623,13 @@ export type Database = {
             referencedColumns: ["client_id"]
           },
           {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
+            referencedColumns: ["client_id"]
+          },
+          {
             foreignKeyName: "activity_timeline_lead_id_fkey"
             columns: ["lead_id"]
             isOneToOne: false
@@ -15737,6 +16665,172 @@ export type Database = {
             referencedColumns: ["for_lead_id"]
           },
         ]
+      }
+      v_open_outcome_reviews: {
+        Row: {
+          case_code: string | null
+          case_id: string | null
+          client_name: string | null
+          days_open: number | null
+          days_to_jr_deadline: number | null
+          decision_notified_on: string | null
+          jr_filing_deadline: string | null
+          matter_locale: string | null
+          opened_at: string | null
+          programme: string | null
+          refusal_reason_code: string | null
+          refusal_reason_notes: string | null
+          review_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "cases"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "mv_cases_at_risk"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_application_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_case_financials"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_case_notes"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_case_outcomes"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_case_timeline"
+            referencedColumns: ["for_case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_cases_masked"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_client_family_chain"
+            referencedColumns: ["member_application_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_outstanding_money"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "case_outcome_reviews_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: true
+            referencedRelation: "v_portal_document_checklist"
+            referencedColumns: ["case_id"]
+          },
+        ]
+      }
+      v_outstanding_money: {
+        Row: {
+          case_code: string | null
+          case_id: string | null
+          client_id: string | null
+          current_stage_code: string | null
+          email: string | null
+          full_name: string | null
+          invoiced: number | null
+          outstanding: number | null
+          paid: number | null
+          phone: string | null
+          quoted_fee_inr: number | null
+          whatsapp: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cases_current_stage_code_fkey"
+            columns: ["current_stage_code"]
+            isOneToOne: false
+            referencedRelation: "case_stages_ref"
+            referencedColumns: ["code"]
+          },
+        ]
+      }
+      v_payments_by_method: {
+        Row: {
+          method: string | null
+          month: string | null
+          payments: number | null
+          total_inr: number | null
+          unverified: number | null
+        }
+        Relationships: []
       }
       v_portal_document_checklist: {
         Row: {
@@ -15802,6 +16896,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "cases_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
         ]
@@ -16074,7 +17175,21 @@ export type Database = {
             foreignKeyName: "activity_timeline_case_id_fkey"
             columns: ["case_id"]
             isOneToOne: false
+            referencedRelation: "v_completed_applications"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
             referencedRelation: "v_ircc_tracker"
+            referencedColumns: ["case_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_case_id_fkey"
+            columns: ["case_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["case_id"]
           },
           {
@@ -16131,6 +17246,13 @@ export type Database = {
             columns: ["client_id"]
             isOneToOne: false
             referencedRelation: "v_lead_overview"
+            referencedColumns: ["client_id"]
+          },
+          {
+            foreignKeyName: "activity_timeline_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "v_outstanding_money"
             referencedColumns: ["client_id"]
           },
           {
@@ -16379,6 +17501,10 @@ export type Database = {
           p_group_type?: string
         }
         Returns: string
+      }
+      fn_invoice_tax_split: {
+        Args: { p_export?: boolean; p_interstate: boolean; p_subtotal: number }
+        Returns: Json
       }
       fn_ircc_form_payload: {
         Args: { p_applicant?: string; p_case: string; p_template: string }

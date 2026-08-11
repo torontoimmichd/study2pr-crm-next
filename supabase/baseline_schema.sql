@@ -312,7 +312,7 @@ BEGIN
   INSERT INTO cases (
     organization_id,
     family_unit_id,
-    lead_id,
+    -- Lead provenance is resolved through clients.source_lead_id; cases has no lead_id.
     client_id,
     application_type,
     stage,
@@ -324,7 +324,6 @@ BEGIN
   ) VALUES (
     v_org_id,
     v_prosp.family_unit_id,
-    CASE WHEN v_prosp.for_person_type = 'lead' THEN v_prosp.for_person_id ELSE NULL END,
     CASE WHEN v_prosp.for_person_type = 'client' THEN v_prosp.for_person_id ELSE NULL END,
     v_prosp.target_application_type,
     'new',
@@ -10406,8 +10405,6 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "anon";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "authenticated";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
-
-
 
 
 

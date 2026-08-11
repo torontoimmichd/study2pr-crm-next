@@ -18,6 +18,7 @@ import { PriorityPill, RiskPill } from "@/components/StatusPill";
 import { fmtDateIST, fmtDateTimeIST, fmtMoney, fmtRelative } from "@/lib/format";
 import { writeAudit } from "@/lib/audit";
 import { writeTimeline } from "@/lib/timeline";
+import { dateOrNull, uuidOrNull } from "@/lib/normalizers";
 import { createCaseStageTasks } from "@/lib/taskEngine";
 import { EntityTimeline } from "@/components/EntityTimeline";
 import { toast } from "sonner";
@@ -524,14 +525,14 @@ function OverviewEditor({
   const save = async () => {
     setSaving(true);
     const patch = {
-      visa_type_id: form.visa_type_id,
-      visa_sub_type_id: form.visa_sub_type_id || null,
+      visa_type_id: uuidOrNull(form.visa_type_id),
+      visa_sub_type_id: uuidOrNull(form.visa_sub_type_id),
       quoted_fee_inr: Number(form.quoted_fee_inr) || 0,
       quoted_govt_fee_cad: Number(form.quoted_govt_fee_cad) || 0,
-      target_submission_date: form.target_submission_date || null,
+      target_submission_date: dateOrNull(form.target_submission_date),
       priority: form.priority,
-      case_manager_id: form.case_manager_id || null,
-      senior_advisor_id: form.senior_advisor_id || null,
+      case_manager_id: uuidOrNull(form.case_manager_id),
+      senior_advisor_id: uuidOrNull(form.senior_advisor_id),
       outcome: form.outcome || null,
       notes: form.notes || null,
       uci_number: form.uci_number.trim() || null,

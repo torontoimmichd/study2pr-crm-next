@@ -17,18 +17,50 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, Layers, Loader2, ArrowRightLeft } from "lucide-react";
+import { Search, Layers, Loader2, ArrowRightLeft, CircleDollarSign, ClipboardCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { ApplicationRow } from "@/components/applications/ApplicationRow";
 import { ProspectiveRow } from "@/components/applications/ProspectiveRow";
 import { ProspectiveDetailSheet } from "@/components/applications/ProspectiveDetailSheet";
 import { BulkProcessProspectivesSheet } from "@/components/applications/BulkProcessProspectivesSheet";
 import { StaffTransferDialog } from "@/components/StaffTransferDialog";
+import { OutcomeReviewQueue } from "@/components/applications/OutcomeReviewQueue";
 import { useRealtimeChannel } from "@/hooks/useRealtimeChannel";
 import type { ApplicationRow as AppRowType, ProspectiveAppRow } from "@/lib/types";
+import { Link } from "@/lib/router-compat";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 
-type StatusTab = "pipeline" | "in_process" | "decision" | "withdrawn" | "pending_payment";
+type StatusTab = "pipeline" | "in_process" | "decision" | "withdrawn" | "pending_payment" | "completed" | "outcome_reviews";
 type ViewMode = "both" | "active" | "prospective";
+
+type CompletedRow = {
+  case_id: string | null;
+  case_code: string | null;
+  client_name: string | null;
+  destination_country: string | null;
+  programme: string | null;
+  current_stage_code: string | null;
+  outcome: string | null;
+  quoted_fee_inr: number | null;
+  paid: number | null;
+  outstanding: number | null;
+  decision_at: string | null;
+  is_archived: boolean | null;
+  review_status: string | null;
+};
+
+type OutstandingRow = {
+  case_id: string | null;
+  case_code: string | null;
+  client_id: string | null;
+  full_name: string | null;
+  current_stage_code: string | null;
+  quoted_fee_inr: number | null;
+  invoiced: number | null;
+  paid: number | null;
+  outstanding: number | null;
+};
 
 export default function ApplicationsPage() {
   const [tab, setTab] = useState<StatusTab>("pipeline");
@@ -40,6 +72,9 @@ export default function ApplicationsPage() {
 
   const [cases, setCases] = useState<AppRowType[]>([]);
   const [prospectives, setProspectives] = useState<(ProspectiveAppRow & { for_person_name: string | null; family_unit_name: string | null })[]>([]);
+  const [completed, setCompleted] = useState<CompletedRow[]>([]);
+  const [outstanding, setOutstanding] = useState<OutstandingRow[]>([]);
+  const [completedOutcomeFilter, setCompletedOutcomeFilter] = useState("all");
   const [loading, setLoading] = useState(true);
 
   // Sheet state — page stays mounted
@@ -52,20 +87,51 @@ export default function ApplicationsPage() {
     void counselorFilter;
     setLoading(true);
     (async () => {
+      if (tab === "completed") {
+        const { data, error } = await supabase.from("v_completed_applications").select("*").order("decision_at", { ascending: false, nullsFirst: false });
+        if (error) toast.error(error.message);
+        setCompleted((data ?? []) as CompletedRow[]);
+        setCases([]);
+        setProspectives([]);
+        setLoading(false);
+        return;
+      }
+
+      if (tab === "pending_payment") {
+        const [{ data, error }, { data: activeCases, error: activeCasesError }] = await Promise.all([
+          supabase.from("v_outstanding_money").select("*").order("outstanding", { ascending: false, nullsFirst: false }),
+          supabase.from("cases").select("id").eq("is_archived", false),
+        ]);
+        if (error) toast.error(error.message);
+        if (activeCasesError) toast.error(activeCasesError.message);
+        const activeCaseIds = new Set((activeCases ?? []).map((row) => row.id));
+        const terminalStages = new Set(["approved", "refused", "withdrawn", "closed"]);
+        setOutstanding(((data ?? []) as OutstandingRow[]).filter((row) => activeCaseIds.has(row.case_id ?? "") && !terminalStages.has(row.current_stage_code ?? "")));
+        setCases([]);
+        setProspectives([]);
+        setLoading(false);
+        return;
+      }
+
+      if (tab === "outcome_reviews") {
+        setCases([]);
+        setProspectives([]);
+        setLoading(false);
+        return;
+      }
+
       // Cases
       // @ts-expect-error Supabase's nested relationship parser exceeds TypeScript's instantiation depth here.
       let casesQ = supabase
         .from("cases")
         .select("*, client:client_id(full_name, family_role), family_unit:family_unit_id(unit_name), case_manager:case_manager_id(full_name), visa:visa_type_id(label)")
+        .eq("is_archived", false)
         .order("created_at", { ascending: false })
         .limit(200);
 
       if (tab === "in_process") casesQ = casesQ.is("outcome", null);
       if (tab === "decision") casesQ = casesQ.in("outcome", ["approved", "refused"]);
       if (tab === "withdrawn") casesQ = casesQ.eq("current_stage_code", "withdrawn");
-      // pending_payment — just show in_process with payment filter; Supabase can't express < easily here
-      // so we load all and filter client-side below
-
       // Prospectives
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let prospQ = (supabase as any)
@@ -121,9 +187,25 @@ export default function ApplicationsPage() {
 
       setCases(filteredCases);
       setProspectives(filteredProsp);
+      setCompleted([]);
+      setOutstanding([]);
       setLoading(false);
     })();
   }, [tab, familyFilter, priorityFilter, counselorFilter]);
+
+  const visibleCompleted = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return completed.filter((row) => {
+      const matchesOutcome = completedOutcomeFilter === "all" || row.outcome === completedOutcomeFilter;
+      const matchesSearch = !q || [row.case_code, row.client_name, row.programme, row.destination_country].filter(Boolean).some((value) => String(value).toLowerCase().includes(q));
+      return matchesOutcome && matchesSearch;
+    });
+  }, [completed, completedOutcomeFilter, search]);
+
+  const visibleOutstanding = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return outstanding.filter((row) => !q || [row.case_code, row.full_name].filter(Boolean).some((value) => String(value).toLowerCase().includes(q)));
+  }, [outstanding, search]);
 
   // Realtime — when anything changes, refresh in place (no navigation)
   useRealtimeChannel("applications-page", [
@@ -214,10 +296,13 @@ export default function ApplicationsPage() {
           <TabsTrigger value="decision">Decision</TabsTrigger>
           <TabsTrigger value="withdrawn">Withdrawn</TabsTrigger>
           <TabsTrigger value="pending_payment">Pending Payment</TabsTrigger>
+          <TabsTrigger value="outcome_reviews">Outcome Reviews</TabsTrigger>
+          <TabsTrigger value="completed">Completed</TabsTrigger>
         </TabsList>
       </Tabs>
 
       {/* Filters row */}
+      {tab !== "outcome_reviews" && tab !== "completed" && (
       <Card className="p-3 mt-3 flex items-center gap-2 flex-wrap">
         {tab === "pipeline" && (
           <Select value={viewMode} onValueChange={v => setViewMode(v as ViewMode)}>
@@ -267,9 +352,35 @@ export default function ApplicationsPage() {
           />
         </div>
       </Card>
+      )}
+
+      {tab === "completed" && (
+        <Card className="p-3 mt-3 flex items-center gap-2 flex-wrap">
+          <Select value={completedOutcomeFilter} onValueChange={setCompletedOutcomeFilter}>
+            <SelectTrigger className="w-44 h-8 text-sm"><SelectValue placeholder="All outcomes" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All outcomes</SelectItem>
+              <SelectItem value="approved">Approved</SelectItem>
+              <SelectItem value="refused">Refused</SelectItem>
+              <SelectItem value="withdrawn">Withdrawn</SelectItem>
+              <SelectItem value="closed">Closed</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="relative flex-1 min-w-[200px]">
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-muted-foreground" />
+            <Input className="pl-8 h-8 text-sm" placeholder="Search completed applications" value={search} onChange={(e) => setSearch(e.target.value)} />
+          </div>
+        </Card>
+      )}
 
       {/* Body */}
-      <Card className="mt-3 p-3">
+      {tab === "outcome_reviews" ? (
+        <div className="mt-3"><OutcomeReviewQueue onResolved={() => undefined} /></div>
+      ) : tab === "completed" ? (
+        <div className="mt-3"><CompletedView rows={visibleCompleted} /></div>
+      ) : tab === "pending_payment" ? (
+        <div className="mt-3"><OutstandingView rows={visibleOutstanding} /></div>
+      ) : <Card className="mt-3 p-3">
         {loading ? (
           <div className="py-10 flex justify-center"><Loader2 className="w-5 h-5 animate-spin text-muted-foreground" /></div>
         ) : tab === "pipeline" && pipelineGroups ? (
@@ -283,7 +394,7 @@ export default function ApplicationsPage() {
         ) : (
           <FlatView cases={visibleCases} onUpdateCase={updateCase} />
         )}
-      </Card>
+      </Card>}
 
       {/* Sheets (overlay; page stays mounted) */}
       <ProspectiveDetailSheet
@@ -399,5 +510,51 @@ function FlatView({
         />
       ))}
     </div>
+  );
+}
+
+function formatINR(value: number | null | undefined): string {
+  return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(value ?? 0);
+}
+
+function CompletedView({ rows }: { rows: CompletedRow[] }) {
+  if (rows.length === 0) return <Card className="p-8 text-center text-sm text-muted-foreground">No completed applications match this view.</Card>;
+  return (
+    <Card className="overflow-hidden">
+      <div className="flex items-center gap-2 border-b bg-slate-50/70 px-4 py-3 text-sm font-semibold"><ClipboardCheck className="h-4 w-4 text-emerald-600" /> Completed applications <span className="text-xs font-normal text-muted-foreground">({rows.length})</span></div>
+      <div className="divide-y">
+        {rows.map((row) => (
+          <div key={row.case_id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+            <div className="min-w-[130px] flex-1">
+              {row.case_id ? <Link to={`/cases/${row.case_id}`} className="text-sm font-semibold text-primary hover:underline">{row.case_code ?? "Open case"}</Link> : <span className="text-sm font-semibold">{row.case_code ?? "—"}</span>}
+              <p className="text-xs text-muted-foreground">{row.client_name ?? "Unnamed client"}{row.programme ? ` · ${row.programme}` : ""}</p>
+            </div>
+            <div className="min-w-[120px] text-xs text-muted-foreground">{row.destination_country ?? "—"}<br /><span className="capitalize">{row.current_stage_code?.replace(/_/g, " ") ?? row.outcome ?? "—"}</span></div>
+            <Badge variant="outline" className="capitalize">{row.outcome ?? "completed"}</Badge>
+            {row.is_archived && <Badge variant="secondary">Archived</Badge>}
+            <div className="ml-auto text-right text-xs"><div>Paid {formatINR(row.paid)}</div><div className={row.outstanding && row.outstanding > 0 ? "font-semibold text-amber-700" : "text-muted-foreground"}>Outstanding {formatINR(row.outstanding)}</div></div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
+function OutstandingView({ rows }: { rows: OutstandingRow[] }) {
+  if (rows.length === 0) return <Card className="p-8 text-center text-sm text-muted-foreground">No active applications with outstanding money.</Card>;
+  const total = rows.reduce((sum, row) => sum + Number(row.outstanding ?? 0), 0);
+  return (
+    <Card className="overflow-hidden">
+      <div className="flex items-center justify-between gap-3 border-b bg-amber-50/70 px-4 py-3"><div className="flex items-center gap-2 text-sm font-semibold"><CircleDollarSign className="h-4 w-4 text-amber-600" /> Pending payment <span className="text-xs font-normal text-muted-foreground">({rows.length})</span></div><span className="text-sm font-semibold text-amber-800">{formatINR(total)} outstanding</span></div>
+      <div className="divide-y">
+        {rows.map((row) => (
+          <div key={row.case_id} className="flex flex-wrap items-center gap-3 px-4 py-3">
+            <div className="min-w-[130px] flex-1">{row.case_id ? <Link to={`/cases/${row.case_id}`} className="text-sm font-semibold text-primary hover:underline">{row.case_code ?? "Open case"}</Link> : <span className="text-sm font-semibold">{row.case_code ?? "—"}</span>}<p className="text-xs text-muted-foreground">{row.full_name ?? "Unnamed client"}</p></div>
+            <Badge variant="outline" className="capitalize">{row.current_stage_code?.replace(/_/g, " ") ?? "active"}</Badge>
+            <div className="text-right text-xs"><div>Quoted {formatINR(row.quoted_fee_inr)}</div><div className="font-semibold text-amber-700">Due {formatINR(row.outstanding)}</div></div>
+          </div>
+        ))}
+      </div>
+    </Card>
   );
 }

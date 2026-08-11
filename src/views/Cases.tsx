@@ -215,9 +215,14 @@ function KanbanView({ stages }: { stages: { code: string; label: string; sort_or
     const c = cases?.find(x => x.id === caseId);
     if (!c || c.current_stage_code === newStage) return;
     const oldStage = c.current_stage_code;
+    const note = window.prompt(`Why is this application moving to ${newStage.replace(/_/g, " ")}?`);
+    if (!note || note.trim().length < 20) {
+      toast.error("A stage-change note of at least 20 characters is required");
+      return;
+    }
     // Optimistic
     qc.setQueryData<CaseRow[]>(["cases-all"], (prev) => prev?.map(p => p.id === caseId ? { ...p, current_stage_code: newStage } : p));
-    const { error } = await supabase.from("cases").update({ current_stage_code: newStage, stage_entered_at: new Date().toISOString() }).eq("id", caseId);
+    const { error } = await supabase.from("cases").update({ current_stage_code: newStage, stage_entered_at: new Date().toISOString(), pending_stage_note: note.trim() }).eq("id", caseId);
     if (error) {
       toast.error(error.message);
       void refetch();

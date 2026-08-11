@@ -2,7 +2,7 @@
 
 // src/components/applications/CaseQuickActionsMenu.tsx
 import { useState } from "react";
-import { MoreVertical, CheckCircle2, XCircle, UserPlus, StickyNote, Eye, ArrowUpRight } from "lucide-react";
+import { MoreVertical, CheckCircle2, XCircle, CircleSlash2, Archive, UserPlus, StickyNote, Eye, ArrowUpRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent,
@@ -21,7 +21,7 @@ interface Props {
 
 export function CaseQuickActionsMenu({ app, onUpdated }: Props) {
   const navigate = useNavigate();
-  const [outcomeOpen, setOutcomeOpen] = useState<"approved" | "refused" | null>(null);
+  const [outcomeOpen, setOutcomeOpen] = useState<"approved" | "refused" | "withdrawn" | "closed" | null>(null);
   const [quickViewOpen, setQuickViewOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
 
@@ -43,6 +43,12 @@ export function CaseQuickActionsMenu({ app, onUpdated }: Props) {
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setOutcomeOpen("refused")}>
             <XCircle className="w-3.5 h-3.5 mr-2 text-red-600" /> Mark refused
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOutcomeOpen("withdrawn")}>
+            <CircleSlash2 className="w-3.5 h-3.5 mr-2 text-slate-600" /> Mark withdrawn
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setOutcomeOpen("closed")}>
+            <Archive className="w-3.5 h-3.5 mr-2 text-amber-600" /> Close file
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setTransferOpen(true)}>
