@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "@/lib/router-compat";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Search, Plus, Inbox, Download, MoreHorizontal, Phone, MessageCircle, ArrowRight, ExternalLink, ArrowRightLeft } from "lucide-react";
+import { Search, Plus, Inbox, Download, MoreHorizontal, Phone, MessageCircle, ArrowRight, ExternalLink, ArrowRightLeft, CornerDownRight, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/AppLayout";
 import { LeadStatusPill } from "@/components/StatusPill";
@@ -174,6 +174,11 @@ export default function Leads() {
       const leadIds = (data ?? []).map((l) => l.id);
       const visaIds = Array.from(new Set((data ?? []).map((l) => l.interested_visa_type_id).filter(Boolean) as string[]));
       const staffIds = Array.from(new Set((data ?? []).map((l) => l.assigned_to).filter(Boolean) as string[]));
+      // Family units this page's leads belong to — used for the grouped display.
+      const famIds = Array.from(new Set((data ?? []).map((l) => l.family_unit_id).filter(Boolean) as string[]));
+      // A lead reaches an application two ways: it was converted (clients.source_lead_id)
+      // or it is an existing client enquiring again (leads.enquiry_client_id).
+      const enquiryClientIds = Array.from(new Set((data ?? []).map((l) => l.enquiry_client_id).filter(Boolean) as string[]));
       const [visasRes, catsRes, staffRes, tasksRes] = await Promise.all([
         // visa_types row = the SUB-TYPE; also carries its category + country
         visaIds.length
@@ -196,6 +201,39 @@ export default function Leads() {
           nextTaskMap.set(t.lead_id, { title: t.title, due_at: t.due_at });
         }
       }
+
+      // ── Family names + application counts ───────────────────────────────
+      // Two extra round trips, both skipped when there is nothing to look up.
+      const [famRes, convertedRes] = await Promise.all([
+        famIds.length
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ? (supabase as any).from("family_units").select("id, unit_name").in("id", famIds)
+          : Promise.resolve({ data: [] as { id: string; unit_name: string | null }[] }),
+        leadIds.length
+          ? supabase.from("clients").select("id, source_lead_id").in("source_lead_id", leadIds)
+          : Promise.resolve({ data: [] as { id: string; source_lead_id: string | null }[] }),
+      ]);
+      const famNameMap = new Map(
+        (((famRes as { data: { id: string; unit_name: string | null }[] }).data) ?? []).map((f) => [f.id, f.unit_name]),
+      );
+      // lead -> client, from either route
+      const leadClientMap = new Map<string, string>();
+      for (const c of ((convertedRes as { data: { id: string; source_lead_id: string | null }[] }).data) ?? []) {
+        if (c.source_lead_id) leadClientMap.set(c.source_lead_id, c.id);
+      }
+      for (const l of data ?? []) {
+        if (l.enquiry_client_id && !leadClientMap.has(l.id)) leadClientMap.set(l.id, l.enquiry_client_id);
+      }
+      const clientIds = Array.from(new Set([...leadClientMap.values(), ...enquiryClientIds]));
+      const appCountByClient = new Map<string, number>();
+      if (clientIds.length) {
+        const { data: caseRows } = await supabase
+          .from("cases").select("client_id").in("client_id", clientIds).eq("is_archived", false);
+        (caseRows ?? []).forEach((c) => {
+          if (c.client_id) appCountByClient.set(c.client_id, (appCountByClient.get(c.client_id) ?? 0) + 1);
+        });
+      }
+
       return (data ?? []).map((l) => {
         const vt = l.interested_visa_type_id ? visaMap.get(l.interested_visa_type_id) : undefined;
         const categoryLabel = l.interested_category_id
@@ -209,10 +247,54 @@ export default function Leads() {
           sub_type_label: vt?.label ?? null,
           assigned_name: l.assigned_to ? staffMap.get(l.assigned_to) ?? "—" : null,
           next_task: nextTaskMap.get(l.id) ?? null,
+          family_unit_name: l.family_unit_id ? (famNameMap.get(l.family_unit_id) ?? null) : null,
+          app_count: (() => {
+            const cid = leadClientMap.get(l.id);
+            return cid ? (appCountByClient.get(cid) ?? 0) : 0;
+          })(),
         };
       });
     },
   });
+
+  // ── Family grouping ───────────────────────────────────────────────────
+  // Same shape as Clients: the principal renders as a normal row, the rest of
+  // the family as indented children directly beneath. Grouping happens only
+  // within the rows already fetched — a relative excluded by the current
+  // filter is not pulled back in, because that would silently widen the filter.
+  type LeadRow = NonNullable<typeof leads>[number] & { _child?: boolean; _famSize?: number };
+  const orderedLeads = useMemo<LeadRow[]>(() => {
+    const list = (leads ?? []) as LeadRow[];
+    const byFamily = new Map<string, LeadRow[]>();
+    const solo: LeadRow[] = [];
+    for (const l of list) {
+      if (l.family_unit_id) {
+        const arr = byFamily.get(l.family_unit_id) ?? [];
+        arr.push(l);
+        byFamily.set(l.family_unit_id, arr);
+      } else solo.push(l);
+    }
+    const out: LeadRow[] = [];
+    const seen = new Set<string>();
+    for (const l of list) {
+      if (seen.has(l.id)) continue;
+      if (!l.family_unit_id) { out.push(l); seen.add(l.id); continue; }
+      const members = byFamily.get(l.family_unit_id) ?? [];
+      if (members.length < 2) { out.push(l); seen.add(l.id); continue; }
+      // principal = family_role 'primary', else the earliest-created member
+      const principal =
+        members.find((m) => (m.family_role ?? "").toLowerCase() === "primary") ??
+        [...members].sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)))[0];
+      out.push({ ...principal, _famSize: members.length });
+      seen.add(principal.id);
+      for (const m of members) {
+        if (m.id === principal.id) continue;
+        out.push({ ...m, _child: true });
+        seen.add(m.id);
+      }
+    }
+    return out;
+  }, [leads]);
 
   const exportCsv = async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -351,7 +433,7 @@ export default function Leads() {
         </div>
 
         {/* Table */}
-        <div className="card-surface overflow-hidden">
+        <div className="card-surface overflow-hidden rounded-xl border border-border/70 shadow-sm">
           {isLoading ? (
             <TableSkeleton rows={8} cols={6} />
           ) : !leads || leads.length === 0 ? (
@@ -362,8 +444,9 @@ export default function Leads() {
               action={<Button onClick={() => setOpen(true)} variant="outline"><Plus className="h-4 w-4 mr-1.5" /> New Lead</Button>}
             />
           ) : (
+            <div className="overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
+              <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground sticky top-0 z-10 backdrop-blur supports-[backdrop-filter]:bg-muted/60">
                 <tr>
                   <th className="text-left px-3 py-3 font-medium">Name</th>
                   <th className="text-left px-3 py-3 font-medium">Age</th>
@@ -371,6 +454,7 @@ export default function Leads() {
                   <th className="text-left px-3 py-3 font-medium">Source</th>
                   <th className="text-left px-3 py-3 font-medium">Destination</th>
                   <th className="text-left px-3 py-3 font-medium">Visa Interest</th>
+                  <th className="text-left px-3 py-3 font-medium">Apps</th>
                   <th className="text-left px-3 py-3 font-medium">Stage</th>
                   <th className="text-left px-3 py-3 font-medium">Next Task</th>
                   <th className="text-left px-3 py-3 font-medium">Assigned</th>
@@ -379,17 +463,40 @@ export default function Leads() {
                 </tr>
               </thead>
               <tbody>
-                {leads.map((l) => {
+                {orderedLeads.map((l) => {
                   const nt = l.next_task as { title: string; due_at: string | null } | null;
                   const ntOverdue = nt?.due_at && new Date(nt.due_at) < new Date();
                   const sourceLabel = (sources ?? []).find((s) => s.code === l.source_code)?.label ?? l.source_code ?? "—";
+                  const isChild = Boolean(l._child);
+                  const relationship = l.family_role
+                    ? String(l.family_role).replace(/_/g, " ")
+                    : "family member";
                   return (
-                  <tr key={l.id} className="border-t border-border hover:bg-muted/30 transition-colors">
-                    {/* Name */}
-                    <td className="px-3 py-3">
+                  <tr
+                    key={l.id}
+                    className={`border-t border-border hover:bg-muted/30 transition-colors ${isChild ? "bg-muted/10" : ""}`}
+                  >
+                    {/* Name — family members render indented under their principal */}
+                    <td className={`px-3 py-3 ${isChild ? "pl-8 relative" : ""}`}>
+                      {isChild && (
+                        <CornerDownRight className="h-3 w-3 text-muted-foreground absolute left-3 top-4" />
+                      )}
                       <Link to={`/leads/${l.id}`} className="font-medium text-foreground hover:text-accent">
                         {l.full_name}
                       </Link>
+                      {!isChild && l._famSize ? (
+                        <span
+                          className="ml-1.5 inline-flex items-center gap-0.5 text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium align-middle"
+                          title={l.family_unit_name ? `Family unit: ${l.family_unit_name}` : "Family unit"}
+                        >
+                          <Users className="h-2.5 w-2.5" />{l._famSize}
+                        </span>
+                      ) : null}
+                      {isChild && (
+                        <div className="text-[10px] text-muted-foreground capitalize truncate max-w-[160px]">
+                          {relationship}
+                        </div>
+                      )}
                       {l.email && <div className="text-[11px] text-muted-foreground truncate max-w-[160px]">{l.email}</div>}
                     </td>
                     {/* Age (how old the lead is) */}
@@ -408,6 +515,19 @@ export default function Leads() {
                         <span className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium mr-1">{l.category_label}</span>
                       )}
                       <span className="text-xs text-muted-foreground">{l.sub_type_label ?? "—"}</span>
+                    </td>
+                    {/* Applications already on file for this person (0 for a pure enquiry) */}
+                    <td className="px-3 py-3">
+                      {l.app_count > 0 ? (
+                        <span
+                          className="text-[11px] px-1.5 py-0.5 rounded bg-accent/15 text-accent-foreground font-medium"
+                          title="Live applications for this person"
+                        >
+                          {l.app_count}
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-muted-foreground/60">—</span>
+                      )}
                     </td>
                     {/* Stage */}
                     <td className="px-3 py-3"><LeadStatusPill status={l.lifecycle_state as string} /></td>
@@ -467,6 +587,7 @@ export default function Leads() {
                 })}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>

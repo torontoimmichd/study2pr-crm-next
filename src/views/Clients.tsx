@@ -83,16 +83,29 @@ export default function Clients() {
       const ids = (rows ?? []).map((c) => c.id);
       const idSet = new Set(ids);
       const caseCounts = new Map<string, number>();
+      // Which programmes each client is actually running, for the Programme column.
+      const progByClient = new Map<string, string[]>();
       let fams: FamilyRow[] = [];
       if (ids.length) {
         const [casesRes, famRes] = await Promise.all([
-          supabase.from("cases").select("client_id").in("client_id", ids).eq("is_archived", false),
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (supabase as any).from("cases")
+            .select("client_id, visa:visa_type_id(label)")
+            .in("client_id", ids).eq("is_archived", false),
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           (supabase as any).from("family_members")
             .select("id, principal_client_id, full_name, relationship")
             .in("principal_client_id", ids),
         ]);
-        casesRes.data?.forEach((c) => caseCounts.set(c.client_id, (caseCounts.get(c.client_id) ?? 0) + 1));
+        (casesRes.data as Array<{ client_id: string; visa?: { label?: string | null } | null }> | null)?.forEach((c) => {
+          caseCounts.set(c.client_id, (caseCounts.get(c.client_id) ?? 0) + 1);
+          const label = c.visa?.label;
+          if (label) {
+            const arr = progByClient.get(c.client_id) ?? [];
+            if (!arr.includes(label)) arr.push(label);
+            progByClient.set(c.client_id, arr);
+          }
+        });
         const rawFams = (famRes.data ?? []) as Array<Omit<FamilyRow, "linked_code" | "client_id"> & { client_id?: string | null }>;
         fams = rawFams.map((f) => ({ ...f, client_id: f.client_id ?? null, linked_code: null }));
       }
@@ -111,6 +124,7 @@ export default function Clients() {
           ...c,
           active_cases: caseCounts.get(c.id) ?? 0,
           family_size: (famByPrincipal[c.id] ?? []).length,
+          programmes: progByClient.get(c.id) ?? [],
         }));
 
       return { principals, famByPrincipal };
@@ -178,7 +192,7 @@ export default function Clients() {
 
         <div className="card-surface overflow-hidden">
           {isLoading ? (
-            <TableSkeleton rows={6} cols={7} />
+            <TableSkeleton rows={6} cols={8} />
           ) : !clients || clients.length === 0 ? (
             <EmptyState
               icon={<UsersIcon className="h-5 w-5" />}
@@ -197,6 +211,7 @@ export default function Clients() {
                     <th className="text-left px-4 py-3 font-medium">Contact</th>
                     <th className="text-left px-4 py-3 font-medium">Country</th>
                     <th className="text-left px-4 py-3 font-medium">Applications</th>
+                    <th className="text-left px-4 py-3 font-medium">Programme</th>
                     <th className="text-left px-4 py-3 font-medium">Family</th>
                     <th className="text-left px-4 py-3 font-medium">Status</th>
                     <th className="text-left px-4 py-3 font-medium">Onboarded</th>
@@ -232,6 +247,24 @@ export default function Clients() {
                               <StatusPill tone="info">{c.active_cases}</StatusPill>
                             ) : (
                               <span className="text-xs text-muted-foreground/60">none</span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            {c.programmes.length > 0 ? (
+                              <div className="flex flex-wrap gap-1 max-w-[200px]">
+                                {c.programmes.slice(0, 2).map((p) => (
+                                  <span key={p} className="text-[10px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium truncate max-w-[120px]" title={p}>
+                                    {p}
+                                  </span>
+                                ))}
+                                {c.programmes.length > 2 && (
+                                  <span className="text-[10px] text-muted-foreground" title={c.programmes.join(", ")}>
+                                    +{c.programmes.length - 2}
+                                  </span>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-xs text-muted-foreground/60">—</span>
                             )}
                           </td>
                           <td className="px-4 py-3">
@@ -276,6 +309,8 @@ export default function Clients() {
                                 {c.phone ?? "—"}
                               </td>
                               <td className="px-4 py-2.5 text-xs text-muted-foreground/60">—</td>
+                              <td className="px-4 py-2.5 text-xs text-muted-foreground/60">—</td>
+                              {/* Programme — a family member has no case of their own */}
                               <td className="px-4 py-2.5 text-xs text-muted-foreground/60">—</td>
                               <td className="px-4 py-2.5 text-xs text-muted-foreground/60">—</td>
                               <td className="px-4 py-2.5">
