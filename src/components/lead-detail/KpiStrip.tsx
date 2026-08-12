@@ -5,10 +5,12 @@
 // Restyled 2026-08-11 to the reference layout Gaurav supplied: fewer, larger
 // tiles with a big tinted number, instead of six small grey boxes.
 //
-// NOTE: no metric was removed. The reference showed three tiles; this keeps all
-// six, because Quoted fee / Family LTV / Chain SLA are the numbers that decide
-// what to do next. Dropping them to match a screenshot would be trading
-// information for tidiness.
+// 2026-08-11 (later) — Quoted fee and Family LTV REMOVED at Gaurav's request.
+// Family LTV summed prospective_applications.estimated_fee_cad, i.e. a CAD
+// figure sitting beside INR numbers on the same strip. That is the same
+// currency-mixing hazard sql/73 was written to avoid: a reader has no way to
+// tell which unit a tile is in. Quoted fee belongs on the application, not on
+// the lead. Four tiles remain.
 import { Card } from "@/components/ui/card";
 import type { ApplicationRow, Lead, ProspectiveAppRow, ChainTask } from "@/lib/types";
 
@@ -19,12 +21,8 @@ interface Props {
   nextAction: ChainTask | null;
 }
 
-function formatINR(n: number | null | undefined) {
-  if (n == null) return "—";
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency", currency: "INR", maximumFractionDigits: 0
-  }).format(n);
-}
+// formatINR removed with the Quoted fee tile. `application` and `prospective`
+// stay on Props so the caller needs no change; they are simply unused now.
 
 function slaRemaining(dueAt: string | null | undefined) {
   if (!dueAt) return { label: "—", tone: "slate" as const };
@@ -48,23 +46,19 @@ const TONE: Record<Tone, { card: string; value: string }> = {
   slate:   { card: "bg-slate-50 border-slate-200",        value: "text-slate-700" },
 };
 
-export function KpiStrip({ lead, application, prospective, nextAction }: Props) {
-  const familyLTV = prospective.reduce((sum, p) => sum + (p.estimated_fee_cad || 0), 0);
+export function KpiStrip({ lead, nextAction }: Props) {
   const sla = slaRemaining(nextAction?.sla_due_at);
-  const serviceFee = application?.quoted_fee_inr ?? application?.fee ?? lead.service_fee ?? lead.quoted_amount ?? null;
   const daysInStage = Math.floor((Date.now() - new Date(lead.updated_at).getTime()) / 86400000);
 
   const tiles: Array<{ label: string; value: string; tone: Tone }> = [
     { label: "Open activities", value: String(lead.open_activities_count ?? 0), tone: "indigo" },
     { label: "Open pipelines",  value: String(lead.open_cases_count ?? 0),      tone: "emerald" },
     { label: "Days in stage",   value: String(daysInStage),                     tone: "violet" },
-    { label: "Quoted fee",      value: formatINR(serviceFee),                   tone: "slate" },
-    { label: "Family LTV (est.)", value: familyLTV > 0 ? `CAD ${familyLTV.toLocaleString()}` : "—", tone: "emerald" },
     { label: "Chain SLA",       value: sla.label,                               tone: sla.tone },
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
       {tiles.map(t => {
         const tone = TONE[t.tone];
         return (

@@ -187,8 +187,15 @@ export function StageTransitionWizard({ open, onOpenChange, currentStage, leadDa
   const validate = (): boolean => {
     if (!target) return false;
 
-    if (target !== "waiting" && (!form.review_notes?.trim() || form.review_notes.trim().length < 20)) {
-      toast.error("A stage-change note of at least 20 characters is required"); return false;
+    // 2026-08-12 — the 20-character minimum is gone at Gaurav's request. A note
+    // is still REQUIRED, just any length: "client called, moving on" is a fine
+    // reason and used to be rejected for being one character short.
+    // Do not make it fully optional without deciding about sql/71, which makes
+    // stage notes mandatory in the DATABASE. If that is ever applied while the
+    // UI allows empty notes, staff get a raw constraint error instead of this
+    // message. 15 of 44 stage changes currently have no note at all.
+    if (target !== "waiting" && !form.review_notes?.trim()) {
+      toast.error("A stage-change note is required"); return false;
     }
 
     if (target === "waiting") {
@@ -199,8 +206,8 @@ export function StageTransitionWizard({ open, onOpenChange, currentStage, leadDa
       }
       if (!form.waiting_start_date) { toast.error("From date is required"); return false; }
       if (!form.waiting_contact_frequency) { toast.error("Contact frequency is required"); return false; }
-      if (!form.waiting_review_notes || form.waiting_review_notes.length < 20) {
-        toast.error("Review notes must be at least 20 characters"); return false;
+      if (!form.waiting_review_notes?.trim()) {
+        toast.error("Review notes are required"); return false;
       }
     }
 
@@ -522,7 +529,7 @@ function WaitingFields({ form, setForm }: { form: Record<string, string>; setFor
 
         <div className="col-span-2 space-y-1.5">
           <Label>
-            Review notes * <span className="text-muted-foreground font-normal">(min 20 chars — plan for when the period ends)</span>
+            Review notes * <span className="text-muted-foreground font-normal">(plan for when the period ends)</span>
           </Label>
           <Textarea
             rows={3}

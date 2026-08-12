@@ -216,8 +216,9 @@ function KanbanView({ stages }: { stages: { code: string; label: string; sort_or
     if (!c || c.current_stage_code === newStage) return;
     const oldStage = c.current_stage_code;
     const note = window.prompt(`Why is this application moving to ${newStage.replace(/_/g, " ")}?`);
-    if (!note || note.trim().length < 20) {
-      toast.error("A stage-change note of at least 20 characters is required");
+    // 20-character minimum removed 2026-08-12. A note is still required.
+    if (!note || !note.trim()) {
+      toast.error("A stage-change note is required");
       return;
     }
     // Optimistic

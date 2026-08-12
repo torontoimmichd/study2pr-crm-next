@@ -525,8 +525,15 @@ const PRIORITY_META: Record<string, { label: string; color: string }> = {
   low:    { label: "Low",    color: "bg-slate-100 text-slate-600" },
 };
 
+// Terminal statuses per task_statuses_ref. This whole tab used to compare
+// against "completed" alone — the DEPRECATED code. Live data is 'done' 138
+// times vs 'completed' twice, so finished tasks were counted as open, shown as
+// overdue, and never matched the Completed filter. One source of truth now.
+const TERMINAL_STATUSES = new Set(["done", "completed", "dismissed", "cancelled"]);
+const isFinished = (statusCode: string) => statusCode === "done" || statusCode === "completed";
+
 function isOverdue(task: TaskRow): boolean {
-  if (task.status_code === "completed" || task.status_code === "cancelled") return false;
+  if (TERMINAL_STATUSES.has(task.status_code)) return false;
   if (!task.due_at) return false;
   return new Date(task.due_at) < new Date();
 }
@@ -550,11 +557,21 @@ function LeadTasksTab({ leadId, leadName, onTasksChanged }: LeadTasksTabProps) {
         .order("created_at", { ascending: false });
       if (error) { console.warn("[LeadTasksTab]", error.message); return []; }
 
-      // Batch-resolve assigned_to names
-      const now = Date.now();
-      const rows = ((data ?? []) as TaskRow[]).filter((task) =>
-        task.status_code === "completed" || !task.due_at || new Date(task.due_at).getTime() <= now,
-      );
+      // 2026-08-11 FIX — this tab rendered empty on leads that plainly had an
+      // open task. The old filter was:
+      //   status_code === "completed" || !due_at || due_at <= now
+      // so a task was shown only if it was already due, had no due date, or
+      // carried the DEPRECATED "completed" code. The engine's own first-call
+      // task is due in 2 working hours — i.e. in the FUTURE — so it was hidden
+      // the moment it was created, which is precisely when someone looks.
+      //
+      // Correct rule: show every task. Open work is never hidden because it is
+      // not due yet; that is the whole point of a task list.
+      //
+      // Terminal codes per task_statuses_ref: done, completed (deprecated),
+      // dismissed, cancelled. Live data uses 'done' 138 times and 'completed'
+      // twice — both are treated as finished so nothing disappears.
+      const rows = (data ?? []) as TaskRow[];
       const assigneeIds = Array.from(new Set(rows.map((r) => r.assigned_to).filter(Boolean))) as string[];
       let nameMap = new Map<string, string>();
       if (assigneeIds.length > 0) {
@@ -571,7 +588,11 @@ function LeadTasksTab({ leadId, leadName, onTasksChanged }: LeadTasksTabProps) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const { error } = await (supabase as any)
         .from("tasks")
-        .update({ status_code: "completed", completed_at: new Date().toISOString() })
+        // 'done' is the live standard (138 rows). task_statuses_ref labels
+        // 'completed' as "Completed (deprecated — use Done)" — this tab was
+        // writing the deprecated value and is the source of the only 2 rows
+        // carrying it. sql/74's auto-close also writes 'done'; they now agree.
+        .update({ status_code: "done", completed_at: new Date().toISOString() })
         .eq("id", task.id);
       if (error) throw error;
       void writeTimeline({
@@ -591,18 +612,20 @@ function LeadTasksTab({ leadId, leadName, onTasksChanged }: LeadTasksTabProps) {
     }
   };
 
+  const isOpen = (t: TaskRow) => !TERMINAL_STATUSES.has(t.status_code) && !isOverdue(t);
+
   const filtered = tasks.filter((t) => {
-    if (filter === "open")      return t.status_code !== "completed" && t.status_code !== "cancelled" && !isOverdue(t);
+    if (filter === "open")      return isOpen(t);
     if (filter === "overdue")   return isOverdue(t);
-    if (filter === "completed") return t.status_code === "completed";
+    if (filter === "completed") return isFinished(t.status_code);
     return true;
   });
 
   const counts = {
     all:       tasks.length,
-    open:      tasks.filter((t) => t.status_code !== "completed" && t.status_code !== "cancelled" && !isOverdue(t)).length,
+    open:      tasks.filter(isOpen).length,
     overdue:   tasks.filter(isOverdue).length,
-    completed: tasks.filter((t) => t.status_code === "completed").length,
+    completed: tasks.filter((t) => isFinished(t.status_code)).length,
   };
 
   return (
@@ -618,8 +641,11 @@ function LeadTasksTab({ leadId, leadName, onTasksChanged }: LeadTasksTabProps) {
             </span>
           )}
         </div>
+        {/* Was "+ New Task" — a literal plus in the label, which read as a
+            stray character and was the only control in the app using one.
+            Every other primary action is icon + words. Kept the action. */}
         <Button size="sm" onClick={() => setNewTaskOpen(true)}>
-          + New Task
+          New Task
         </Button>
       </div>
 
@@ -650,13 +676,13 @@ function LeadTasksTab({ leadId, leadName, onTasksChanged }: LeadTasksTabProps) {
         </div>
       ) : filtered.length === 0 ? (
         <div className="py-12 text-center text-sm text-muted-foreground">
-          {filter === "all" ? "No tasks yet. Click \"+ New Task\" to create one." : `No ${filter} tasks.`}
+          {filter === "all" ? "No tasks yet. Use New Task to create one." : `No ${filter} tasks.`}
         </div>
       ) : (
         <div className="divide-y divide-border">
           {filtered.map((task) => {
             const overdue = isOverdue(task);
-            const done    = task.status_code === "completed";
+            const done    = isFinished(task.status_code);
             const pMeta   = task.priority ? (PRIORITY_META[task.priority] ?? null) : null;
 
             return (

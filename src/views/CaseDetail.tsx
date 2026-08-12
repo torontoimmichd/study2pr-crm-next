@@ -150,8 +150,9 @@ export default function CaseDetail() {
   const moveStage = async (newStage: string) => {
     if (!caseRow || newStage === caseRow.current_stage_code) return;
     const note = window.prompt(`Why is this application moving to ${newStage.replace(/_/g, " ")}?`);
-    if (!note || note.trim().length < 20) {
-      toast.error("A stage-change note of at least 20 characters is required");
+    // 20-character minimum removed 2026-08-12. A note is still required.
+    if (!note || !note.trim()) {
+      toast.error("A stage-change note is required");
       return;
     }
     const old = caseRow.current_stage_code;
