@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Phone, MessageCircle, Mail, Send, CheckSquare, Loader2, ClipboardList, Clock, AlertCircle } from "lucide-react";
 import { NewTaskDialog } from "@/components/NewTaskDialog";
 import { fmtRelative, fmtDateTimeIST } from "@/lib/format";
@@ -383,29 +384,7 @@ export default function LeadDetailPage() {
                   assessment the client had already submitted — with none on
                   file it just said "No self-assessment submitted", and there
                   was no way to start one. */}
-              <div className="card-surface p-4 flex flex-wrap items-center gap-3">
-                <ClipboardList className="h-4 w-4 text-muted-foreground shrink-0" />
-                <div className="flex-1 min-w-[200px]">
-                  <p className="text-sm font-medium">Run an assessment</p>
-                  <p className="text-xs text-muted-foreground">
-                    Express Entry PR — 55 fields across Intake screen, Strategy &amp; profile
-                    and Post-ITA control. Answers save against this lead.
-                  </p>
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => window.open(`/assessment?lead=${leadId}&form=EE_PR_ASSESSMENT`, "_blank")}
-                >
-                  <ClipboardList className="h-4 w-4 mr-1.5" />
-                  Express Entry PR
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => window.open(`/assessment?lead=${leadId}`, "_blank")}
-                >
-                  General eligibility
-                </Button>
-              </div>
+              <RunAssessmentCard leadId={leadId!} />
               <AssessmentReviewPanel leadId={leadId!} />
             </TabsContent>
           </Tabs>
@@ -536,6 +515,75 @@ const PRIORITY_META: Record<string, { label: string; color: string }> = {
 // overdue, and never matched the Completed filter. One source of truth now.
 const TERMINAL_STATUSES = new Set(["done", "completed", "dismissed", "cancelled"]);
 const isFinished = (statusCode: string) => statusCode === "done" || statusCode === "completed";
+
+// ---------- Run assessment ----------
+// Lists every ACTIVE form in assessment_forms rather than hardcoding buttons,
+// so a form added in Admin → Assessment Forms appears here with no code change.
+// ?form=CODE is honoured by AssessmentForm; omitting it falls back to the
+// default form, which is the public eligibility one.
+function RunAssessmentCard({ leadId }: { leadId: string }) {
+  const [code, setCode] = useState<string>("");
+
+  const { data: forms = [], isLoading } = useQuery({
+    queryKey: ["assessment-forms-active"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("assessment_forms")
+        .select("code, title, description, is_default")
+        .eq("is_active", true)
+        .order("is_default", { ascending: false })
+        .order("title");
+      if (error) { console.warn("[RunAssessmentCard]", error.message); return []; }
+      return (data ?? []) as { code: string; title: string; description: string | null; is_default: boolean }[];
+    },
+  });
+
+  const selected = forms.find((f) => f.code === code) ?? forms[0];
+
+  return (
+    <div className="card-surface p-4 space-y-3">
+      <div className="flex items-start gap-3">
+        <ClipboardList className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-medium">Run an assessment</p>
+          <p className="text-xs text-muted-foreground">
+            {isLoading
+              ? "Loading forms…"
+              : selected?.description
+                ? selected.description
+                : "Answers save against this lead."}
+          </p>
+        </div>
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Select value={selected?.code ?? ""} onValueChange={setCode}>
+          <SelectTrigger className="w-full sm:w-[320px] h-9">
+            <SelectValue placeholder={isLoading ? "Loading…" : "Choose a form"} />
+          </SelectTrigger>
+          <SelectContent>
+            {forms.map((f) => (
+              <SelectItem key={f.code} value={f.code}>
+                {f.title}{f.is_default ? " (default)" : ""}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button
+          disabled={!selected}
+          onClick={() => selected && window.open(`/assessment?lead=${leadId}&form=${selected.code}`, "_blank")}
+        >
+          <ClipboardList className="h-4 w-4 mr-1.5" />
+          Start
+        </Button>
+      </div>
+      {!isLoading && forms.length === 0 && (
+        <p className="text-xs text-muted-foreground">
+          No active assessment forms. Add one in Admin → Assessment Forms.
+        </p>
+      )}
+    </div>
+  );
+}
 
 function isOverdue(task: TaskRow): boolean {
   if (TERMINAL_STATUSES.has(task.status_code)) return false;
