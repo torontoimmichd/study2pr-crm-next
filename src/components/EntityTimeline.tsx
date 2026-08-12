@@ -269,8 +269,9 @@ export function EntityTimeline({ leadId, caseId, clientId, allowNotes = true }: 
         <div className="py-8 text-center text-sm text-muted-foreground">No activity recorded yet.</div>
       ) : (
         <div className="relative">
-          {/* Vertical line */}
-          <div className="absolute left-[18px] top-0 bottom-0 w-px bg-border" />
+          {/* Vertical rail — inset slightly so it does not poke out past the
+              first and last icons */}
+          <div className="absolute left-[18px] top-3 bottom-3 w-px bg-border" />
 
           <div className="space-y-0">
             {events.map((evt, i) => {
@@ -305,25 +306,29 @@ function TimelineRow({ event, isLast }: { event: TimelineEvent; isLast: boolean 
   const IconComp = ICON_MAP[meta.icon] ?? Info;
   const [expanded, setExpanded] = useState(false);
 
+  // 2026-08-12 — restyled to match ActivityTimelineCard: filled circular icon
+  // against the rail, and the event itself in a bordered card. Previously the
+  // rows floated with no container, which is what made this feed look untidy
+  // next to the Overview one. Same data, same behaviour — presentation only.
   return (
-    <div className={cn("flex gap-3 pb-4", isLast && "pb-0")}>
-      {/* Icon bubble */}
+    <div className={cn("flex gap-3 pb-3", isLast && "pb-0")}>
+      {/* Icon bubble — ring-background punches a hole in the rail behind it */}
       <div className={cn(
-        "relative z-10 flex-shrink-0 h-9 w-9 rounded-full flex items-center justify-center text-[11px] font-semibold border-2 border-background",
+        "relative z-10 flex-shrink-0 h-9 w-9 rounded-full flex items-center justify-center text-[11px] font-semibold ring-4 ring-background",
         meta.color,
       )}>
         <IconComp className="h-4 w-4" />
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 pt-1">
+      <div className="flex-1 min-w-0 rounded-lg border bg-card px-3 py-2.5">
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
           <span className="text-sm font-medium text-foreground">{event.title}</span>
           {event.actor_name && !event.is_system && (
             <span className="text-xs text-muted-foreground">by {event.actor_name}</span>
           )}
           {event.is_system && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground">auto</span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full border bg-muted/50 text-muted-foreground">auto</span>
           )}
           <span
             className="text-[11px] text-muted-foreground/70 ml-auto cursor-default"

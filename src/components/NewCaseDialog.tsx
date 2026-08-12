@@ -333,6 +333,32 @@ export function NewCaseDialog({ open, onOpenChange, clientId, defaultLeadId, def
       return;
     }
     void writeAudit({ action: "CREATE", entity_type: "cases", entity_id: data.id, changes: payload });
+
+    // 2026-08-12 FIX — the note typed here used to go ONLY into cases.notes,
+    // a text column on the case row. The Notes tab reads entity_notes, so the
+    // note vanished the moment the application was created: staff typed it,
+    // then could not find it anywhere.
+    //
+    // Now it is also written as a real note against the case. cases.notes is
+    // still populated (nothing else was changed) so no existing screen loses
+    // anything; this adds the row that makes it visible.
+    //
+    // note_type must be one of the entity_notes CHECK values:
+    // general, follow_up, internal, client_communication, call, meeting,
+    // email, whatsapp, gc_account. 'general' is the column default.
+    if (form.notes.trim()) {
+      const { error: noteErr } = await supabase.from("entity_notes").insert({
+        case_id: data.id,
+        client_id: uuidOrNull(effectiveClientId),
+        note_type: "general",
+        body: form.notes.trim(),
+        created_by: user?.id ?? null,
+      });
+      // Non-fatal: the case exists and is the thing that matters. Surface it
+      // rather than failing silently, which is how this bug survived.
+      if (noteErr) toast.error("Case created, but the note could not be saved: " + noteErr.message);
+    }
+
     void createCaseTasks(data.id, profile?.id ?? null, user?.id ?? null);
     void qc.invalidateQueries({ queryKey: ["cases-all"] });
     void qc.invalidateQueries({ queryKey: ["sidebar-badge-counts"] });

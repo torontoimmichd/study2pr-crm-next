@@ -33,7 +33,10 @@ import { FamilyUnitCard } from "@/components/lead-detail/FamilyUnitCard";
 import { FeeAssignmentCard } from "@/components/lead-detail/FeeAssignmentCard";
 import { ApplicationsPanel } from "@/components/lead-detail/ApplicationsPanel";
 import { PathwayPlanCard } from "@/components/lead-detail/PathwayPlanCard";
-import { ActivityTimelineCard } from "@/components/lead-detail/ActivityTimelineCard";
+// ActivityTimelineCard import removed 2026-08-12 — the Overview no longer
+// renders a second timeline. The component file is kept, not deleted: it is a
+// clean standalone renderer and may be wanted elsewhere. If it is still unused
+// at the next tidy-up, delete it then rather than leaving a half-removal now.
 import { NextBestActionBar } from "@/components/lead-detail/NextBestActionBar";
 import { AssessmentReviewPanel } from "@/components/AssessmentReviewPanel";
 
@@ -319,10 +322,12 @@ export default function LeadDetailPage() {
                 prospective={prospective}
                 currentLeadId={lead.id}
               />
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                <PathwayPlanCard applications={applications} prospective={prospective} />
-                <ActivityTimelineCard events={timeline} />
-              </div>
+              {/* 2026-08-12 — the Activity Timeline card used to sit here as
+                  well, so a lead showed TWO timelines over the same data with
+                  different styling. There is now one, in the Timeline tab,
+                  which also merges audit_log entries and so shows strictly
+                  more. EntityTimeline has been restyled to match. */}
+              <PathwayPlanCard applications={applications} prospective={prospective} />
               {nextAction && (
                 <NextBestActionBar task={nextAction} onAction={() => loadAll(lead.id)} />
               )}
