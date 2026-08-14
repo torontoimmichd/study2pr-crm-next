@@ -7,6 +7,7 @@ import { ArrowLeft, Briefcase, Plus, Pencil, Trash2, Users } from "lucide-react"
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/AppLayout";
+import { AdminDeleteButton } from "@/components/AdminDeleteButton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { fmtDateIST, fmtRelative, fmtMoney } from "@/lib/format";
@@ -134,6 +135,9 @@ export default function ClientDetail() {
             <Button size="sm" onClick={() => setNewCaseOpen(true)} className="bg-primary hover:bg-primary/90">
               <Plus className="h-4 w-4 mr-1.5" />New Case
             </Button>
+            {/* Owner/admin only. fn_admin_delete refuses if any case under this
+                client has money paid against it. */}
+            <AdminDeleteButton type="client" id={client.id} label={client.full_name} />
           </div>
         }
       />

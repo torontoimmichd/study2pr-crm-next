@@ -59,7 +59,7 @@ export default function Tasks() {
         q = q.not("completed_at", "is", null);
       } else {
         q = q.is("completed_at", null);
-        q = q.neq("status_code", "done");
+        q = q.neq("status_code", "completed");
       }
 
       // Date filters (only for open tasks)
@@ -130,7 +130,7 @@ export default function Tasks() {
 
   const completeTask = async (id: string) => {
     const task = tasks?.find((t) => t.id === id);
-    const patch = { status_code: "done", completed_at: new Date().toISOString() };
+    const patch = { status_code: "completed", completed_at: new Date().toISOString() };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await supabase.from("tasks").update(patch as any).eq("id", id);
     if (error) { toast.error(error.message); return; }

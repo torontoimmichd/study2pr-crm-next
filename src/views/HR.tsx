@@ -52,7 +52,7 @@ export default function HR() {
       const [headcount, recent, openTasks, advisors] = await Promise.all([
         supabase.from("staff_profiles").select("id", { count: "exact", head: true }).eq("is_active", true),
         supabase.from("staff_profiles").select("id", { count: "exact", head: true }).gte("created_at", ninety.toISOString()),
-        supabase.from("tasks").select("id", { count: "exact", head: true }).neq("status_code", "done"),
+        supabase.from("tasks").select("id", { count: "exact", head: true }).neq("status_code", "completed"),
         supabase.from("cases").select("case_manager_id").eq("is_archived", false).limit(5000),
       ]);
       const advisorCounts: Record<string, number> = {};
@@ -195,7 +195,7 @@ function Performance() {
 
       const tasksByStaff: Record<string, { done: number; onTime: number }> = {};
       (tasks.data ?? []).forEach((t) => {
-        if (!t.assigned_to || t.status_code !== "done" || !t.completed_at) return;
+        if (!t.assigned_to || t.status_code !== "completed" || !t.completed_at) return;
         tasksByStaff[t.assigned_to] = tasksByStaff[t.assigned_to] ?? { done: 0, onTime: 0 };
         tasksByStaff[t.assigned_to].done += 1;
         if (!t.due_at || new Date(t.completed_at) <= new Date(t.due_at)) {

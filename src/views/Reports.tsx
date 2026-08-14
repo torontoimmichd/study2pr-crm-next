@@ -275,8 +275,8 @@ function StaffPerformanceSection() {
       return staff.map((s) => ({
         name: s.full_name,
         role: s.role.replace(/_/g, " "),
-        openTasks:  tasks.filter((t) => t.assigned_to === s.id && t.status_code !== "done").length,
-        doneTasks:  tasks.filter((t) => t.assigned_to === s.id && t.status_code === "done").length,
+        openTasks:  tasks.filter((t) => t.assigned_to === s.id && t.status_code !== "completed").length,
+        doneTasks:  tasks.filter((t) => t.assigned_to === s.id && t.status_code === "completed").length,
         calls:      calls.filter((c) => c.staff_id === s.id).length,
         activeCases: cases.filter((c) => c.case_manager_id === s.id).length,
       })).filter((s) => s.openTasks + s.doneTasks + s.calls + s.activeCases > 0)

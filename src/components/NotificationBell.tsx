@@ -165,7 +165,7 @@ export function NotificationBell() {
   const completeTask = async (taskId: string) => {
     setUpdatingTaskId(taskId);
     const { error } = await db.from("tasks").update({
-      status_code: "done",
+      status_code: "completed",
       completed_at: new Date().toISOString(),
     }).eq("id", taskId);
     setUpdatingTaskId(null);

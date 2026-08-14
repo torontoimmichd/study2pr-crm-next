@@ -26,6 +26,9 @@ import { useAuth } from "@/lib/auth-context";
 import { CaseDocumentsTab } from "@/components/CaseDocumentsTab";
 import { CasePaymentsTab } from "@/components/CasePaymentsTab";
 import { CaseInvoicesTab } from "@/components/CaseInvoicesTab";
+// F1 — Case Cockpit (2026-08-12): everything about the application on one screen.
+import { CaseCockpit } from "@/components/case-detail/CaseCockpit";
+import { AdminDeleteButton } from "@/components/AdminDeleteButton";
 import { GenerateInvoiceDialog } from "@/components/GenerateInvoiceDialog";
 import { OutreachDialog } from "@/components/OutreachDialog";
 
@@ -185,7 +188,7 @@ export default function CaseDetail() {
   const toggleTask = async (taskId: string, done: boolean) => {
     const task = tasks?.find((t) => t.id === taskId);
     const patch = done
-      ? { status_code: "done", completed_at: new Date().toISOString() }
+      ? { status_code: "completed", completed_at: new Date().toISOString() }
       : { status_code: "open", completed_at: null };
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { error } = await supabase.from("tasks").update(patch as any).eq("id", taskId);
@@ -223,39 +226,33 @@ export default function CaseDetail() {
               <FilePlus2 className="h-4 w-4 mr-1.5" />Generate invoice
             </Button>
             <Link to="/cases"><Button variant="outline" size="sm"><ArrowLeft className="h-4 w-4 mr-1.5" />Back</Button></Link>
+            {/* Owner/admin only. fn_admin_delete refuses outright if anything has
+                been paid against this application. */}
+            <AdminDeleteButton type="case" id={caseRow.id} label={caseRow.case_code} />
           </div>
         }
       />
 
       <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-[1400px]">
         <div className="lg:col-span-2 space-y-4">
-          <div className="card-surface p-5">
-            <div className="flex items-center gap-2 flex-wrap mb-4">
-              <PriorityPill priority={caseRow.priority} />
-              <RiskPill risk={caseRow.risk_level} />
-              <span className="text-xs text-muted-foreground capitalize">{caseRow.current_stage_code?.replace(/_/g, " ")}</span>
-            </div>
-            {/* Stage progress */}
-            {stages && (
-              <div className="flex gap-1">
-                {stages.map(s => {
-                  const idx = stages.findIndex(x => x.code === caseRow.current_stage_code);
-                  const myIdx = stages.findIndex(x => x.code === s.code);
-                  const done = myIdx <= idx;
-                  return (
-                    <div key={s.code} className="flex-1" title={s.label}>
-                      <div className={`h-1.5 rounded-full ${done ? "bg-primary" : "bg-muted"}`} />
-                      <div className="text-[10px] uppercase tracking-wider text-muted-foreground mt-1 truncate">{s.label}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+          <div className="flex items-center gap-2 flex-wrap">
+            <PriorityPill priority={caseRow.priority} />
+            <RiskPill risk={caseRow.risk_level} />
           </div>
+
+          {/* F1 — Case Cockpit. Replaced the old 10-segment bar, which walked the rail
+              through Refused on the way to Closed and showed no dates or counts. */}
+          <CaseCockpit
+            caseRow={caseRow}
+            stages={stages}
+            tasks={tasks}
+            family={family}
+            staff={staff}
+          />
 
           <Tabs defaultValue="overview">
             <TabsList>
-              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="overview">Details</TabsTrigger>
               <TabsTrigger value="documents"><FileText className="h-3.5 w-3.5 mr-1" />Docs ({docCount ?? 0})</TabsTrigger>
               <TabsTrigger value="tasks"><CheckSquare className="h-3.5 w-3.5 mr-1" />Tasks ({tasks?.length ?? 0})</TabsTrigger>
               <TabsTrigger value="family"><Users className="h-3.5 w-3.5 mr-1" />Family ({family?.length ?? 0})</TabsTrigger>
@@ -292,12 +289,12 @@ export default function CaseDetail() {
                     <li key={t.id} className="flex items-center gap-3 py-2.5 px-2">
                       <input
                         type="checkbox"
-                        checked={t.status_code === "done"}
+                        checked={t.status_code === "completed"}
                         onChange={(e) => toggleTask(t.id, e.target.checked)}
                         className="h-4 w-4 rounded border-border accent-primary"
                       />
                       <div className="flex-1 min-w-0">
-                        <div className={`text-sm ${t.status_code === "done" ? "line-through text-muted-foreground" : ""}`}>{t.title}</div>
+                        <div className={`text-sm ${t.status_code === "completed" ? "line-through text-muted-foreground" : ""}`}>{t.title}</div>
                         {t.due_at && <div className="text-xs text-muted-foreground">Due {fmtDateTimeIST(t.due_at)}</div>}
                       </div>
                       <span className="text-xs capitalize text-muted-foreground">{t.priority}</span>

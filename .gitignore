@@ -43,3 +43,8 @@ pnpm-lock.yaml
 yarn.lock
 
 .vercel
+
+# Sandbox probe files. The agent sandbox can create files on this mount but
+# cannot delete them, so these get left behind. They are never part of a build.
+.claude_delete_probe
+.claude_write_probe

@@ -32,7 +32,7 @@ export function NextBestActionBar({ task, onAction }: Props) {
     try {
       // FIX 2026-07-22: tasks uses status_code ("done") + completed_at, not "status".
       const { error } = await (supabase as any).from("tasks").update({
-        status_code: "done",
+        status_code: "completed",
         completed_at: new Date().toISOString(),
       }).eq("id", task.id);
       if (error) { toast.error(error.message); return; }

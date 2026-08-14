@@ -24,6 +24,7 @@ import { EntityTimeline } from "@/components/EntityTimeline";
 import { NotesPanel } from "@/components/NotesPanel";
 import { LogCallDialog } from "@/components/LogCallDialog";
 import { ConvertLeadWizard } from "@/components/ConvertLeadWizard";
+import { AdminDeleteButton } from "@/components/AdminDeleteButton";
 import { OutreachDialog } from "@/components/OutreachDialog";
 import { StageTransitionWizard, type LeadStageData } from "@/components/StageTransitionWizard";
 
@@ -255,10 +256,13 @@ export default function LeadDetailPage() {
 
   return (
     <div className="min-h-screen p-4 lg:p-6">
-      <div className="mb-3">
+      <div className="mb-3 flex items-center justify-between gap-2">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="w-4 h-4 mr-1" /> Back
         </Button>
+        {/* Owner/admin only — renders nothing for anyone else, and the database
+            refuses regardless via fn_is_owner_admin(). */}
+        <AdminDeleteButton type="lead" id={lead.id} label={lead.full_name} />
       </div>
 
       {/* Header with wired buttons */}
@@ -513,8 +517,8 @@ const PRIORITY_META: Record<string, { label: string; color: string }> = {
 // against "completed" alone — the DEPRECATED code. Live data is 'done' 138
 // times vs 'completed' twice, so finished tasks were counted as open, shown as
 // overdue, and never matched the Completed filter. One source of truth now.
-const TERMINAL_STATUSES = new Set(["done", "completed", "dismissed", "cancelled"]);
-const isFinished = (statusCode: string) => statusCode === "done" || statusCode === "completed";
+const TERMINAL_STATUSES = new Set(["completed", "cancelled"]);
+const isFinished = (statusCode: string) => statusCode === "completed";
 
 // ---------- Run assessment ----------
 // Lists every ACTIVE form in assessment_forms rather than hardcoding buttons,
@@ -645,7 +649,7 @@ function LeadTasksTab({ leadId, leadName, onTasksChanged }: LeadTasksTabProps) {
         // 'completed' as "Completed (deprecated — use Done)" — this tab was
         // writing the deprecated value and is the source of the only 2 rows
         // carrying it. sql/74's auto-close also writes 'done'; they now agree.
-        .update({ status_code: "done", completed_at: new Date().toISOString() })
+        .update({ status_code: "completed", completed_at: new Date().toISOString() })
         .eq("id", task.id);
       if (error) throw error;
       void writeTimeline({

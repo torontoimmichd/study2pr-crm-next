@@ -370,7 +370,7 @@ export default function StaffDailyView() {
     mutationFn: async (taskId: string) => {
       const { error } = await supabase
         .from("tasks")
-        .update({ completed_at: new Date().toISOString(), status_code: "done" })
+        .update({ completed_at: new Date().toISOString(), status_code: "completed" })
         .eq("id", taskId);
       if (error) throw error;
       await writeAudit({
